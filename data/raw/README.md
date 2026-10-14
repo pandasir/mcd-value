@@ -62,8 +62,16 @@ python scripts/coupon_doctor.py --sanitize raw.json
    python demo.py
    ```
 
-`build_index.py` 只读取 `meals_*.json` 中**名字排序最靠前**的那个文件，
-所以换店时请先移走旧的 `meals_<storeCode>.json`。
+`build_index.py` 在 `data/raw/` 下**只认一份** `meals_*.json`。如果同时存在多份，
+它不会猜 —— 会直接报错并列出候选，让你移走多余的，或者用 `--store <storeCode>` 指定：
+
+```bash
+python scripts/build_index.py --store 1420888
+```
+
+> 这条是**故意做硬的**：早先它是「取文件名排序最靠前的一份」，于是往本目录多放一家门店的
+> 快照就会**静默换店** —— 索引换了，而券快照、README 里的价格、`demo.py` 的断言
+> 还停在原来的门店，错配没人发现。宁可报错，也不要在你不知道的情况下换一家店算账。
 
 ## 为什么快照要进仓库
 

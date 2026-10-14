@@ -93,8 +93,16 @@ python scripts/coupon_doctor.py --sanitize /tmp/raw.json
   | 麦乐送 `beType=2` | 2 | 必传 | `delivery-query-stores` |
   | 企业团餐 `beType=6` | 2 | 必传 | `delivery-query-stores` |
 
-`build_index.py` 只读取 `meals_*.json` 中**名字排序最靠前**的那个文件，
-换店时请先移走旧文件。
+`build_index.py` 在 `data/raw/` 下**只认一份** `meals_*.json`。同时存在多份时它不会猜：
+会报错并列出候选。要用哪一家就用 `--store` 明说（不指定且只有一份时可省略）：
+
+```bash
+python scripts/build_index.py --store 1420888
+```
+
+> 换店不是换个 JSON 就完事。索引换了之后，**券快照还挂在原门店**（`coupons_<storeCode>.json`），
+> README / `docs/demo-output.md` 里的价格与门店名也还是旧的，`demo.py` 的断言同样。
+> 要么连这些一起换，要么就当作一次本地试跑 —— 别让它半新半旧地进仓库。
 
 ## 5. 安全约定
 

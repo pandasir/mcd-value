@@ -10,6 +10,8 @@ venv/
 # 可提交的是派生摘要 data/raw/orders_summary_*.json。
 data/raw/orders_*.json
 !data/raw/orders_summary_*.json
+# 换店试跑时留下的旧快照与备份（本地留存，不入库）
+data/raw/*.bak
 .DS_Store
 .idea/
 .vscode/

@@ -17,10 +17,13 @@ build_index.py —— 把 MCP 原始快照归一化成引擎可直接消费的�
 2. 套餐营养：三件套/四件套/随心选等在营养库里没有对应行，这里按「主体 + 薯条 + 饮品」建模推算，
    并把 confidence 标记为 "estimated"，绝不冒充实测值。
 3. 角色分类：把商品归入 staple/side/drink/dessert/nonfood，供组合求解器分桶。
+4. 门店选择：data/raw/ 下有多份 `meals_*.json` 时**不猜**，直接报错列出候选，
+   要用哪家就用 `--store <storeCode>` 明说。理由见 `pick_meals_file()` 的说明。
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -209,15 +212,48 @@ def resolve_bundle(name: str, table: dict[str, dict]) -> dict | None:
     return {"nutri": total, "components": comps, "confidence": "estimated"}
 
 
+# ---------------------------------------------------------------- 门店选择
+def pick_meals_file(store: str | None) -> Path:
+    """选出这次要用的菜单快照；多份并存时**拒绝猜测**。
+
+    这里曾经是 `sorted(...)[0]` —— 从 data/raw/ 里多放一家门店的快照开始，
+    索引就会**静默**换成那一家，而券快照、README 里的数字、demo 的断言
+    都还停在原来的门店，错配无人察觉（实测发生过：覆盖门店后
+    `test_nutrition_coverage` 才把它挡住）。
+
+    所以改成分两种情况：`--store` 指定就按它找；没指定而候选多于一份就报错。
+    """
+    files = sorted(RAW.glob("meals_*.json"))
+    if not files:
+        raise SystemExit("缺少 data/raw/meals_<storeCode>.json")
+
+    if store:
+        hit = [p for p in files if p.stem == f"meals_{store}"]
+        if not hit:
+            names = "、".join(p.name for p in files)
+            raise SystemExit(f"找不到 meals_{store}.json；现有：{names}")
+        return hit[0]
+
+    if len(files) > 1:
+        names = "\n".join(f"  · {p.name}" for p in files)
+        raise SystemExit(
+            f"data/raw/ 下有 {len(files)} 份菜单快照，无法确定该用哪一份：\n{names}\n"
+            f"请移走多余的，或用 --store <storeCode> 指定。"
+        )
+    return files[0]
+
+
 # ---------------------------------------------------------------- 主流程
 def main() -> None:
     """读取原始快照，生成 data/index.json 并打印覆盖率统计。"""
-    table = load_nutrition()
+    ap = argparse.ArgumentParser(description="把 MCP 原始快照归一化成索引")
+    ap.add_argument("--store", default=None,
+                    help="门店编码；data/raw/ 下有多个 meals_*.json 时必填")
+    args = ap.parse_args()
 
-    meal_files = sorted(RAW.glob("meals_*.json"))
-    if not meal_files:
-        raise SystemExit("缺少 data/raw/meals_<storeCode>.json")
-    raw = json.loads(meal_files[0].read_text(encoding="utf-8"))
+    table = load_nutrition()
+    meals_file = pick_meals_file(args.store)
+    raw = json.loads(meals_file.read_text(encoding="utf-8"))
 
     items: dict[str, dict] = {}
     nutrition: dict[str, dict] = {}

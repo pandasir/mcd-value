@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -19,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import adviser  # noqa: E402
+import build_index  # noqa: E402
 from build_index import classify  # noqa: E402
 
 PY = sys.executable
@@ -149,6 +151,60 @@ class TestCli(unittest.TestCase):
             self.assertIn("order_items", plan)
             self.assertIn("nutrition", plan)
             self.assertIn("total", plan)
+
+
+class TestMealsSelection(unittest.TestCase):
+    """data/raw/ 下有多份门店快照时，必须报错而不是静默挑一份。
+
+    这条不是假想的：实测发生过 —— 往 data/raw/ 多放一家门店的 meals_*.json，
+    索引就被静默换成了那一家，而券快照、README 里的数字、demo 的断言
+    都还停在原门店。整套流程只在最后被营养覆盖率那条断言拦下来。
+    """
+
+    def _with_raw(self, names: list[str]) -> None:
+        """把 build_index.RAW 临时指向一个装着占位快照的目录。"""
+        tmp = tempfile.TemporaryDirectory()
+        path = Path(tmp.name)
+        for name in names:
+            (path / name).write_text("{}", encoding="utf-8")
+        original = build_index.RAW
+        build_index.RAW = path
+        self.addCleanup(setattr, build_index, "RAW", original)
+        self.addCleanup(tmp.cleanup)
+
+    def test_single_snapshot_is_used(self) -> None:
+        """只有一份时正常返回它。"""
+        self._with_raw(["meals_1420762.json"])
+        picked = build_index.pick_meals_file(None)
+        self.assertEqual(picked.name, "meals_1420762.json")
+
+    def test_multiple_snapshots_refuse_to_guess(self) -> None:
+        """两份并存 → SystemExit，且报错里两份都要点出来。"""
+        self._with_raw(["meals_1420762.json", "meals_1420888.json"])
+        with self.assertRaises(SystemExit) as ctx:
+            build_index.pick_meals_file(None)
+        message = str(ctx.exception)
+        self.assertIn("meals_1420762.json", message)
+        self.assertIn("meals_1420888.json", message)
+
+    def test_explicit_store_picks_that_store(self) -> None:
+        """--store 能在一堆候选里精确挑出指定门店。"""
+        self._with_raw(["meals_1420762.json", "meals_1420888.json"])
+        picked = build_index.pick_meals_file("1420888")
+        self.assertEqual(picked.name, "meals_1420888.json")
+
+    def test_unknown_store_lists_candidates(self) -> None:
+        """指定了不存在的门店 → 报错要告诉用户实际有哪些。"""
+        self._with_raw(["meals_1420762.json"])
+        with self.assertRaises(SystemExit) as ctx:
+            build_index.pick_meals_file("9999999")
+        self.assertIn("meals_1420762.json", str(ctx.exception))
+
+    def test_no_snapshot_at_all(self) -> None:
+        """一份都没有 → 明确提示缺什么。"""
+        self._with_raw([])
+        with self.assertRaises(SystemExit):
+            build_index.pick_meals_file(None)
 
 
 if __name__ == "__main__":
