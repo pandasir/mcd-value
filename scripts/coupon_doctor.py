@@ -24,6 +24,7 @@ from __future__ import annotations
 import json
 import math
 import re
+import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
@@ -52,6 +53,9 @@ STRETCH = "努一把"
 PAPER = "纸面富贵"
 UNKNOWN = "无法判断"
 VERDICT_ORDER = {HANDY: 0, STRETCH: 1, PAPER: 2, UNKNOWN: 3}
+
+# 价值来源 → 面向用户的中文口径（对外展示统一走这里，不暴露内部术语）
+VALUE_SOURCE_LABEL = {"probe": "实测", "reverse": "菜单反查", "unknown": "拿不到"}
 
 
 @dataclass
@@ -149,6 +153,100 @@ def load_probes(path: Path | None = None) -> dict[str, dict]:
         return {}
     raw = json.loads(path.read_text(encoding="utf-8"))
     return {p["couponId"]: p for p in raw.get("probes", [])}
+
+
+# ------------------------------------------------------------------ 订单
+ORDERS = RAW / "orders_1420762.json"                  # 本地完整脱敏快照（不入库）
+ORDER_SUMMARY = RAW / "orders_summary_1420762.json"   # 只含派生指标（入库）
+
+
+def sanitize_orders(raw: dict) -> dict:
+    """把 `order-list` 的原始返回洗成**可以本地留存**的脱敏快照。
+
+    去掉 orderId（账号）、storeCode / storeName / beCode（定位）、下单时刻的时分秒
+    （行为时段）；只保留日期、取餐方式、状态、金额与商品名。
+    """
+    block = raw.get("data", raw)
+    orders = []
+    for o in block.get("list", []):
+        orders.append({
+            "date": (o.get("createTime") or "")[:10],
+            "beType": o.get("beType"),
+            "status": o.get("orderStatus"),
+            "total": float(o.get("realTotalAmount") or 0),
+            "items": [{"productCode": p.get("productCode"),
+                       "name": p.get("productName"),
+                       "quantity": p.get("quantity", 1)}
+                      for p in o.get("orderProductList", [])],
+        })
+    return {"capturedAt": block.get("datetime") or raw.get("datetime"),
+            "orders": orders}
+
+
+def derive_orders(snapshot: dict) -> dict:
+    """从脱敏快照派生审计指标。
+
+    只统计「订单已完成」——已取消的单不代表真实消费。
+    金额为 0 的单计入点单频率（它确实是一笔点单），但不计入客单价（它没花钱）。
+    """
+    done = [o for o in snapshot.get("orders", [])
+            if o.get("status") == "订单已完成"]
+    if not done:
+        return {}
+
+    dates = sorted(o["date"] for o in done if o.get("date"))
+    anchor = parse_dt(snapshot.get("capturedAt")) or datetime.now()
+    span_days = max(1, (anchor - datetime.strptime(dates[0], "%Y-%m-%d")).days)
+    paid = [o["total"] for o in done if o.get("total")]
+
+    counts: dict[str, int] = {}
+    for o in done:
+        for it in o.get("items", []):
+            name = it.get("name")
+            if name:
+                counts[name] = counts.get(name, 0) + 1
+
+    return {
+        "n_orders": len(done),
+        "n_paid": len(paid),
+        "first_date": dates[0],
+        "last_date": dates[-1],
+        "span_days": span_days,
+        "avg_ticket": round(sum(paid) / len(paid), 2) if paid else None,
+        "total_spend": round(sum(paid), 2),
+        "orders_per_week": round(len(done) / (span_days / 7), 4),
+        "top_items": sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:5],
+    }
+
+
+def order_summary(snapshot: dict) -> dict:
+    """把脱敏快照压成**可以提交**的摘要：只有派生指标，没有逐单明细。"""
+    derived = derive_orders(snapshot)
+    # 可提交的摘要不带逐单日期、不带商品名 —— 只留「花了多少、多久点一次」。
+    keep = ("n_orders", "n_paid", "span_days", "avg_ticket",
+            "total_spend", "orders_per_week")
+    return {
+        "capturedAt": snapshot.get("capturedAt"),
+        "source": "order-list（麦当劳 MCP）",
+        "note": "只保留派生指标；逐单明细、商品名与下单日期均不在仓库内。",
+        "summary": {k: derived[k] for k in keep if k in derived},
+    }
+
+
+def load_orders(path: Path | None = None) -> dict:
+    """读订单数据并返回审计指标。没有数据时返回空 dict —— 不猜。
+
+    优先读**派生摘要**（`orders_summary_*.json`，随仓库提交）；
+    没有就退回到**本地脱敏快照**（`orders_*.json`，需自己采集）并现场派生。
+    """
+    if path is None:
+        path = ORDER_SUMMARY if ORDER_SUMMARY.exists() else ORDERS
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if raw.get("summary"):          # 摘要格式：已是派生结果，直接用
+        return dict(raw["summary"])
+    return derive_orders(raw)
 
 
 # ------------------------------------------------------------------ 价值
@@ -311,15 +409,15 @@ def claimable(coupons: list[Coupon]) -> list[Coupon]:
     return [c for c in coupons if c.status == "claimable"]
 
 
-def orders_in_window(window_days: int, orders_per_week: float) -> int:
-    """窗口内大概还会点几单。至少 1 单（否则排程没有意义）。"""
-    return max(1, int(window_days * orders_per_week / 7))
-
-
 # ------------------------------------------------------------------ 一站式
 def analyze(baseline: float, orders_per_week: float = 3.0,
-            now: datetime | None = None) -> dict:
-    """读快照 → 补价值 → 体检 → 排程，返回全部结论。"""
+            now: datetime | None = None, orders: dict | None = None,
+            force_frequency: float | None = None) -> dict:
+    """读快照 → 补价值 → 体检 → 排程，返回全部结论。
+
+    频率来源按优先级：显式指定（`force_frequency`）> 订单实测（`orders`）> 假设值。
+    订单实测值来自脱敏快照派生，不来自任何猜测。
+    """
     import adviser  # 延迟导入，避免顶层循环依赖
 
     idx = adviser.load_index()
@@ -330,6 +428,14 @@ def analyze(baseline: float, orders_per_week: float = 3.0,
     if now is None:
         now = parse_dt(meta.get("capturedAt")) or datetime.now()
 
+    audit = orders or None
+    if force_frequency is not None:
+        orders_per_week, source = force_frequency, "命令行指定"
+    elif audit:
+        orders_per_week, source = audit["orders_per_week"], "订单实测"
+    else:
+        source = "假设"
+
     return {
         "meta": meta,
         "now": now,
@@ -337,10 +443,17 @@ def analyze(baseline: float, orders_per_week: float = 3.0,
         "schedule": schedule(coupons, orders_per_week, now),
         "claimable": [c.to_dict() for c in claimable(coupons)],
         "coupons": [c.to_dict() for c in coupons],
+        "audit": audit,
+        "frequency_source": source,
     }
 
 
 # ------------------------------------------------------------------ 渲染
+def fmt_freq(x: float) -> str:
+    """点单频率的显示格式：恰好是整数就不带小数点，否则保留两位。"""
+    return f"{x:.0f}" if abs(x - round(x)) < 0.005 else f"{x:.2f}"
+
+
 def render(report: dict) -> str:
     """把体检与排程渲染成给人看的报告。"""
     out: list[str] = []
@@ -362,7 +475,7 @@ def render(report: dict) -> str:
         days = "—" if row["days_left"] is None else f"{row['days_left']}天"
         face = f"面值 ¥{row['face_value']:.1f}"
         net = "" if row["net_value"] is None else f" · 净赚 ¥{row['net_value']:.1f}"
-        src = {"probe": "实测", "reverse": "菜单反查", "unknown": "拿不到"}[row["value_source"]]
+        src = VALUE_SOURCE_LABEL[row["value_source"]]
         out.append(f"   [{row['verdict']}] {row['title']}")
         out.append(f"        {face}（{src}）{net} · 还剩 {days}")
 
@@ -382,7 +495,26 @@ def render(report: dict) -> str:
         out.append(f"   ⚠️ {counts[PAPER]} 张建议劝退：为了用它们要多花的钱 ≥ 券面价值。")
 
     out.append("")
-    out.append(f"   用券排程：窗口 {sch['window_days']} 天 × {sch['orders_per_week']:g} 单/周"
+    audit = report.get("audit")
+    if audit:
+        if audit.get("first_date") and audit.get("last_date"):
+            period = (f"（{audit['first_date']} → {audit['last_date']}，"
+                      f"跨 {audit['span_days']} 天）")
+        else:
+            period = f"（跨度 {audit['span_days']} 天）"
+        out.append(f"   消费审计：{audit['n_orders']} 笔已完成订单{period}")
+        if audit.get("avg_ticket") is not None:
+            per_month = audit["orders_per_week"] * 52 / 12
+            out.append(f"     客单价 ¥{audit['avg_ticket']:.1f}"
+                       f" · 累计 ¥{audit['total_spend']:.1f}"
+                       f" · 点单 {audit['orders_per_week']:.2f} 单/周"
+                       f"（≈ {per_month:.1f} 单/月）")
+        if audit.get("top_items"):
+            tops = "、".join(f"{n}×{c}" for n, c in audit["top_items"])
+            out.append(f"     常点：{tops}")
+
+    out.append(f"   用券排程（频率来源：{report['frequency_source']}）：窗口 "
+               f"{sch['window_days']} 天 × {fmt_freq(sch['orders_per_week'])} 单/周"
                f" → 大概只会点 {sch['orders_in_window']} 单，最多用掉 "
                f"{sch['orders_in_window']} 张券")
     for i, a in enumerate(sch["assigned"], 1):
@@ -410,16 +542,49 @@ def render(report: dict) -> str:
 
 
 def main() -> int:
-    """命令行入口：输出券包体检与用券排程。"""
+    """命令行入口：券包体检与用券排程；也可用 --sanitize 生成脱敏订单快照。"""
     import argparse
 
     ap = argparse.ArgumentParser(description="券包体检与用券排程")
     ap.add_argument("--baseline", type=float, default=None,
                     help="基准消费（元）；默认取求解器在该预算下的方案总价")
     ap.add_argument("--budget", type=float, default=45, help="预算（元），用于推导默认基准")
-    ap.add_argument("--orders-per-week", type=float, default=3.0, help="每周点单频率")
+    ap.add_argument("--orders-per-week", type=float, default=None,
+                    help="每周点单频率；显式给出则覆盖订单实测值")
+    ap.add_argument("--orders", type=Path, default=None,
+                    help="订单数据文件；默认读仓库内置的派生摘要")
+    ap.add_argument("--no-orders", action="store_true",
+                    help="忽略订单数据，退回 3 单/周的假设频率")
+    ap.add_argument("--sanitize", type=Path, default=None,
+                    help="把 order-list 的原始返回洗成脱敏快照后退出")
+    ap.add_argument("--out", type=Path, default=None, help="--sanitize 的输出路径")
+    ap.add_argument("--summary-out", type=Path, default=None,
+                    help="--sanitize 同时导出的派生摘要路径（可提交的那份）")
     ap.add_argument("--json", action="store_true", help="输出结构化 JSON")
     args = ap.parse_args()
+
+    if args.sanitize:
+        raw = json.loads(args.sanitize.read_text(encoding="utf-8"))
+        snapshot = sanitize_orders(raw)
+        out = args.out or ORDERS
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n",
+                       encoding="utf-8")
+
+        summary_path = args.summary_out or ORDER_SUMMARY
+        summary_path.parent.mkdir(parents=True, exist_ok=True)
+        summary_path.write_text(
+            json.dumps(order_summary(snapshot), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8")
+
+        for label, path in (("脱敏快照（本地留存）", out),
+                            ("派生摘要（可提交）", summary_path)):
+            try:
+                shown = path.relative_to(ROOT)
+            except ValueError:          # 输出到仓库之外时照原样显示
+                shown = path
+            print(f"✅ {label}：{shown}")
+        return 0
 
     baseline = args.baseline
     if baseline is None:
@@ -429,7 +594,15 @@ def main() -> int:
                               "balanced", 1, None, None)
         baseline = plans[0].total if plans else args.budget
 
-    report = analyze(baseline=baseline, orders_per_week=args.orders_per_week)
+    orders = None
+    if not args.no_orders:
+        orders = load_orders(args.orders) if args.orders else load_orders()
+        if args.orders and not orders:
+            print(f"ⓘ 未读到订单数据（{args.orders}），频率按 3 单/周假设。",
+                  file=sys.stderr)
+
+    report = analyze(baseline=baseline, orders=orders,
+                     force_frequency=args.orders_per_week)
 
     if args.json:
         print(json.dumps(report, ensure_ascii=False, indent=2, default=str))

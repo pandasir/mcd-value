@@ -58,11 +58,15 @@ python scripts/adviser.py --budget <预算> --people <人数> --mode <模式> \
 
 ```bash
 python scripts/adviser.py --budget <预算> --mode <模式> --coupons   # 在方案上标注本单可用的券
-python scripts/coupon_doctor.py --budget <预算> --orders-per-week <频率>   # 券包体检 + 用券排程
+python scripts/coupon_doctor.py --budget <预算>                    # 券包体检 + 消费审计 + 用券排程
 ```
 
 三条假设（基准消费 = 本单方案总价；窗口内还会点 K 单；每单最多用 1 张券）见
 [`docs/COUPON_METHOD.md`](docs/COUPON_METHOD.md)。
+
+> **点单频率默认来自订单实测**：`order-list` 的返回必须先经 `--sanitize` 洗成
+> 「本地脱敏快照 + 可提交派生摘要」，**仓库里只放派生指标，不放逐单明细**。
+> `--no-orders` 可回到 3 单/周的假设模式。
 
 > **不擅自替用户领券。** 领取会改动账号状态，必须先取得用户明确同意；
 > 本工具负责把"有哪些没领、值不值"摆清楚。

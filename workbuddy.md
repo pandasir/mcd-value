@@ -8,8 +8,8 @@
 |---|---|
 | 项目名称 | 麦麦点餐参谋（mcd-value） |
 | 使用工具 | 腾讯 WorkBuddy（Agent 模式） |
-| 使用能力 | MCP 连接器调用、代码生成与重构、脚本执行、测试运行、文档撰写 |
-| 开发日期 | 2026-10-14 |
+| 使用能力 | MCP 连接器调用、数据快照采集、代码生成与重构、脚本执行、测试运行、CI 编排、文档撰写 |
+| 开发日期 | 2026-10-14（分三阶段推进：① 传播壳 ② 券纵深 ③ 工程加固） |
 | 接入的 MCP | `mcd-mcp`（streamablehttp，`https://mcp.mcd.cn`） |
 
 ## 对话上下文（按时间顺序）
@@ -31,10 +31,15 @@ WorkBuddy 抓取 `activityGuidelines.md` 与活动 README，梳理出关键机�
 WorkBuddy 直连 `mcd-mcp` 并逐个验证工具，实际调用了：
 
 `now-time-info`、`list-nutrition-foods`、`available-coupons`、`query-my-account`、
+`query-store-coupons`、`query-my-coupons`、`calculate-price`（带券计价）、
 `query-nearby-stores`（深圳·科技园）、`query-meals`（门店 1420762）、`query-meal-detail`。
 
 据此确认了真实数据结构、价格单位（`query-meals` 为元、`calculate-price` 为分）、
 `beCode` 传递规则，以及营养库与菜单名称不对齐等工程细节。
+
+其中 `calculate-price` 的**带券计价**是关键发现：把券自带商品码 + `couponId` 传进去，
+返回的 `discount` 就是这张券的**精确价值**——`available-coupons` 只给券名不给面值的空洞，
+由此被填上。这一步的结果被缓存进 `data/raw/coupon_probe_1420762.json`，使券价值在离线环境下可复现。
 
 ### 3. 方案设计与实现
 
@@ -45,13 +50,17 @@ WorkBuddy 完成以下交付：
 | `SKILL.md` | WorkBuddy Skill 定义，固化执行流程与安全红线 |
 | `scripts/build_index.py` | 名称对齐、角色分类、套餐营养显式建模 |
 | `scripts/adviser.py` | 约束求解器 + 四模式多目标打分 + CLI |
-| `tests/test_adviser.py` | 13 项回归测试 |
-| `data/raw/` | 真实 MCP 返回快照（脱敏） |
+| `scripts/coupon_doctor.py` | 券的价值口径 + 券包体检 + 用券排程 + 可领取券 |
+| `demo.py` | 一条命令跑通全部叙事（零依赖 / 零 Token / 不联网），同时是端到端回归 |
+| `scripts/style_check.py` | 零依赖静态检查（行宽 / 返回类型 / docstring / 未使用 import） |
+| `tests/` | 47 项回归测试（求解 13 + 券 34） |
+| `data/raw/` | 真实 MCP 返回快照（脱敏，含菜单 / 营养 / 券 / 券价值实测） |
+| `.github/workflows/tests.yml` | CI：规范检查 + 4 版本矩阵 + 索引可复现校验 + demo |
 | `README.md` / `MCP_INTEGRATION.md` | 项目文档与 MCP 集成说明 |
 
 ### 4. 迭代修正（关键过程）
 
-开发过程中 WorkBuddy 通过**实际运行**发现并修复了三个真实缺陷：
+开发过程中 WorkBuddy 通过**实际运行**发现并修复了五个真实缺陷：
 
 1. **均衡模式退化为"挑最便宜的"**：预算 40 元却只推荐 15 元的单品。
    修复：引入「完整一餐」的结构约束（主食+小食+饮品），并把价格从主目标降为约束。
@@ -59,17 +68,48 @@ WorkBuddy 完成以下交付：
    修复：重写分类优先级规则，并新增对应测试用例钉住。
 3. **随心配类商品营养缺失**：内容自选商品在营养库无对应行，估算明显偏低。
    修复：建立显式建模 + 置信度标注机制，绝不把估算冒充实测值。
+4. **券有效期算不出来**：券快照里的 `capturedAt` 带秒（`2026-10-14 17:26:54`），
+   时间解析只认到分钟，导致所有券的"剩余天数"都是空 —— 一个真实的复现缺陷。
+   修复：补齐 `%Y-%m-%d %H:%M:%S` 格式。
+5. **固定价券识别漏判**：正则要求券名有「元」字，把「13.9浓浓黑巧」这类无「元」券
+   判成了"价值未知"。修复：改为 `元?` 可选。**这个 bug 是测试先发现的，不是人眼发现的。**
 
-### 5. 验证
+### 5. 对标迭代（第二轮：传播壳 / 券纵深 / 工程加固）
+
+拿到同类项目做横向对标后，WorkBuddy 判断真正的短板不在技术深度，而在**转化漏斗**：
+访客 30 秒内看不懂就走。于是把真内核（约束求解器）重新包装为一件**能算出"这一顿你多花了多少钱"的止损工具**，
+刺点由求解器自身产出（冤枉钱 = 单点基线 − 最优组合），并补齐券纵深、消费审计与工程基建：
+
+1. **传播壳**：`demo.py` 单命令、离线、零 Token、零依赖，一次跑通全部叙事，同时充当端到端回归；
+   新增 `assets/banner.svg`、`demo-dual-view.svg`、`architecture.svg`、`social-preview.png`；
+   README 首屏直接可复现，硬编码徽章换成动态 CI 徽章。
+   **真实结果**：全菜单扫出 8 组"三件套比四件套更贵"的结构倒挂（最大 ¥8.5），这条结论由求解器与菜单价格直接算出。
+2. **券纵深**：券从 3 条硬编码子串规则，变成「价值实测 + 券包体检 + 用券排程」三件套，
+   数据全部落盘到 `data/raw/`。最有力的一条实测：**「王牌小食拼」值 ¥6.1，靠菜单反查永远算不出来**
+   （券名无数字、菜单无此商品），只有 `calculate-price` 的 `discount` 能给出。
+3. **工程加固**：新增 `scripts/style_check.py`（零依赖静态检查：行宽 / 返回类型 / docstring /
+   未使用 import / **重复定义**）、CI 扩为规范检查 + Python 3.9/3.10/3.12/3.13
+   矩阵 + **索引可复现校验**（`git diff --exit-code data/index.json`），全流程零 `pip install`。
+4. **消费审计**：用 `order-list` 拉取历史订单，洗成「本地脱敏快照 + 可提交派生摘要」两层，
+   把用券排程里的「点单频率」从拍脑袋的假设换成**实测值**。
+   真实结果：这个账户三个月只点了 8 单（客单价 ¥23.6，≈ 1.1 单/月），
+   而早期 demo 假设的是 3 单/周 —— **假设错了约 11 倍，结论就从「浪费 ¥6.1」翻成「浪费 ¥13.2」**。
+   仓库里不存任何原始订单，也不存逐单明细。
+
+### 6. 验证
 
 ```bash
-python scripts/build_index.py     # ✅ 112 商品 / 营养覆盖 92%
-python -m unittest discover -s tests -v   # ✅ 13 tests OK
-python scripts/adviser.py --budget 45 --people 1 --mode balanced   # ✅ 输出可下单方案
+python scripts/build_index.py             # ✅ 112 商品 / 营养覆盖 92%（重建结果与提交版本逐字节一致）
+python scripts/style_check.py             # ✅ 7 个文件规范检查通过
+python -m unittest discover -s tests -v   # ✅ 47 tests OK（求解 13 + 券 34）
+python demo.py                            # ✅ 五场景跑通，断言关键不变量，失败退出码非 0
+python scripts/coupon_doctor.py --budget 45   # ✅ 券包体检 + 消费审计 + 用券排程
+python scripts/adviser.py --budget 45 --people 1 --mode balanced  # ✅ 输出可下单方案
 ```
 
 ## 说明
 
-- 上述过程均在 WorkBuddy 对话中完成，包含 MCP 调用、代码编写、执行与测试。
+- 上述过程均在 WorkBuddy 对话中完成，包含 MCP 调用与快照采集、代码编写与重构、执行与测试、CI 编排与文档撰写。
 - 仓库内所有文件均不含真实 MCP Token；`mcp-config.example.json` 仅使用环境变量占位符。
+- 所有落盘快照均已脱敏：只保留商品编码、名称、价格、营养与券结构字段，不含账号、手机号、地址、订单号等个人数据。
 - 项目为参赛者独立开发，非麦当劳官方产品。

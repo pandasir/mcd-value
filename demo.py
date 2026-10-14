@@ -176,7 +176,8 @@ def print_plan(title: str, note: str, args: SimpleNamespace, idx: dict,
 def print_coupons(idx: dict, plans: list, coupons: list) -> dict:
     """场景三：券的价值、体检、排程与可领取券。返回体检报告供断言使用。"""
     baseline = plans[0].total if plans else 45.0
-    report = CD.analyze(baseline=baseline, orders_per_week=3.0)
+    report = CD.analyze(baseline=baseline, orders_per_week=3.0,
+                        orders=CD.load_orders() or None)
     print("③ 你的券在漏水：券不是「可用资源」，是有保质期的钱")
     print()
     for line in CD.render(report).splitlines():
@@ -191,8 +192,9 @@ def print_coupons(idx: dict, plans: list, coupons: list) -> dict:
             names = " + ".join(line.name for line in p.lines)
             print(f"     方案 ¥{p.total:.1f}　{names}")
             for h in hits:
+                src = CD.VALUE_SOURCE_LABEL.get(h["value_source"], "来源未知")
                 print(f"       🎟️ 本单可用：{h['title']}　再省 ¥{h['face_value']:.1f}"
-                      f"（{h['value_source']}，需门店核验）")
+                      f"（{src}，需门店核验）")
             break
     print()
     return report
@@ -247,6 +249,11 @@ def main() -> int:
             f"券面价值与来源不一致：{c.title}"
     chk = report["checkup"]
     assert chk["realizable"] <= chk["named_total"] + 1e-6, "可实现不应超过券面名义总额"
+    if report["audit"]:
+        assert report["frequency_source"] == "订单实测", "有订单数据就该用实测频率"
+        assert report["audit"]["orders_per_week"] > 0, "点单频率应为正"
+        assert report["audit"]["avg_ticket"] is None or \
+            report["audit"]["avg_ticket"] > 0, "客单价应为正"
 
     # ---- 尾 --------------------------------------------------------------
     print(BAR)
@@ -254,7 +261,7 @@ def main() -> int:
     print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced")
     print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced"
           " --no-beef --no-fried")
-    print("  python scripts/coupon_doctor.py --budget 45 --orders-per-week 3")
+    print("  python scripts/coupon_doctor.py --budget 45")
     print("  python -m unittest discover -s tests -v")
     print()
     print("价格为门店实时快照口径，最终以 calculate-price 结果为准；营养为估算的已标注。")

@@ -110,11 +110,13 @@ python demo.py
    名义总额 ¥26.7 → 按你的消费水平可实现 ¥26.7
    ⓘ 6 张价值未知 —— 券面推不出来，我们就不猜；领取后可用带券计价实测。
 
-   用券排程：窗口 6 天 × 3 单/周 → 大概只会点 2 单，最多用掉 2 张券
+   消费审计：8 笔已完成订单（跨度 212 天）
+     客单价 ¥23.6 · 累计 ¥141.9 · 点单 0.26 单/周（≈ 1.1 单/月）
+   用券排程（频率来源：订单实测）：窗口 6 天 × 0.26 单/周 → 大概只会点 1 单，最多用掉 1 张券
      第 1 单 → 中薯条买一送一　净赚 ¥13.5（还剩 3 天）
-     第 2 单 → 13.9浓浓黑巧　净赚 ¥7.1（还剩 6 天）
+     排不上 → 13.9浓浓黑巧　净价值 ¥7.1（还剩 6 天）
      排不上 → 王牌小食拼　净价值 ¥6.1（还剩 3 天）
-   券包可实现 ¥26.7，但机会只够用掉 ¥20.6 —— 剩下 ¥6.1 注定随券过期浪费。
+   券包可实现 ¥26.7，但机会只够用掉 ¥13.5 —— 剩下 ¥13.2 注定随券过期浪费。
 
    还没领的券 3 张（领取免费）：
      · 免费脆薯饼　价值未知
@@ -131,12 +133,21 @@ python demo.py
    渲染时也不给它们编一个"剩余天数"。这条被测试与 CI 钉住：
    `face_value is None` **当且仅当** `value_source == "unknown"`。
 3. **可实现的券，未必用得上。** 券会过期，而你点单次数有限 ——
-   ¥26.7 的券包里，有 ¥6.1 是注定要浪费的。
+   上面这个账户三个月只点了 8 单，6 天内等不到 3 次点单机会，
+   于是 ¥26.7 的券包里有 **¥13.2** 是注定要浪费的。
+
+> **消费审计是「实测」而不是「假设」。** 排程的默认频率来自脱敏订单摘要
+> （`data/raw/orders_summary_1420762.json`：只含客单价、频率与跨度，不含逐单明细、
+> 商品名与下单日期）。仓库里**没有任何一条原始订单**。
+> 你也可以换成自己的：`coupon_doctor.py --orders 你的订单摘要.json`；
+> 想回到纯假设模式用 `--no-orders`。**注意**：demo 早期版本假设「3 单/周」，
+> 比这个账户的真实频率高约 11 倍 —— 假设定错，结论就从「浪费 ¥6.1」翻成「浪费 ¥13.2」。
 
 券还能叠到具体方案上（只有本单真的含券覆盖的商品时才标注）：
 
 ```bash
-python scripts/coupon_doctor.py --budget 45 --orders-per-week 3
+python scripts/coupon_doctor.py --budget 45          # 默认用仓库内置的订单摘要
+python scripts/coupon_doctor.py --budget 45 --no-orders          # 回到纯假设频率
 python scripts/adviser.py --budget 30 --mode light --top 5 --coupons
 #   → 方案 ¥25.4　“我就喜欢”鸡薯双全盒 + 鲜萃咖啡
 #     🎟️ 本单可用：中薯条买一送一　再省 ¥13.5（实测，需门店核验）
@@ -144,6 +155,7 @@ python scripts/adviser.py --budget 30 --mode light --top 5 --coupons
 
 > 三条假设（基准消费怎么定、窗口内还会点几单、用券不改点单次数）全部写在
 > [`docs/COUPON_METHOD.md`](docs/COUPON_METHOD.md) 里，不藏在代码里。
+> 其中「窗口内还会点几单」现在默认由**订单实测**给出，而不是拍一个数。
 
 ## 工作原理
 
@@ -182,6 +194,14 @@ python scripts/adviser.py --budget 45 --people 1 --mode balanced --no-beef --no-
 python scripts/adviser.py --budget 60 --people 2 --mode protein --json
 ```
 
+券包体检（`coupon_doctor.py`）另有自己的一组参数：
+
+```text
+--budget 预算（元）        --baseline 基准消费（元）    --json 结构化输出
+--orders 订单摘要路径      --no-orders 忽略订单数据     --orders-per-week 强制频率
+--sanitize 原始返回.json   --out / --summary-out       把 order-list 返回洗成可提交的摘要
+```
+
 `data/index.json` 已随仓库提交，全新 clone 可直接跑，无需先建索引。
 忌口同时支持**精确标签**（`no-beef` = 牛肉类）与**组合过滤**，两者叠加。
 
@@ -193,7 +213,9 @@ python scripts/adviser.py --budget 60 --people 2 --mode protein --json
 - 🧮 **你在学约束求解 / 组合优化** —— [`scripts/adviser.py`](scripts/adviser.py) 是一个完整的
   「分桶 → 枚举 → 硬约束过滤 → 多目标打分 → 帕累托去重」实现，**零第三方依赖**，可直接读。
 - 🎟️ **你想知道手里的券到底值多少钱** —— [`docs/COUPON_METHOD.md`](docs/COUPON_METHOD.md)
-  讲清了三件事：券面价值怎么算、名义 ¥26.7 的券包为什么只能用掉 ¥20.6、哪几张该劝退。
+  讲清了三件事：券面价值怎么算、名义 ¥26.7 的券包为什么只能用掉 ¥13.5、哪几张该劝退。
+- 📉 **你想知道自己多久点一次、一次花多少** —— `coupon_doctor.py` 从脱敏订单摘要派生出
+  客单价与点单频率，把"窗口内还会点几单"从假设变成实测。
 - 🍔 **你只想少吃点冤枉钱** —— `python demo.py` 跑一遍，看看你的常用搭配贵在哪。
 - 💡 **你也在做麦当劳 MCP 的点餐工具** —— 欢迎对比，也欢迎来 issue 讨论"菜单结构倒挂"这个现象。
 
@@ -208,7 +230,8 @@ python scripts/adviser.py --budget 60 --people 2 --mode protein --json
    的内容，把 `Bearer ${MCD_MCP_TOKEN}` 换成你的 Token（也可参考 [`.env.example`](.env.example)）。
 3. 让 Agent 执行 [`SKILL.md`](SKILL.md) 中的流程：`query-nearby-stores` → `query-meals` → `list-nutrition-foods`，
    把返回写入 `data/raw/`，再跑 `python scripts/build_index.py`。
-   快照的字段说明与换店方法见 [`data/raw/README.md`](data/raw/README.md)。
+   快照的字段说明与换店方法见 [`data/raw/README.md`](data/raw/README.md)，
+   完整的 Token 申请与快照采集步骤见 [`docs/TOKEN_GUIDE.md`](docs/TOKEN_GUIDE.md)。
 
 **Token 只放环境变量，不要提交到仓库。** 仓库内的快照已脱敏。
 
@@ -221,23 +244,27 @@ mcd-value/
 ├── scripts/
 │   ├── build_index.py         归一化：名称对齐 → 角色分类 → 套餐营养建模
 │   ├── adviser.py             核心引擎：约束求解 + 多目标打分 + CLI
-│   └── coupon_doctor.py       券的价值口径 + 券包体检 + 用券排程 + CLI
+│   ├── coupon_doctor.py       券的价值口径 + 券包体检 + 用券排程 + CLI
+│   └── style_check.py         零依赖静态检查（行宽 / 返回类型 / docstring / 未使用 import）
 ├── data/
 │   ├── raw/                   真实 MCP 返回快照（已脱敏，见该目录 README）
-│   │   ├── meals_1420762.json        query-meals
-│   │   ├── nutrition.txt             list-nutrition-foods
-│   │   ├── coupons_1420762.json      query-store-coupons + query-my-coupons
-│   │   └── coupon_probe_1420762.json calculate-price（券价值的实测缓存）
+│   │   ├── meals_1420762.json          query-meals
+│   │   ├── nutrition.txt               list-nutrition-foods
+│   │   ├── coupons_1420762.json        query-store-coupons + query-my-coupons
+│   │   ├── coupon_probe_1420762.json   calculate-price（券价值的实测缓存）
+│   │   └── orders_summary_1420762.json order-list（只含派生指标，无逐单明细）
 │   └── index.json             生成的索引（已提交，可直接使用）
 ├── tests/
 │   ├── test_adviser.py        13 项：分类 / 求解 / 打分 / 契约
-│   └── test_coupon_doctor.py  27 项：券形态 / 价值来源 / 四分类 / 排程 / 不编造
-├── assets/                    README 展示图（banner / 两种买法对比 / 架构）
+│   └── test_coupon_doctor.py  34 项：券形态 / 价值来源 / 四分类 / 排程 / 消费审计 / 不编造
+├── assets/                    README 展示图（banner / 两种买法对比 / 架构 / 社交卡）
 ├── docs/
 │   ├── COUPON_METHOD.md       券的口径与三条假设
+│   ├── TOKEN_GUIDE.md         Token 申请 → MCP 配置 → 快照采集
+│   ├── SUBMIT_CHECKLIST.md    参赛强制文件与赛程自查
 │   ├── pipeline.svg           处理流程图
 │   └── demo-output.md         多场景真实输出
-├── .github/workflows/tests.yml CI：索引可复现校验 + 单测 + 端到端演示
+├── .github/workflows/tests.yml CI：规范检查 + 4 版本矩阵 + 索引可复现校验 + demo
 ├── MCP_INTEGRATION.md         使用的 MCP Tool、调用链与工程要点
 ├── CONTEST_DECLARATION.md     参赛声明（官方原文，未改动）
 └── workbuddy.md               WorkBuddy 开发上下文
@@ -246,7 +273,7 @@ mcd-value/
 ## 测试与 CI
 
 ```bash
-python -m unittest discover -s tests -v   # 40 项单元测试
+python -m unittest discover -s tests -v   # 47 项单元测试
 python demo.py                            # 端到端：断言关键不变量，失败退出码非 0
 ```
 
@@ -254,7 +281,9 @@ python demo.py                            # 端到端：断言关键不变量，
 忌口过滤生效、热量上限生效、买一送一券正确计价、下单参数结构契约、预算过低时返回空集而非硬凑；
 以及券侧：券形态判定、**价值来源优先级（实测 > 菜单反查 > 未知）**、
 券包体检四分类（顺手可用 / 努一把 / 纸面富贵 / 无法判断）、
-用券排程的机会约束、**没有来源就不给价值**。
+用券排程的机会约束、**没有来源就不给价值**；
+以及消费审计：**订单脱敏后不含订单号/门店/时刻**、已取消订单不计入、
+0 元单计入频率但不拉低客单价、给了订单就用实测频率且标明来源。
 
 CI 在 Python 3.9 / 3.10 / 3.12 / 3.13 上跑同一套流程，并**校验 `data/index.json` 可复现**
 （`build_index.py` 重建结果必须与提交版本逐字节一致，否则 CI 失败）。全流程零 `pip install`。
@@ -265,13 +294,16 @@ CI 在 Python 3.9 / 3.10 / 3.12 / 3.13 上跑同一套流程，并**校验 `data
   输出中标注为"估算"。剩余无营养数据的条目（调味酱、部分新品）不参与营养打分。
 - **券的价值有边界**：券自带商品码与菜单商品并不一一对应，无法确定对齐的券一律标为"价值未知"，
   不猜。券的可用范围与叠加规则以门店和 App 实时结果为准。
+- **消费审计是账户级的聚合，不是逐单分析**：仓库内只提交客单价、频率与跨度这几个派生数字，
+  逐单明细、商品名与下单日期不进仓库。审计只说明"你多久点一次、一次花多少"，
+  不推断口味偏好。
 - **价格是快照口径**：演示用数据来自 2026-10-14 的门店快照，实时价格请用 `calculate-price` 复核。
 - **不是营养或医疗建议**：数据与结论仅供参考，以麦当劳官方渠道实时信息为准。
 
 ## Roadmap
 
 - [x] 券的净价值计算与用券排程（券不是"可用资源"，是**有保质期的钱**）
-- [ ] 从历史订单推导客单价与点单频率，把券包体检从"订单作用域"扩展到"账户作用域"
+- [x] 从历史订单推导客单价与点单频率，把用券排程从"拍一个假设"换成"**订单实测**"
 - [ ] 多人场景接入「分享装 / 拼盘」的组合优化（当前已支持但打分权重待调）
 - [ ] 早餐 / 夜市时段专属菜单与菜单切换
 - [ ] 积分商城兑换组合建议（`mall-points-products`）

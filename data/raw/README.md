@@ -9,11 +9,40 @@
 |---|---|---|---|
 | `meals_1420762.json` | `query-meals` | 2026-10-14 16:41:06 | 门店 1420762（深圳同方信息港）的完整菜单：分类、商品编码、现价、划线价、优惠标签 |
 | `nutrition.txt` | `list-nutrition-foods` | 2026-10-14 | 营养库，160 条，含能量/蛋白/脂肪/碳水/钠/钙 |
+| `coupons_1420762.json` | `query-store-coupons` + `query-my-coupons` + `available-coupons` | 2026-10-14 17:26:54 | 12 张券：券名、状态、有效期、券自带商品码与用券实付 |
+| `coupon_probe_1420762.json` | `calculate-price` | 2026-10-14 17:27:02 | 券价值实测缓存：把券商品码 + `couponId` + `couponCode` 传给 `calculate-price`，返回的 `discount`（单位**分**）就是券的精确价值 |
+| `orders_summary_1420762.json` | `order-list` | 2026-10-14 17:45:09 | **只含派生指标**：已完成单数、客单价、点单频率、跨度。**没有逐单明细、商品名与下单日期** |
 
 ## 脱敏说明
 
-快照**不含任何个人数据**：没有账号、手机号、地址、订单号、券码。
-只保留商品编码、名称、价格与营养字段。`_meta` 中的 `storeCode` 是公开门店编码。
+菜单与营养快照**不含任何个人数据**：没有账号、手机号、地址、订单号。
+
+券快照保留了 `couponId` / `couponCode` —— 这是**为了让「券价值靠 `calculate-price` 实测」
+这件事可被审计**（探针缓存 `coupon_probe_*.json` 要与之一一对应）。这些券码**绑定账号、
+无法被他人核销**，且在采集后 2 天（2026-10-16）即过期；
+若你介意，可以按 `title` 建立假名映射后替换（`scripts/coupon_doctor.py` 只按 `couponId` 关联，
+换掉两侧即可）。
+
+订单数据做了**两层**处理：
+
+1. **脱敏**（`--sanitize`）：去掉 `orderId`、`storeCode`、`storeName`、`beCode`，
+   下单时刻只留到日、去掉时分秒。产物 `orders_1420762.json` 被 `.gitignore` 排除。
+2. **只提交派生摘要**：`orders_summary_<storeCode>.json` 里**只有**客单价、频率、单数、跨度，
+   没有逐单明细、商品名与下单日期。
+
+也就是说：**仓库里既没有原始订单，也没有可直接读出你吃了什么、什么时候吃的文件。**
+
+## 订单摘要怎么生成
+
+```bash
+# 1. 把 order-list 的原始返回存成 raw.json（Agent 调用后原样保存）
+# 2. 一条命令产出「本地脱敏快照」+「可提交派生摘要」
+python scripts/coupon_doctor.py --sanitize raw.json
+#   ✅ 脱敏快照（本地留存）：data/raw/orders_1420762.json      （被 .gitignore 排除）
+#   ✅ 派生摘要（可提交）：data/raw/orders_summary_1420762.json
+```
+
+派生口径：只统计「订单已完成」；已取消的不计；金额为 0 的单计入频率但不计入客单价。
 
 ## 怎么换成你自己的门店
 

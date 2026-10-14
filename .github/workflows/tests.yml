@@ -55,5 +55,9 @@ jobs:
       - name: 端到端演示（同时是不变量回归）
         run: python demo.py
 
-      - name: 券包体检（CLI 冒烟）
-        run: python scripts/coupon_doctor.py --budget 45 --orders-per-week 3
+      - name: 券包体检 + 消费审计（CLI 冒烟）
+        run: |
+          python scripts/coupon_doctor.py --budget 45
+          python scripts/coupon_doctor.py --budget 45 --no-orders
+          python scripts/coupon_doctor.py --budget 45 --orders-per-week 1
+          python scripts/coupon_doctor.py --budget 45 --json > /dev/null

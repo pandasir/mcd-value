@@ -6,6 +6,10 @@ venv/
 .env.*
 !.env.example
 *.local.json
+# 本地脱敏订单快照：含逐单日期与商品名，只留本地，不入库。
+# 可提交的是派生摘要 data/raw/orders_summary_*.json。
+data/raw/orders_*.json
+!data/raw/orders_summary_*.json
 .DS_Store
 .idea/
 .vscode/

@@ -367,6 +367,8 @@ def coupons_for_plan(plan: Plan, idx: dict, coupons: list) -> list[dict]:
 # ------------------------------------------------------------------ 渲染
 def render(idx: dict, plans: list[Plan], args) -> str:
     """把方案渲染成终端可读的文本（含营养、备注、券标注与下单参数）。"""
+    import coupon_doctor as CD
+
     store = idx["store"]
     out: list[str] = []
     out.append(f"🍟 麦麦点餐参谋 · {store['storeCode']} {store['storeName']}")
@@ -396,7 +398,7 @@ def render(idx: dict, plans: list[Plan], args) -> str:
         for note in p.notes:
             out.append(f"  ⓘ {note}")
         for c in p.coupons:
-            src = {"probe": "实测", "reverse": "菜单反查"}.get(c["value_source"], "来源未知")
+            src = CD.VALUE_SOURCE_LABEL.get(c["value_source"], "来源未知")
             out.append(f"  🎟️ 本单可用：{c['title']}　再省 ¥{c['face_value']:.1f}（{src}）")
         out.append("  下单参数：" + json.dumps([{"productCode": l.code, "quantity": l.qty}
                                             for l in p.lines], ensure_ascii=False))

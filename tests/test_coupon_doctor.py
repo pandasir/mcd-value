@@ -244,5 +244,88 @@ class TestRealSnapshot(unittest.TestCase):
                 self.assertIn(c.value_source, ("probe", "reverse"), c.title)
 
 
+class TestOrders(unittest.TestCase):
+    """消费审计：脱敏、派生客单价与频率。用构造的合成快照，不读真实订单。"""
+
+    RAW = {
+        "datetime": "2026-10-14 17:45:09",
+        "data": {"list": [
+            {"orderId": "SECRET-1", "createTime": "2026-09-25 18:26:26",
+             "beType": "1", "beCode": "BE-9", "storeCode": "1420962",
+             "storeName": "某门店", "orderStatus": "订单已完成",
+             "realTotalAmount": "0",
+             "orderProductList": [{"productCode": "1", "productName": "随心配1+1",
+                                   "quantity": 1}]},
+            {"orderId": "SECRET-2", "createTime": "2026-06-25 12:00:00",
+             "beType": "1", "beCode": "BE-9", "storeCode": "1420962",
+             "storeName": "某门店", "orderStatus": "订单已完成",
+             "realTotalAmount": "30",
+             "orderProductList": [{"productCode": "2", "productName": "巨无霸",
+                                   "quantity": 2}]},
+            {"orderId": "SECRET-3", "createTime": "2026-04-25 12:00:00",
+             "beType": "1", "beCode": "BE-9", "storeCode": "1420962",
+             "storeName": "某门店", "orderStatus": "订单已取消",
+             "realTotalAmount": "20",
+             "orderProductList": [{"productCode": "2", "productName": "巨无霸",
+                                   "quantity": 1}]},
+        ]},
+    }
+
+    def _snapshot(self, data: dict) -> Path:
+        """把合成快照写进临时文件，返回路径。"""
+        import json
+        import tempfile
+        fd, name = tempfile.mkstemp(suffix=".json")
+        with open(fd, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, ensure_ascii=False)
+        self.addCleanup(Path(name).unlink)
+        return Path(name)
+
+    def test_sanitize_drops_personal_fields(self) -> None:
+        """脱敏后不含订单号、门店、BE 码与下单时刻。"""
+        clean = CD.sanitize_orders(self.RAW)
+        blob = str(clean)
+        for leaked in ("SECRET", "1420962", "某门店", "BE-9"):
+            self.assertNotIn(leaked, blob)
+        self.assertEqual(clean["orders"][0]["date"], "2026-09-25")
+
+    def test_sanitize_keeps_money_and_items(self) -> None:
+        """金额与商品名保留 —— 审计要用的就是这些。"""
+        clean = CD.sanitize_orders(self.RAW)
+        self.assertEqual(clean["orders"][1]["total"], 30.0)
+        self.assertEqual(clean["orders"][1]["items"][0]["name"], "巨无霸")
+
+    def test_load_orders_excludes_cancelled(self) -> None:
+        """已取消的订单不算消费。"""
+        audit = CD.load_orders(self._snapshot(CD.sanitize_orders(self.RAW)))
+        self.assertEqual(audit["n_orders"], 2)
+
+    def test_zero_amount_not_in_ticket_but_in_frequency(self) -> None:
+        """金额 0 的单计入点单频率，但不拉低客单价。"""
+        audit = CD.load_orders(self._snapshot(CD.sanitize_orders(self.RAW)))
+        self.assertEqual(audit["avg_ticket"], 30.0)
+        self.assertEqual(audit["n_orders"], 2)
+
+    def test_missing_file_returns_empty(self) -> None:
+        """没有订单快照就返回空 —— 不猜。"""
+        self.assertEqual(CD.load_orders(Path("/nonexistent/orders.json")), {})
+
+    def test_analyze_switches_to_measured_frequency(self) -> None:
+        """给了订单就用实测频率，并在报告里标明来源。"""
+        audit = CD.load_orders(self._snapshot(CD.sanitize_orders(self.RAW)))
+        assumed = CD.analyze(baseline=45.0, orders_per_week=3.0, now=NOW)
+        measured = CD.analyze(baseline=45.0, orders_per_week=3.0, now=NOW,
+                              orders=audit)
+        self.assertEqual(assumed["frequency_source"], "假设")
+        self.assertEqual(measured["frequency_source"], "订单实测")
+        self.assertAlmostEqual(measured["schedule"]["orders_per_week"],
+                               audit["orders_per_week"])
+
+    def test_fmt_freq_keeps_integers_clean(self) -> None:
+        """整数频率不带小数点，小数频率保留两位。"""
+        self.assertEqual(CD.fmt_freq(3.0), "3")
+        self.assertEqual(CD.fmt_freq(0.264151), "0.26")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
