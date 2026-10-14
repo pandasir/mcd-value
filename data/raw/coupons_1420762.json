@@ -6,12 +6,11 @@
     "storeName": "麦当劳深圳同方信息港餐厅",
     "orderType": 1,
     "beType": 1,
-    "note": "已脱敏：不含账号、手机号、订单号。couponCode 是券码，用于 calculate-price 实测券价值；券名与窗口为原始返回。"
+    "note": "已脱敏：不含账号、手机号、订单号，也不含券码。couponId 保留，用于与 coupon_probe_*.json 一一对应；couponCode 属账号凭证，本仓库一律不存 —— 复现实测价值只需 couponId 与探针缓存对应即可。券名与窗口为原始返回。"
   },
   "coupons": [
     {
       "couponId": "8692944B045928451618BFF22F535D2A",
-      "couponCode": "MCD6117LV900K0110L087",
       "title": "中薯条买一送一",
       "status": "claimed",
       "priceWith": 13.5,
@@ -22,7 +21,6 @@
     },
     {
       "couponId": "E05F6BFB4BAFAA5DB44B233583BFE711",
-      "couponCode": "MCD610070K09VK66L0176",
       "title": "王牌小食拼",
       "status": "claimed",
       "priceWith": 15.9,
@@ -33,7 +31,6 @@
     },
     {
       "couponId": "32EC0AE5FAE33F46B20027B94A7D7143",
-      "couponCode": "MCD696139102S02FW0100",
       "title": "13.9浓浓黑巧",
       "status": "claimed",
       "priceWith": 13.9,
@@ -44,7 +41,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "大脆鸡扒堡早餐两件套",
       "status": "claimed",
       "priceWith": 9.9,
@@ -55,7 +51,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "火腿扒堡早餐两件套",
       "status": "claimed",
       "priceWith": 9.9,
@@ -66,7 +61,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "巧克力味厚松饼猪柳蛋套餐",
       "status": "claimed",
       "priceWith": 29.9,
@@ -77,7 +71,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "火腿扒堡早餐两件套",
       "status": "claimed",
       "priceWith": 9.9,
@@ -88,7 +81,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "芝香脆鸡扒堡早餐两件套",
       "status": "claimed",
       "priceWith": 9.9,
@@ -99,7 +91,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "高达芝士蛋堡早餐两件套",
       "status": "claimed",
       "priceWith": 9.9,
@@ -110,7 +101,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "免费脆薯饼",
       "status": "claimable",
       "priceWith": null,
@@ -121,7 +111,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "人气麦旋风买一送一",
       "status": "claimable",
       "priceWith": null,
@@ -132,7 +121,6 @@
     },
     {
       "couponId": null,
-      "couponCode": null,
       "title": "9.9元中杯冰美式",
       "status": "claimable",
       "priceWith": null,

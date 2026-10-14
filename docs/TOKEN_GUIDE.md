@@ -105,9 +105,25 @@ python scripts/coupon_doctor.py --sanitize /tmp/raw.json
   grep -rn "Bearer [A-Za-z0-9]\{10,\}" . | grep -v MCD_MCP_TOKEN
   ```
 
-- `data/raw/` 里的快照必须**脱敏**：不含账号、手机号、地址、订单号。
-  **订单数据一律不提交明细** —— 只提交 `orders_summary_*.json` 里的派生指标，
+- `data/raw/` 里的快照必须**脱敏**：不含账号、手机号、地址、订单号、券码。
+- **订单数据一律不提交明细** —— 只提交 `orders_summary_*.json` 里的派生指标，
   完整的脱敏快照由 `.gitignore` 挡在仓库外。
-- 券快照里的 `couponId` / `couponCode` 是券本身的标识，不含个人信息，
-  但在同一个账号下可被关联 —— 如果你有顾虑，可以整体替换为占位符；
-  那样 `coupon_doctor` 会退回到"价值未知"，这是被支持的降级路径。
+- **`couponCode` 绝不入库。** 它是在门店可核销的账号凭证，公开即等于把券送人。
+  实测券价值时你需要它，但**只缓存结果、不落盘**。提交前跑一次剥离：
+
+  ```bash
+  python - <<'PY'
+  import json, pathlib
+  for name in ("data/raw/coupons_1420762.json", "data/raw/coupon_probe_1420762.json"):
+      p = pathlib.Path(name)
+      d = json.loads(p.read_text(encoding="utf-8"))
+      for row in d.get("coupons", []) + d.get("probes", []):
+          row.pop("couponCode", None)
+      p.write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+  PY
+  # 自查：应当没有任何输出
+  grep -rnE "MCD[0-9A-Z]{15,}" data/ .github/ docs/ || echo "✅ 无券码"
+  ```
+
+  `couponId` 可以留 —— 它是本地标识，不含个人信息，
+  且 `coupon_doctor` 只靠它把券与探针缓存对上。

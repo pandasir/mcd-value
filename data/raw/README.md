@@ -9,19 +9,23 @@
 |---|---|---|---|
 | `meals_1420762.json` | `query-meals` | 2026-10-14 16:41:06 | 门店 1420762（深圳同方信息港）的完整菜单：分类、商品编码、现价、划线价、优惠标签 |
 | `nutrition.txt` | `list-nutrition-foods` | 2026-10-14 | 营养库，160 条，含能量/蛋白/脂肪/碳水/钠/钙 |
-| `coupons_1420762.json` | `query-store-coupons` + `query-my-coupons` + `available-coupons` | 2026-10-14 17:26:54 | 12 张券：券名、状态、有效期、券自带商品码与用券实付 |
-| `coupon_probe_1420762.json` | `calculate-price` | 2026-10-14 17:27:02 | 券价值实测缓存：把券商品码 + `couponId` + `couponCode` 传给 `calculate-price`，返回的 `discount`（单位**分**）就是券的精确价值 |
+| `coupons_1420762.json` | `query-store-coupons` + `query-my-coupons` + `available-coupons` | 2026-10-14 17:26:54 | 12 张券：券名、状态、有效期、券自带商品码与用券实付。**不含券码**（`couponCode`） |
+| `coupon_probe_1420762.json` | `calculate-price` | 2026-10-14 17:27:02 | 券价值实测缓存：把券商品码 + `couponId` + `couponCode` 传给 `calculate-price`，返回的 `discount`（单位**分**）就是券的精确价值。归档版**只留 `couponId` 与结果，不留券码** |
 | `orders_summary_1420762.json` | `order-list` | 2026-10-14 17:45:09 | **只含派生指标**：已完成单数、客单价、点单频率、跨度。**没有逐单明细、商品名与下单日期** |
 
 ## 脱敏说明
 
 菜单与营养快照**不含任何个人数据**：没有账号、手机号、地址、订单号。
 
-券快照保留了 `couponId` / `couponCode` —— 这是**为了让「券价值靠 `calculate-price` 实测」
-这件事可被审计**（探针缓存 `coupon_probe_*.json` 要与之一一对应）。这些券码**绑定账号、
-无法被他人核销**，且在采集后 2 天（2026-10-16）即过期；
-若你介意，可以按 `title` 建立假名映射后替换（`scripts/coupon_doctor.py` 只按 `couponId` 关联，
-换掉两侧即可）。
+券快照只保留 `couponId`，**不含 `couponCode`**。
+
+`couponId` 是券在本地的标识，用来让「券价值靠 `calculate-price` 实测」这件事**可被审计**
+（探针缓存 `coupon_probe_*.json` 要与之一一对应）。而 `couponCode` 是在门店可核销的
+**账号凭证**，一旦公开就可能被他人用掉 —— 所以它**从不落盘**：实测完成后只缓存结果。
+
+你不用为这个取舍担心复现问题：`scripts/coupon_doctor.py` 只按 `couponId` 关联，
+券码缺失不影响任何结论。**你自己采集快照时**（见 `docs/TOKEN_GUIDE.md`）拿到的是带券码的原始返回，
+提交前剥掉即可 —— 那里有一条现成命令。
 
 订单数据做了**两层**处理：
 
