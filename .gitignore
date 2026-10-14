@@ -13,3 +13,6 @@ data/raw/orders_*.json
 .DS_Store
 .idea/
 .vscode/
+# WorkBuddy 工作区数据（含开发过程记录与内部判断），属于本地上下文，
+# 不随公开仓库分发。注意：仅忽略不影响本地使用。
+.workbuddy/
