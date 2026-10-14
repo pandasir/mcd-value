@@ -1,0 +1,2949 @@
+{
+ "store": {
+  "source": "mcp.mcd.cn / query-meals",
+  "capturedAt": "2026-10-14 16:41:06",
+  "storeCode": "1420762",
+  "storeName": "麦当劳深圳同方信息港餐厅",
+  "orderType": 1,
+  "beType": 1
+ },
+ "mealCount": 112,
+ "nutritionCoverage": 0.92,
+ "categories": [
+  {
+   "name": "人气热卖",
+   "codes": [
+    "9900016076",
+    "9900016075",
+    "9900016073",
+    "9900016077",
+    "521954",
+    "9900016311",
+    "9900004064",
+    "521950",
+    "515946"
+   ]
+  },
+  {
+   "name": "精选单人餐",
+   "codes": [
+    "9900004064",
+    "9900004236",
+    "9900010110",
+    "9900006957"
+   ]
+  },
+  {
+   "name": "鸡肉汉堡\n/卷",
+   "codes": [
+    "9900016075",
+    "9900016073",
+    "521953",
+    "521952",
+    "9900016310",
+    "9900016309",
+    "9900000891",
+    "9900000890",
+    "9900000884",
+    "9900005462",
+    "9900005456",
+    "9900005453",
+    "9900015008",
+    "9900003537",
+    "1440",
+    "1406",
+    "1450",
+    "521816",
+    "9900008746"
+   ]
+  },
+  {
+   "name": "小食拼盘\n/多人餐",
+   "codes": [
+    "9900016076",
+    "9900006332",
+    "9900015730",
+    "9900004066",
+    "9900005321"
+   ]
+  },
+  {
+   "name": "蘸酱炸鸡",
+   "codes": [
+    "9900016078",
+    "9900016079",
+    "9900015729",
+    "521966",
+    "521797"
+   ]
+  },
+  {
+   "name": "随心配\n1+1",
+   "codes": [
+    "9900013304",
+    "9900015568"
+   ]
+  },
+  {
+   "name": "巨无霸\n牛鱼肉堡",
+   "codes": [
+    "9900000888",
+    "9900000886",
+    "9900000885",
+    "9900000893",
+    "9900005411",
+    "9900005466",
+    "9900005468",
+    "9900005413",
+    "9900005460",
+    "9900005464",
+    "9900005449",
+    "1100",
+    "9900003586",
+    "1600",
+    "4648",
+    "1106",
+    "1120",
+    "521316",
+    "9900008747"
+   ]
+  },
+  {
+   "name": "安格斯MAX\n厚牛堡",
+   "codes": [
+    "9900000881",
+    "9900000882",
+    "9900005428",
+    "9900005430",
+    "511781",
+    "511782"
+   ]
+  },
+  {
+   "name": "炸鸡",
+   "codes": [
+    "521966",
+    "521797",
+    "9900005451",
+    "9900004835",
+    "1700",
+    "520445",
+    "1401",
+    "521156",
+    "9900005432"
+   ]
+  },
+  {
+   "name": "大堡口福\n单人餐",
+   "codes": [
+    "9900015602"
+   ]
+  },
+  {
+   "name": "小食甜品\n/其他",
+   "codes": [
+    "521954",
+    "521986",
+    "9900016082",
+    "521950",
+    "521951",
+    "521907",
+    "521914",
+    "521922",
+    "4810",
+    "4437",
+    "9900008754",
+    "9900008745",
+    "515837",
+    "9900008752"
+   ]
+  },
+  {
+   "name": "开心乐园",
+   "codes": [
+    "9900016058",
+    "506189"
+   ]
+  },
+  {
+   "name": "麦咖啡™",
+   "codes": [
+    "9900015561",
+    "515946",
+    "515955",
+    "521717",
+    "507411",
+    "507409",
+    "510479",
+    "507387",
+    "520689",
+    "507389",
+    "507394",
+    "510488"
+   ]
+  },
+  {
+   "name": "500\n大卡套餐",
+   "codes": [
+    "9900011126",
+    "9900011123",
+    "9900009245"
+   ]
+  },
+  {
+   "name": "饮品",
+   "codes": [
+    "521817",
+    "9900008751",
+    "3010",
+    "515520",
+    "2430",
+    "515280",
+    "6352",
+    "3755",
+    "6362",
+    "9900003538",
+    "520689",
+    "3505"
+   ]
+  }
+ ],
+ "items": {
+  "9900005456": {
+   "code": "9900005456",
+   "name": "麦辣鸡腿汉堡三件套",
+   "role": "staple",
+   "price": 33.5,
+   "originalPrice": 46.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005456_320.png",
+   "hasNutrition": true
+  },
+  "511781": {
+   "code": "511781",
+   "name": "培根安格斯厚牛堡",
+   "role": "staple",
+   "price": 34.5,
+   "originalPrice": 34.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511781_320.png",
+   "hasNutrition": true
+  },
+  "6352": {
+   "code": "6352",
+   "name": "阳光橙麦炫酷",
+   "role": "dessert",
+   "price": 13.0,
+   "originalPrice": 13.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_6352_320.png",
+   "hasNutrition": true
+  },
+  "521907": {
+   "code": "521907",
+   "name": "姜汁撞奶风味派",
+   "role": "dessert",
+   "price": 5.0,
+   "originalPrice": 10.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521907_320.png",
+   "hasNutrition": true
+  },
+  "511782": {
+   "code": "511782",
+   "name": "芝士安格斯厚牛堡",
+   "role": "staple",
+   "price": 31.5,
+   "originalPrice": 31.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_511782_320.png",
+   "hasNutrition": true
+  },
+  "2430": {
+   "code": "2430",
+   "name": "【美汁源】“黄金橙橙”",
+   "role": "drink",
+   "price": 13.0,
+   "originalPrice": 13.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20240904/product/MS_2430_320.png",
+   "hasNutrition": true
+  },
+  "521986": {
+   "code": "521986",
+   "name": "马苏里拉拉丝芝士条",
+   "role": "side",
+   "price": 11.0,
+   "originalPrice": 15.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521986_320.png",
+   "hasNutrition": true
+  },
+  "9900016078": {
+   "code": "9900016078",
+   "name": "蘸酱麦麦脆汁鸡",
+   "role": "side",
+   "price": 11.9,
+   "originalPrice": 18.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016078_320.png",
+   "hasNutrition": true
+  },
+  "9900016079": {
+   "code": "9900016079",
+   "name": "蘸酱脆皮鸡柳",
+   "role": "side",
+   "price": 11.9,
+   "originalPrice": 17.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016079_320.png",
+   "hasNutrition": true
+  },
+  "9900016076": {
+   "code": "9900016076",
+   "name": "“我就喜欢”鸡薯双全盒",
+   "role": "staple",
+   "price": 15.9,
+   "originalPrice": 28.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016076_320.png",
+   "hasNutrition": true
+  },
+  "9900016077": {
+   "code": "9900016077",
+   "name": "蘸酱炸鸡",
+   "role": "side",
+   "price": 11.9,
+   "originalPrice": 17.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016077_320.gif",
+   "hasNutrition": true
+  },
+  "9900016075": {
+   "code": "9900016075",
+   "name": "龙焰芝士棒鸡腿堡三件套",
+   "role": "staple",
+   "price": 29.9,
+   "originalPrice": 50.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016075_320.png",
+   "hasNutrition": true
+  },
+  "9900016073": {
+   "code": "9900016073",
+   "name": "龙焰鸡腿堡三件套",
+   "role": "staple",
+   "price": 26.9,
+   "originalPrice": 47.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016073_320.png",
+   "hasNutrition": true
+  },
+  "9900005460": {
+   "code": "9900005460",
+   "name": "麦香鱼套餐",
+   "role": "staple",
+   "price": 33.5,
+   "originalPrice": 46.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504968_320.png",
+   "hasNutrition": true
+  },
+  "9900005462": {
+   "code": "9900005462",
+   "name": "板烧鸡腿堡三件套",
+   "role": "staple",
+   "price": 34.5,
+   "originalPrice": 47.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005462_320.png",
+   "hasNutrition": true
+  },
+  "3755": {
+   "code": "3755",
+   "name": "纯牛奶(盒装)",
+   "role": "drink",
+   "price": 10.5,
+   "originalPrice": 10.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20240731/product/MS_3755_320.png",
+   "hasNutrition": true
+  },
+  "9900005464": {
+   "code": "9900005464",
+   "name": "双层吉士汉堡套餐",
+   "role": "staple",
+   "price": 34.0,
+   "originalPrice": 46.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504966_320.png",
+   "hasNutrition": true
+  },
+  "9900004236": {
+   "code": "9900004236",
+   "name": "人气超值四件套随心选",
+   "role": "staple",
+   "price": 28.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004236_320.gif",
+   "hasNutrition": true
+  },
+  "9900005466": {
+   "code": "9900005466",
+   "name": "巨无霸三件套",
+   "role": "staple",
+   "price": 36.5,
+   "originalPrice": 49.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005466_320.png",
+   "hasNutrition": true
+  },
+  "521914": {
+   "code": "521914",
+   "name": "“葱不求人“按摩捶痒痒挠",
+   "role": "nonfood",
+   "price": 14.9,
+   "originalPrice": 14.9,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_521914_320.png",
+   "hasNutrition": false
+  },
+  "6362": {
+   "code": "6362",
+   "name": "100% 苹果汁(盒装)",
+   "role": "drink",
+   "price": 11.5,
+   "originalPrice": 11.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250430/product/MS_6362_320_1745552987716.png",
+   "hasNutrition": true
+  },
+  "9900005449": {
+   "code": "9900005449",
+   "name": "吉士汉堡包套餐",
+   "role": "staple",
+   "price": 26.0,
+   "originalPrice": 38.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504971_320.png",
+   "hasNutrition": true
+  },
+  "9900015008": {
+   "code": "9900015008",
+   "name": "酥酥多笋卷三件套",
+   "role": "staple",
+   "price": 31.5,
+   "originalPrice": 44.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900015008_320.png",
+   "hasNutrition": true
+  },
+  "3010": {
+   "code": "3010",
+   "name": "雪碧",
+   "role": "drink",
+   "price": 9.5,
+   "originalPrice": 9.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G3010_320.png",
+   "hasNutrition": true
+  },
+  "9900010110": {
+   "code": "9900010110",
+   "name": "鱼牛汉堡四件套随心选",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 58.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900010110_320.gif",
+   "hasNutrition": true
+  },
+  "1106": {
+   "code": "1106",
+   "name": "培根蔬萃双层牛堡",
+   "role": "staple",
+   "price": 24.5,
+   "originalPrice": 24.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1106_320.png",
+   "hasNutrition": true
+  },
+  "1100": {
+   "code": "1100",
+   "name": "巨无霸",
+   "role": "staple",
+   "price": 25.5,
+   "originalPrice": 25.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1100_320.png",
+   "hasNutrition": true
+  },
+  "506189": {
+   "code": "506189",
+   "name": "如意百宝袋",
+   "role": "nonfood",
+   "price": 12.0,
+   "originalPrice": 12.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_506189_320.png",
+   "hasNutrition": false
+  },
+  "9900005451": {
+   "code": "9900005451",
+   "name": "麦辣鸡翅4块套餐",
+   "role": "staple",
+   "price": 36.5,
+   "originalPrice": 49.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504972_320.png",
+   "hasNutrition": true
+  },
+  "9900005453": {
+   "code": "9900005453",
+   "name": "麦香鸡套餐",
+   "role": "staple",
+   "price": 28.0,
+   "originalPrice": 40.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504967_320.png",
+   "hasNutrition": true
+  },
+  "507394": {
+   "code": "507394",
+   "name": "牛奶",
+   "role": "drink",
+   "price": 19.0,
+   "originalPrice": 19.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G5073941_320.png",
+   "hasNutrition": true
+  },
+  "9900008746": {
+   "code": "9900008746",
+   "name": "鸡肉堡单品精选",
+   "role": "staple",
+   "price": 23.5,
+   "originalPrice": 23.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900008746_320.gif",
+   "hasNutrition": true
+  },
+  "9900008745": {
+   "code": "9900008745",
+   "name": "新地",
+   "role": "dessert",
+   "price": 12.0,
+   "originalPrice": 12.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008745_320.gif",
+   "hasNutrition": true
+  },
+  "9900008747": {
+   "code": "9900008747",
+   "name": "牛肉堡单品精选",
+   "role": "staple",
+   "price": 15.0,
+   "originalPrice": 15.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_9900008747_320.gif",
+   "hasNutrition": true
+  },
+  "515520": {
+   "code": "515520",
+   "name": "怡泉+C",
+   "role": "drink",
+   "price": 11.5,
+   "originalPrice": 11.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515520_320.png",
+   "hasNutrition": true
+  },
+  "1120": {
+   "code": "1120",
+   "name": "双层吉士汉堡",
+   "role": "staple",
+   "price": 23.0,
+   "originalPrice": 23.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_1120_320.png",
+   "hasNutrition": true
+  },
+  "521966": {
+   "code": "521966",
+   "name": "韩式烟熏芝士风味酱",
+   "role": "nonfood",
+   "price": 3.0,
+   "originalPrice": 3.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521966_320.png",
+   "hasNutrition": false
+  },
+  "9900015561": {
+   "code": "9900015561",
+   "name": "麦咖啡冰爽一夏",
+   "role": "drink",
+   "price": 9.9,
+   "originalPrice": 23.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015561_320.gif",
+   "hasNutrition": true
+  },
+  "9900008751": {
+   "code": "9900008751",
+   "name": "可乐",
+   "role": "drink",
+   "price": 9.5,
+   "originalPrice": 9.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008751_320.gif",
+   "hasNutrition": true
+  },
+  "9900006332": {
+   "code": "9900006332",
+   "name": "薄皮V翅双拼十翅",
+   "role": "side",
+   "price": 49.9,
+   "originalPrice": 77.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900006332_320.png",
+   "hasNutrition": true
+  },
+  "9900008752": {
+   "code": "9900008752",
+   "name": "派",
+   "role": "dessert",
+   "price": 8.5,
+   "originalPrice": 8.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G9900008752_320.gif",
+   "hasNutrition": true
+  },
+  "9900008754": {
+   "code": "9900008754",
+   "name": "经典麦旋风",
+   "role": "dessert",
+   "price": 15.5,
+   "originalPrice": 15.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900008754_320.gif",
+   "hasNutrition": true
+  },
+  "9900005468": {
+   "code": "9900005468",
+   "name": "培根蔬萃双层牛堡三件套",
+   "role": "staple",
+   "price": 35.5,
+   "originalPrice": 48.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005468_320.png",
+   "hasNutrition": true
+  },
+  "9900006957": {
+   "code": "9900006957",
+   "name": "安格斯厚牛堡四件套随心选",
+   "role": "staple",
+   "price": 37.0,
+   "originalPrice": 66.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900006957_320.png",
+   "hasNutrition": true
+  },
+  "1401": {
+   "code": "1401",
+   "name": "麦乐鸡",
+   "role": "side",
+   "price": 14.0,
+   "originalPrice": 14.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260529/product/MS_G1401_320.png",
+   "hasNutrition": true
+  },
+  "9900016082": {
+   "code": "9900016082",
+   "name": "心形薯饼5块",
+   "role": "side",
+   "price": 14.5,
+   "originalPrice": 14.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016082_320.png",
+   "hasNutrition": true
+  },
+  "1406": {
+   "code": "1406",
+   "name": "板烧鸡腿堡",
+   "role": "staple",
+   "price": 23.5,
+   "originalPrice": 23.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20241008/product/MS_1406_320.png",
+   "hasNutrition": true
+  },
+  "9900005413": {
+   "code": "9900005413",
+   "name": "双层深海鳕鱼堡三件套",
+   "role": "staple",
+   "price": 35.0,
+   "originalPrice": 47.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005413_320.png",
+   "hasNutrition": true
+  },
+  "9900016309": {
+   "code": "9900016309",
+   "name": "龙焰鸡腿堡四件套",
+   "role": "staple",
+   "price": 29.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016309_320.png",
+   "hasNutrition": true
+  },
+  "9900015730": {
+   "code": "9900015730",
+   "name": "BFF四宫格小食盘",
+   "role": "side",
+   "price": 39.8,
+   "originalPrice": 54.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015730_320.gif",
+   "hasNutrition": true
+  },
+  "9900016311": {
+   "code": "9900016311",
+   "name": "龙焰美味四件套",
+   "role": "staple",
+   "price": 29.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016311_320.gif",
+   "hasNutrition": true
+  },
+  "9900016310": {
+   "code": "9900016310",
+   "name": "龙焰芝士棒鸡腿堡四件套",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016310_320.png",
+   "hasNutrition": true
+  },
+  "521156": {
+   "code": "521156",
+   "name": "那么大鸡排（椒盐风味）",
+   "role": "side",
+   "price": 14.0,
+   "originalPrice": 14.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_521156_320.png",
+   "hasNutrition": true
+  },
+  "9900004835": {
+   "code": "9900004835",
+   "name": "麦乐鸡套餐",
+   "role": "staple",
+   "price": 25.0,
+   "originalPrice": 37.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_G504969_320.png",
+   "hasNutrition": true
+  },
+  "510488": {
+   "code": "510488",
+   "name": "燕麦奶",
+   "role": "drink",
+   "price": 21.0,
+   "originalPrice": 21.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G510489_320.png",
+   "hasNutrition": true
+  },
+  "4648": {
+   "code": "4648",
+   "name": "不素之霸双层牛堡",
+   "role": "staple",
+   "price": 26.5,
+   "originalPrice": 26.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_4648_320.png",
+   "hasNutrition": true
+  },
+  "9900003586": {
+   "code": "9900003586",
+   "name": "双层深海鳕鱼堡",
+   "role": "staple",
+   "price": 24.0,
+   "originalPrice": 24.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003586_320.png",
+   "hasNutrition": true
+  },
+  "9900000890": {
+   "code": "9900000890",
+   "name": "板烧鸡腿堡四件套",
+   "role": "staple",
+   "price": 28.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000890_320.png",
+   "hasNutrition": true
+  },
+  "521717": {
+   "code": "521717",
+   "name": "椰奶雪冰",
+   "role": "drink",
+   "price": 9.9,
+   "originalPrice": 23.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521717_320.gif",
+   "hasNutrition": true
+  },
+  "9900015729": {
+   "code": "9900015729",
+   "name": "蘸酱BFF四宫格小食盘",
+   "role": "side",
+   "price": 42.8,
+   "originalPrice": 57.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015729_320.gif",
+   "hasNutrition": true
+  },
+  "521950": {
+   "code": "521950",
+   "name": "蓝莓爆爆珠麦旋风",
+   "role": "dessert",
+   "price": 16.5,
+   "originalPrice": 16.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521950_320.gif",
+   "hasNutrition": true
+  },
+  "9900013304": {
+   "code": "9900013304",
+   "name": "人气经典随心配",
+   "role": "staple",
+   "price": 14.9,
+   "originalPrice": 14.9,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900013304_320.png",
+   "hasNutrition": true
+  },
+  "521797": {
+   "code": "521797",
+   "name": "北美招牌牧场酱",
+   "role": "nonfood",
+   "price": 3.0,
+   "originalPrice": 3.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_521797_320.png",
+   "hasNutrition": false
+  },
+  "521951": {
+   "code": "521951",
+   "name": "灰焰圆筒",
+   "role": "dessert",
+   "price": 5.0,
+   "originalPrice": 5.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G521951_320.gif",
+   "hasNutrition": true
+  },
+  "9900011126": {
+   "code": "9900011126",
+   "name": "酥脆无双套餐",
+   "role": "staple",
+   "price": 20.0,
+   "originalPrice": 20.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260701/product/MS_9900011126_320.png",
+   "hasNutrition": true
+  },
+  "521952": {
+   "code": "521952",
+   "name": "龙焰鸡腿堡",
+   "role": "staple",
+   "price": 24.0,
+   "originalPrice": 24.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521952_320.png",
+   "hasNutrition": true
+  },
+  "9900015602": {
+   "code": "9900015602",
+   "name": "大堡口福三件套",
+   "role": "staple",
+   "price": 22.9,
+   "originalPrice": 47.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015602_320.png",
+   "hasNutrition": true
+  },
+  "521953": {
+   "code": "521953",
+   "name": "龙焰芝士棒鸡腿堡",
+   "role": "staple",
+   "price": 27.0,
+   "originalPrice": 27.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521953_320.png",
+   "hasNutrition": true
+  },
+  "521954": {
+   "code": "521954",
+   "name": "麦当劳联名复古棒球帽",
+   "role": "nonfood",
+   "price": 34.9,
+   "originalPrice": 39.9,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521954_320.png",
+   "hasNutrition": false
+  },
+  "521316": {
+   "code": "521316",
+   "name": "高达吉士双牛堡",
+   "role": "staple",
+   "price": 22.5,
+   "originalPrice": 22.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260309/product/MS_521316_320.png",
+   "hasNutrition": true
+  },
+  "9900015568": {
+   "code": "9900015568",
+   "name": "精选超值随心配",
+   "role": "staple",
+   "price": 13.9,
+   "originalPrice": 13.9,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900015568_320.png",
+   "hasNutrition": true
+  },
+  "9900011123": {
+   "code": "9900011123",
+   "name": "“辣”么快乐套餐",
+   "role": "staple",
+   "price": 24.0,
+   "originalPrice": 36.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900011123_320.png",
+   "hasNutrition": true
+  },
+  "1700": {
+   "code": "1700",
+   "name": "麦辣鸡翅",
+   "role": "side",
+   "price": 15.0,
+   "originalPrice": 15.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_G1700_320.png",
+   "hasNutrition": true
+  },
+  "9900000888": {
+   "code": "9900000888",
+   "name": "巨无霸四件套",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 58.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000888_320.png",
+   "hasNutrition": true
+  },
+  "9900000886": {
+   "code": "9900000886",
+   "name": "不素之霸双层牛堡四件套",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 58.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000886_320.png",
+   "hasNutrition": true
+  },
+  "9900000884": {
+   "code": "9900000884",
+   "name": "酥酥多笋卷四件套",
+   "role": "staple",
+   "price": 28.0,
+   "originalPrice": 55.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000884_320.png",
+   "hasNutrition": true
+  },
+  "9900000885": {
+   "code": "9900000885",
+   "name": "培根蔬萃双层牛堡四件套",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 58.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000885_320.png",
+   "hasNutrition": true
+  },
+  "4810": {
+   "code": "4810",
+   "name": "薯条",
+   "role": "side",
+   "price": 13.5,
+   "originalPrice": 13.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250523/product/MS_G4810_320_1747877491921.png",
+   "hasNutrition": true
+  },
+  "510479": {
+   "code": "510479",
+   "name": "燕麦奶铁",
+   "role": "drink",
+   "price": 9.9,
+   "originalPrice": 23.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G510481_320.png",
+   "hasNutrition": true
+  },
+  "9900000882": {
+   "code": "9900000882",
+   "name": "芝士安格斯厚牛堡四件套",
+   "role": "staple",
+   "price": 37.0,
+   "originalPrice": 66.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000882_320.png",
+   "hasNutrition": true
+  },
+  "9900005411": {
+   "code": "9900005411",
+   "name": "不素之霸双层牛堡三件套",
+   "role": "staple",
+   "price": 37.5,
+   "originalPrice": 50.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005411_320.png",
+   "hasNutrition": true
+  },
+  "9900000881": {
+   "code": "9900000881",
+   "name": "培根安格斯厚牛堡四件套",
+   "role": "staple",
+   "price": 37.0,
+   "originalPrice": 66.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000881_320.png",
+   "hasNutrition": true
+  },
+  "9900004066": {
+   "code": "9900004066",
+   "name": "堡堡随心拼（7件任选）",
+   "role": "staple",
+   "price": 72.5,
+   "originalPrice": 101.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260624/product/MS_9900004066_320.gif",
+   "hasNutrition": true
+  },
+  "9900004064": {
+   "code": "9900004064",
+   "name": "精选单人餐三件套",
+   "role": "staple",
+   "price": 34.5,
+   "originalPrice": 46.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900004064_320.gif",
+   "hasNutrition": true
+  },
+  "1440": {
+   "code": "1440",
+   "name": "麦辣鸡腿汉堡",
+   "role": "staple",
+   "price": 22.5,
+   "originalPrice": 22.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260325/product/MS_1440_320.png",
+   "hasNutrition": true
+  },
+  "521922": {
+   "code": "521922",
+   "name": "奶香大米派",
+   "role": "dessert",
+   "price": 9.5,
+   "originalPrice": 9.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260916/product/MS_G521922_320.gif",
+   "hasNutrition": true
+  },
+  "515280": {
+   "code": "515280",
+   "name": "阳光柠檬红茶",
+   "role": "drink",
+   "price": 9.5,
+   "originalPrice": 9.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G515280_320.png",
+   "hasNutrition": true
+  },
+  "9900016058": {
+   "code": "9900016058",
+   "name": "鱼排堡开心乐园餐",
+   "role": "staple",
+   "price": 24.0,
+   "originalPrice": 24.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900016058_320.png",
+   "hasNutrition": true
+  },
+  "507389": {
+   "code": "507389",
+   "name": "浓缩咖啡",
+   "role": "drink",
+   "price": 15.0,
+   "originalPrice": 15.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_507389_320.png",
+   "hasNutrition": true
+  },
+  "9900009245": {
+   "code": "9900009245",
+   "name": "牛气满满套餐",
+   "role": "staple",
+   "price": 35.0,
+   "originalPrice": 47.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900009245_320.png",
+   "hasNutrition": true
+  },
+  "507387": {
+   "code": "507387",
+   "name": "卡布奇诺",
+   "role": "drink",
+   "price": 21.0,
+   "originalPrice": 21.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G507388_320.png",
+   "hasNutrition": true
+  },
+  "9900000893": {
+   "code": "9900000893",
+   "name": "双层深海鳕鱼堡四件套",
+   "role": "staple",
+   "price": 32.0,
+   "originalPrice": 58.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000893_320.png",
+   "hasNutrition": true
+  },
+  "515955": {
+   "code": "515955",
+   "name": "浓浓燕麦黑巧（冰/热）",
+   "role": "drink",
+   "price": 15.9,
+   "originalPrice": 23.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515954_320.gif",
+   "hasNutrition": false
+  },
+  "9900005321": {
+   "code": "9900005321",
+   "name": "BFF四宫格小食盘双人餐",
+   "role": "side",
+   "price": 62.9,
+   "originalPrice": 122.5,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260304/product/MS_9900005321_320.png",
+   "hasNutrition": true
+  },
+  "9900000891": {
+   "code": "9900000891",
+   "name": "麦辣鸡腿堡四件套",
+   "role": "staple",
+   "price": 28.0,
+   "originalPrice": 57.0,
+   "discountType": "随单购麦金卡优惠",
+   "canWithOrder": true,
+   "withOrder": {
+    "membershipCode": "106",
+    "specId": "880"
+   },
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900000891_320.png",
+   "hasNutrition": false
+  },
+  "515837": {
+   "code": "515837",
+   "name": "圆筒冰淇淋",
+   "role": "dessert",
+   "price": 5.0,
+   "originalPrice": 5.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_515837_320.png",
+   "hasNutrition": true
+  },
+  "521816": {
+   "code": "521816",
+   "name": "酥酥多笋卷",
+   "role": "staple",
+   "price": 20.5,
+   "originalPrice": 20.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_521816_320.png",
+   "hasNutrition": true
+  },
+  "521817": {
+   "code": "521817",
+   "name": "【美汁源】“多汁柠柠”",
+   "role": "drink",
+   "price": 12.0,
+   "originalPrice": 12.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260807/product/MS_521817_320.png",
+   "hasNutrition": false
+  },
+  "9900005428": {
+   "code": "9900005428",
+   "name": "培根安格斯厚牛堡三件套",
+   "role": "staple",
+   "price": 45.5,
+   "originalPrice": 58.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005428_320.png",
+   "hasNutrition": true
+  },
+  "1450": {
+   "code": "1450",
+   "name": "麦香鸡",
+   "role": "staple",
+   "price": 17.0,
+   "originalPrice": 17.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_1450_320.png",
+   "hasNutrition": true
+  },
+  "520445": {
+   "code": "520445",
+   "name": "薄皮焦香V翅",
+   "role": "side",
+   "price": 16.0,
+   "originalPrice": 16.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20241202/product/MS_520445_320.png",
+   "hasNutrition": true
+  },
+  "520689": {
+   "code": "520689",
+   "name": "鲜萃咖啡",
+   "role": "drink",
+   "price": 9.5,
+   "originalPrice": 9.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250324/product/MS_G520688_320.gif",
+   "hasNutrition": true
+  },
+  "507409": {
+   "code": "507409",
+   "name": "麦咖啡™奶铁",
+   "role": "drink",
+   "price": 13.9,
+   "originalPrice": 21.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507372_320.gif",
+   "hasNutrition": true
+  },
+  "3505": {
+   "code": "3505",
+   "name": "锡兰红茶",
+   "role": "drink",
+   "price": 11.5,
+   "originalPrice": 11.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_3505_320.png",
+   "hasNutrition": true
+  },
+  "1600": {
+   "code": "1600",
+   "name": "麦香鱼",
+   "role": "staple",
+   "price": 22.5,
+   "originalPrice": 22.5,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260101/product/MS_1600_320.png",
+   "hasNutrition": true
+  },
+  "507411": {
+   "code": "507411",
+   "name": "麦咖啡™美式",
+   "role": "drink",
+   "price": 11.9,
+   "originalPrice": 19.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260422/product/MS_G507374_320.gif",
+   "hasNutrition": true
+  },
+  "9900003538": {
+   "code": "9900003538",
+   "name": "学生专享饮品随心选",
+   "role": "drink",
+   "price": 10.0,
+   "originalPrice": 10.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900003538_320.gif",
+   "hasNutrition": true
+  },
+  "9900003537": {
+   "code": "9900003537",
+   "name": "学生专享汉堡小食随心选",
+   "role": "staple",
+   "price": 27.0,
+   "originalPrice": 27.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20250420/product/MS_9900003537_320_0_1744785048324.gif",
+   "hasNutrition": true
+  },
+  "9900005430": {
+   "code": "9900005430",
+   "name": "芝士安格斯厚牛堡三件套",
+   "role": "staple",
+   "price": 42.5,
+   "originalPrice": 55.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20260824/product/MS_9900005430_320.png",
+   "hasNutrition": true
+  },
+  "4437": {
+   "code": "4437",
+   "name": "玉米杯",
+   "role": "side",
+   "price": 13.0,
+   "originalPrice": 13.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_G4437_320.png",
+   "hasNutrition": true
+  },
+  "515946": {
+   "code": "515946",
+   "name": "浓浓黑巧（冰/热）",
+   "role": "drink",
+   "price": 13.9,
+   "originalPrice": 21.0,
+   "discountType": "促销优惠",
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/20261008/product/MS_G515945_320.gif",
+   "hasNutrition": false
+  },
+  "9900005432": {
+   "code": "9900005432",
+   "name": "麦麦脆汁鸡1块",
+   "role": "side",
+   "price": 15.0,
+   "originalPrice": 15.0,
+   "discountType": null,
+   "canWithOrder": false,
+   "withOrder": null,
+   "image": "https://menu-img.mcd.cn/pcm/prod/menu/ProductPool/product/MS_9900005432_320.png",
+   "hasNutrition": true
+  }
+ },
+ "nutrition": {
+  "9900005456": {
+   "kcal": 921,
+   "protein": 28.0,
+   "fat": 36.0,
+   "carb": 116.0,
+   "sodium": 1373,
+   "calcium": 182,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "511781": {
+   "kcal": 707,
+   "protein": 34.0,
+   "fat": 44.0,
+   "carb": 43.0,
+   "sodium": 1037,
+   "calcium": 161,
+   "confidence": "exact",
+   "components": [
+    "培根安格斯厚牛堡"
+   ]
+  },
+  "6352": {
+   "kcal": 228,
+   "protein": 1.0,
+   "fat": 2.0,
+   "carb": 50.0,
+   "sodium": 77,
+   "calcium": 52,
+   "confidence": "alias",
+   "components": [
+    "麦旋酷阳光橙"
+   ]
+  },
+  "521907": {
+   "kcal": 232,
+   "protein": 2.0,
+   "fat": 12.0,
+   "carb": 28.0,
+   "sodium": 159,
+   "calcium": 7,
+   "confidence": "alias",
+   "components": [
+    "香芋派"
+   ]
+  },
+  "511782": {
+   "kcal": 696,
+   "protein": 32.0,
+   "fat": 44.0,
+   "carb": 43.0,
+   "sodium": 897,
+   "calcium": 150,
+   "confidence": "exact",
+   "components": [
+    "芝士安格斯厚牛堡"
+   ]
+  },
+  "2430": {
+   "kcal": 165,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 41.0,
+   "sodium": 53,
+   "calcium": 0,
+   "confidence": "exact",
+   "components": [
+    "【美汁源】“黄金橙橙”"
+   ]
+  },
+  "521986": {
+   "kcal": 146,
+   "protein": 1.0,
+   "fat": 9.0,
+   "carb": 14.0,
+   "sodium": 311,
+   "calcium": 7,
+   "confidence": "estimated",
+   "components": [
+    "脆薯饼"
+   ]
+  },
+  "9900016078": {
+   "kcal": 328,
+   "protein": 21.0,
+   "fat": 20.0,
+   "carb": 16.0,
+   "sodium": 905,
+   "calcium": 24,
+   "confidence": "alias",
+   "components": [
+    "麦麦脆汁鸡-琵琶腿"
+   ]
+  },
+  "9900016079": {
+   "kcal": 332,
+   "protein": 22.0,
+   "fat": 18.0,
+   "carb": 16.0,
+   "sodium": 812,
+   "calcium": 25,
+   "confidence": "alias",
+   "components": [
+    "麦麦脆汁鸡-带骨里脊"
+   ]
+  },
+  "9900016076": {
+   "kcal": 502,
+   "protein": 16.0,
+   "fat": 24.0,
+   "carb": 51.0,
+   "sodium": 587,
+   "calcium": 27,
+   "confidence": "alias",
+   "components": [
+    "麦乐鸡5块",
+    "中薯条x1"
+   ]
+  },
+  "9900016077": {
+   "kcal": 328,
+   "protein": 21.0,
+   "fat": 20.0,
+   "carb": 16.0,
+   "sodium": 905,
+   "calcium": 24,
+   "confidence": "alias",
+   "components": [
+    "麦麦脆汁鸡-琵琶腿"
+   ]
+  },
+  "9900016075": {
+   "kcal": 921,
+   "protein": 28.0,
+   "fat": 36.0,
+   "carb": 116.0,
+   "sodium": 1373,
+   "calcium": 182,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900016073": {
+   "kcal": 921,
+   "protein": 28.0,
+   "fat": 36.0,
+   "carb": 116.0,
+   "sodium": 1373,
+   "calcium": 182,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005460": {
+   "kcal": 761,
+   "protein": 20.0,
+   "fat": 25.0,
+   "carb": 109.0,
+   "sodium": 721,
+   "calcium": 127,
+   "confidence": "estimated",
+   "components": [
+    "麦香鱼",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005462": {
+   "kcal": 827,
+   "protein": 27.0,
+   "fat": 29.0,
+   "carb": 109.0,
+   "sodium": 1206,
+   "calcium": 121,
+   "confidence": "estimated",
+   "components": [
+    "板烧鸡腿堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "3755": {
+   "kcal": 129,
+   "protein": 7.0,
+   "fat": 7.0,
+   "carb": 10.0,
+   "sodium": 73,
+   "calcium": 231,
+   "confidence": "alias",
+   "components": [
+    "纯牛奶（盒装）"
+   ]
+  },
+  "9900005464": {
+   "kcal": 865,
+   "protein": 31.0,
+   "fat": 34.0,
+   "carb": 105.0,
+   "sodium": 1182,
+   "calcium": 260,
+   "confidence": "estimated",
+   "components": [
+    "双层吉士汉堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900004236": {
+   "kcal": 949,
+   "protein": 31.0,
+   "fat": 38.0,
+   "carb": 116.0,
+   "sodium": 1126,
+   "calcium": 199,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005466": {
+   "kcal": 949,
+   "protein": 31.0,
+   "fat": 38.0,
+   "carb": 116.0,
+   "sodium": 1126,
+   "calcium": 199,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "6362": {
+   "kcal": 88,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 21.0,
+   "sodium": 0,
+   "calcium": 0,
+   "confidence": "alias",
+   "components": [
+    "100%苹果汁"
+   ]
+  },
+  "9900005449": {
+   "kcal": 730,
+   "protein": 20.0,
+   "fat": 24.0,
+   "carb": 104.0,
+   "sodium": 838,
+   "calcium": 172,
+   "confidence": "estimated",
+   "components": [
+    "吉士汉堡包",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900015008": {
+   "kcal": 778,
+   "protein": 18.0,
+   "fat": 27.0,
+   "carb": 110.0,
+   "sodium": 1209,
+   "calcium": 69,
+   "confidence": "estimated",
+   "components": [
+    "酥酥多笋卷",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "3010": {
+   "kcal": 105,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 26.0,
+   "sodium": 29,
+   "calcium": 0,
+   "confidence": "alias",
+   "components": [
+    "雪碧中杯"
+   ]
+  },
+  "9900010110": {
+   "kcal": 921,
+   "protein": 32.0,
+   "fat": 33.0,
+   "carb": 120.0,
+   "sodium": 1082,
+   "calcium": 175,
+   "confidence": "estimated",
+   "components": [
+    "双层深海鳕鱼堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "1106": {
+   "kcal": 442,
+   "protein": 24.0,
+   "fat": 23.0,
+   "carb": 34.0,
+   "sodium": 728,
+   "calcium": 73,
+   "confidence": "exact",
+   "components": [
+    "培根蔬萃双层牛堡"
+   ]
+  },
+  "1100": {
+   "kcal": 513,
+   "protein": 27.0,
+   "fat": 26.0,
+   "carb": 42.0,
+   "sodium": 961,
+   "calcium": 171,
+   "confidence": "exact",
+   "components": [
+    "巨无霸"
+   ]
+  },
+  "9900005451": {
+   "kcal": 660,
+   "protein": 17.0,
+   "fat": 27.0,
+   "carb": 83.0,
+   "sodium": 702,
+   "calcium": 41,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡翅-2块",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005453": {
+   "kcal": 805,
+   "protein": 19.0,
+   "fat": 29.0,
+   "carb": 113.0,
+   "sodium": 896,
+   "calcium": 101,
+   "confidence": "estimated",
+   "components": [
+    "麦香鸡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "507394": {
+   "kcal": 129,
+   "protein": 7.0,
+   "fat": 7.0,
+   "carb": 10.0,
+   "sodium": 73,
+   "calcium": 231,
+   "confidence": "alias",
+   "components": [
+    "纯牛奶（盒装）"
+   ]
+  },
+  "9900008746": {
+   "kcal": 369,
+   "protein": 15.0,
+   "fat": 17.0,
+   "carb": 39.0,
+   "sodium": 731,
+   "calcium": 73,
+   "confidence": "alias",
+   "components": [
+    "麦香鸡"
+   ]
+  },
+  "9900008745": {
+   "kcal": 282,
+   "protein": 5.0,
+   "fat": 9.0,
+   "carb": 44.0,
+   "sodium": 126,
+   "calcium": 182,
+   "confidence": "alias",
+   "components": [
+    "朱古力新地"
+   ]
+  },
+  "9900008747": {
+   "kcal": 513,
+   "protein": 27.0,
+   "fat": 26.0,
+   "carb": 42.0,
+   "sodium": 961,
+   "calcium": 171,
+   "confidence": "alias",
+   "components": [
+    "巨无霸"
+   ]
+  },
+  "515520": {
+   "kcal": 110,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 27.0,
+   "sodium": 0,
+   "calcium": 0,
+   "confidence": "alias",
+   "components": [
+    "中杯怡泉+C"
+   ]
+  },
+  "1120": {
+   "kcal": 429,
+   "protein": 27.0,
+   "fat": 22.0,
+   "carb": 31.0,
+   "sodium": 1017,
+   "calcium": 232,
+   "confidence": "exact",
+   "components": [
+    "双层吉士汉堡"
+   ]
+  },
+  "9900015561": {
+   "kcal": 269,
+   "protein": 6.0,
+   "fat": 11.0,
+   "carb": 36.0,
+   "sodium": 180,
+   "calcium": 188,
+   "confidence": "alias",
+   "components": [
+    "特浓奶香雪冰中杯"
+   ]
+  },
+  "9900008751": {
+   "kcal": 147,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 36.0,
+   "sodium": 0,
+   "calcium": 10,
+   "confidence": "alias",
+   "components": [
+    "可乐中杯"
+   ]
+  },
+  "9900006332": {
+   "kcal": 384,
+   "protein": 34.0,
+   "fat": 22.0,
+   "carb": 12.0,
+   "sodium": 1188,
+   "calcium": 30,
+   "confidence": "estimated",
+   "components": [
+    "薄皮焦香V翅",
+    "薄皮焦香V翅x1"
+   ]
+  },
+  "9900008752": {
+   "kcal": 232,
+   "protein": 2.0,
+   "fat": 12.0,
+   "carb": 28.0,
+   "sodium": 159,
+   "calcium": 7,
+   "confidence": "alias",
+   "components": [
+    "香芋派"
+   ]
+  },
+  "9900008754": {
+   "kcal": 266,
+   "protein": 5.0,
+   "fat": 9.0,
+   "carb": 40.0,
+   "sodium": 116,
+   "calcium": 185,
+   "confidence": "alias",
+   "components": [
+    "奥利奥麦旋风"
+   ]
+  },
+  "9900005468": {
+   "kcal": 878,
+   "protein": 28.0,
+   "fat": 35.0,
+   "carb": 108.0,
+   "sodium": 893,
+   "calcium": 101,
+   "confidence": "estimated",
+   "components": [
+    "培根蔬萃双层牛堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900006957": {
+   "kcal": 1132,
+   "protein": 36.0,
+   "fat": 56.0,
+   "carb": 117.0,
+   "sodium": 1062,
+   "calcium": 178,
+   "confidence": "estimated",
+   "components": [
+    "芝士安格斯厚牛堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "1401": {
+   "kcal": 213,
+   "protein": 12.0,
+   "fat": 12.0,
+   "carb": 13.0,
+   "sodium": 422,
+   "calcium": 9,
+   "confidence": "alias",
+   "components": [
+    "麦乐鸡5块"
+   ]
+  },
+  "9900016082": {
+   "kcal": 438,
+   "protein": 3.0,
+   "fat": 27.0,
+   "carb": 42.0,
+   "sodium": 933,
+   "calcium": 21,
+   "confidence": "estimated",
+   "components": [
+    "脆薯饼",
+    "脆薯饼x2"
+   ]
+  },
+  "1406": {
+   "kcal": 391,
+   "protein": 23.0,
+   "fat": 17.0,
+   "carb": 35.0,
+   "sodium": 1041,
+   "calcium": 93,
+   "confidence": "exact",
+   "components": [
+    "板烧鸡腿堡"
+   ]
+  },
+  "9900005413": {
+   "kcal": 921,
+   "protein": 32.0,
+   "fat": 33.0,
+   "carb": 120.0,
+   "sodium": 1082,
+   "calcium": 175,
+   "confidence": "estimated",
+   "components": [
+    "双层深海鳕鱼堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900016309": {
+   "kcal": 1134,
+   "protein": 40.0,
+   "fat": 48.0,
+   "carb": 129.0,
+   "sodium": 1795,
+   "calcium": 191,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900015730": {
+   "kcal": 502,
+   "protein": 16.0,
+   "fat": 24.0,
+   "carb": 51.0,
+   "sodium": 587,
+   "calcium": 27,
+   "confidence": "estimated",
+   "components": [
+    "麦乐鸡5块",
+    "中薯条x1"
+   ]
+  },
+  "9900016311": {
+   "kcal": 1134,
+   "protein": 40.0,
+   "fat": 48.0,
+   "carb": 129.0,
+   "sodium": 1795,
+   "calcium": 191,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900016310": {
+   "kcal": 1134,
+   "protein": 40.0,
+   "fat": 48.0,
+   "carb": 129.0,
+   "sodium": 1795,
+   "calcium": 191,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "521156": {
+   "kcal": 385,
+   "protein": 24.0,
+   "fat": 21.0,
+   "carb": 24.0,
+   "sodium": 996,
+   "calcium": 13,
+   "confidence": "alias",
+   "components": [
+    "那么大鸡排"
+   ]
+  },
+  "9900004835": {
+   "kcal": 649,
+   "protein": 16.0,
+   "fat": 24.0,
+   "carb": 87.0,
+   "sodium": 587,
+   "calcium": 37,
+   "confidence": "estimated",
+   "components": [
+    "麦乐鸡5块",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "510488": {
+   "kcal": 157,
+   "protein": 3.0,
+   "fat": 6.0,
+   "carb": 21.0,
+   "sodium": 114,
+   "calcium": 344,
+   "confidence": "alias",
+   "components": [
+    "热燕麦奶中杯"
+   ]
+  },
+  "4648": {
+   "kcal": 493,
+   "protein": 28.0,
+   "fat": 27.0,
+   "carb": 34.0,
+   "sodium": 1012,
+   "calcium": 75,
+   "confidence": "exact",
+   "components": [
+    "不素之霸双层牛堡"
+   ]
+  },
+  "9900003586": {
+   "kcal": 485,
+   "protein": 28.0,
+   "fat": 21.0,
+   "carb": 46.0,
+   "sodium": 917,
+   "calcium": 147,
+   "confidence": "exact",
+   "components": [
+    "双层深海鳕鱼堡"
+   ]
+  },
+  "9900000890": {
+   "kcal": 1040,
+   "protein": 39.0,
+   "fat": 41.0,
+   "carb": 122.0,
+   "sodium": 1628,
+   "calcium": 130,
+   "confidence": "estimated",
+   "components": [
+    "板烧鸡腿堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "521717": {
+   "kcal": 289,
+   "protein": 7.0,
+   "fat": 11.0,
+   "carb": 39.0,
+   "sodium": 181,
+   "calcium": 220,
+   "confidence": "estimated",
+   "components": [
+    "浓浓抹茶雪冰中杯"
+   ]
+  },
+  "9900015729": {
+   "kcal": 502,
+   "protein": 16.0,
+   "fat": 24.0,
+   "carb": 51.0,
+   "sodium": 587,
+   "calcium": 27,
+   "confidence": "estimated",
+   "components": [
+    "麦乐鸡5块",
+    "中薯条x1"
+   ]
+  },
+  "521950": {
+   "kcal": 266,
+   "protein": 5.0,
+   "fat": 9.0,
+   "carb": 40.0,
+   "sodium": 116,
+   "calcium": 185,
+   "confidence": "estimated",
+   "components": [
+    "奥利奥麦旋风"
+   ]
+  },
+  "9900013304": {
+   "kcal": 718,
+   "protein": 31.0,
+   "fat": 34.0,
+   "carb": 69.0,
+   "sodium": 1182,
+   "calcium": 250,
+   "confidence": "estimated",
+   "components": [
+    "双层吉士汉堡",
+    "中薯条x1"
+   ]
+  },
+  "521951": {
+   "kcal": 93,
+   "protein": 2.0,
+   "fat": 3.0,
+   "carb": 14.0,
+   "sodium": 36,
+   "calcium": 77,
+   "confidence": "estimated",
+   "components": [
+    "圆筒冰淇淋"
+   ]
+  },
+  "9900011126": {
+   "kcal": 805,
+   "protein": 19.0,
+   "fat": 29.0,
+   "carb": 113.0,
+   "sodium": 896,
+   "calcium": 101,
+   "confidence": "estimated",
+   "components": [
+    "麦香鸡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "521952": {
+   "kcal": 485,
+   "protein": 24.0,
+   "fat": 24.0,
+   "carb": 42.0,
+   "sodium": 1208,
+   "calcium": 154,
+   "confidence": "alias",
+   "components": [
+    "麦辣鸡腿汉堡"
+   ]
+  },
+  "9900015602": {
+   "kcal": 949,
+   "protein": 31.0,
+   "fat": 38.0,
+   "carb": 116.0,
+   "sodium": 1126,
+   "calcium": 199,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "521953": {
+   "kcal": 485,
+   "protein": 24.0,
+   "fat": 24.0,
+   "carb": 42.0,
+   "sodium": 1208,
+   "calcium": 154,
+   "confidence": "alias",
+   "components": [
+    "麦辣鸡腿汉堡"
+   ]
+  },
+  "521316": {
+   "kcal": 429,
+   "protein": 27.0,
+   "fat": 22.0,
+   "carb": 31.0,
+   "sodium": 1017,
+   "calcium": 232,
+   "confidence": "estimated",
+   "components": [
+    "双层吉士汉堡"
+   ]
+  },
+  "9900015568": {
+   "kcal": 658,
+   "protein": 19.0,
+   "fat": 29.0,
+   "carb": 77.0,
+   "sodium": 896,
+   "calcium": 91,
+   "confidence": "estimated",
+   "components": [
+    "麦香鸡",
+    "中薯条x1"
+   ]
+  },
+  "9900011123": {
+   "kcal": 921,
+   "protein": 28.0,
+   "fat": 36.0,
+   "carb": 116.0,
+   "sodium": 1373,
+   "calcium": 182,
+   "confidence": "estimated",
+   "components": [
+    "麦辣鸡腿汉堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "1700": {
+   "kcal": 224,
+   "protein": 13.0,
+   "fat": 15.0,
+   "carb": 9.0,
+   "sodium": 537,
+   "calcium": 13,
+   "confidence": "alias",
+   "components": [
+    "麦辣鸡翅-2块"
+   ]
+  },
+  "9900000888": {
+   "kcal": 1162,
+   "protein": 43.0,
+   "fat": 50.0,
+   "carb": 129.0,
+   "sodium": 1548,
+   "calcium": 208,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900000886": {
+   "kcal": 1142,
+   "protein": 44.0,
+   "fat": 51.0,
+   "carb": 121.0,
+   "sodium": 1599,
+   "calcium": 112,
+   "confidence": "estimated",
+   "components": [
+    "不素之霸双层牛堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900000884": {
+   "kcal": 991,
+   "protein": 30.0,
+   "fat": 39.0,
+   "carb": 123.0,
+   "sodium": 1631,
+   "calcium": 78,
+   "confidence": "estimated",
+   "components": [
+    "酥酥多笋卷",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900000885": {
+   "kcal": 1091,
+   "protein": 40.0,
+   "fat": 47.0,
+   "carb": 121.0,
+   "sodium": 1315,
+   "calcium": 110,
+   "confidence": "estimated",
+   "components": [
+    "培根蔬萃双层牛堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "4810": {
+   "kcal": 289,
+   "protein": 4.0,
+   "fat": 12.0,
+   "carb": 38.0,
+   "sodium": 165,
+   "calcium": 18,
+   "confidence": "alias",
+   "components": [
+    "中薯条"
+   ]
+  },
+  "510479": {
+   "kcal": 186,
+   "protein": 11.0,
+   "fat": 8.0,
+   "carb": 17.0,
+   "sodium": 99,
+   "calcium": 320,
+   "confidence": "estimated",
+   "components": [
+    "热奶铁中杯"
+   ]
+  },
+  "9900000882": {
+   "kcal": 1345,
+   "protein": 48.0,
+   "fat": 68.0,
+   "carb": 130.0,
+   "sodium": 1484,
+   "calcium": 187,
+   "confidence": "estimated",
+   "components": [
+    "芝士安格斯厚牛堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005411": {
+   "kcal": 929,
+   "protein": 32.0,
+   "fat": 39.0,
+   "carb": 108.0,
+   "sodium": 1177,
+   "calcium": 103,
+   "confidence": "estimated",
+   "components": [
+    "不素之霸双层牛堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900000881": {
+   "kcal": 1356,
+   "protein": 50.0,
+   "fat": 68.0,
+   "carb": 130.0,
+   "sodium": 1624,
+   "calcium": 198,
+   "confidence": "estimated",
+   "components": [
+    "培根安格斯厚牛堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900004066": {
+   "kcal": 513,
+   "protein": 27.0,
+   "fat": 26.0,
+   "carb": 42.0,
+   "sodium": 961,
+   "calcium": 171,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸"
+   ]
+  },
+  "9900004064": {
+   "kcal": 949,
+   "protein": 31.0,
+   "fat": 38.0,
+   "carb": 116.0,
+   "sodium": 1126,
+   "calcium": 199,
+   "confidence": "estimated",
+   "components": [
+    "巨无霸",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "1440": {
+   "kcal": 485,
+   "protein": 24.0,
+   "fat": 24.0,
+   "carb": 42.0,
+   "sodium": 1208,
+   "calcium": 154,
+   "confidence": "exact",
+   "components": [
+    "麦辣鸡腿汉堡"
+   ]
+  },
+  "521922": {
+   "kcal": 232,
+   "protein": 2.0,
+   "fat": 12.0,
+   "carb": 28.0,
+   "sodium": 159,
+   "calcium": 7,
+   "confidence": "estimated",
+   "components": [
+    "香芋派"
+   ]
+  },
+  "515280": {
+   "kcal": 117,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 29.0,
+   "sodium": 17,
+   "calcium": 0,
+   "confidence": "alias",
+   "components": [
+    "阳光柠檬红茶中杯"
+   ]
+  },
+  "9900016058": {
+   "kcal": 269,
+   "protein": 15.0,
+   "fat": 6.0,
+   "carb": 36.0,
+   "sodium": 442,
+   "calcium": 58,
+   "confidence": "alias",
+   "components": [
+    "儿童鱼排堡"
+   ]
+  },
+  "507389": {
+   "kcal": 13,
+   "protein": 1.0,
+   "fat": 0.0,
+   "carb": 2.0,
+   "sodium": 0,
+   "calcium": 7,
+   "confidence": "exact",
+   "components": [
+    "浓缩咖啡"
+   ]
+  },
+  "9900009245": {
+   "kcal": 931,
+   "protein": 30.0,
+   "fat": 36.0,
+   "carb": 116.0,
+   "sodium": 929,
+   "calcium": 107,
+   "confidence": "estimated",
+   "components": [
+    "牛气满满",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "507387": {
+   "kcal": 167,
+   "protein": 9.0,
+   "fat": 7.0,
+   "carb": 15.0,
+   "sodium": 88,
+   "calcium": 285,
+   "confidence": "alias",
+   "components": [
+    "卡布奇诺中杯"
+   ]
+  },
+  "9900000893": {
+   "kcal": 1134,
+   "protein": 44.0,
+   "fat": 45.0,
+   "carb": 133.0,
+   "sodium": 1504,
+   "calcium": 184,
+   "confidence": "estimated",
+   "components": [
+    "双层深海鳕鱼堡",
+    "麦乐鸡5块x1",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "9900005321": {
+   "kcal": 502,
+   "protein": 16.0,
+   "fat": 24.0,
+   "carb": 51.0,
+   "sodium": 587,
+   "calcium": 27,
+   "confidence": "estimated",
+   "components": [
+    "麦乐鸡5块",
+    "中薯条x1"
+   ]
+  },
+  "515837": {
+   "kcal": 93,
+   "protein": 2.0,
+   "fat": 3.0,
+   "carb": 14.0,
+   "sodium": 36,
+   "calcium": 77,
+   "confidence": "exact",
+   "components": [
+    "圆筒冰淇淋"
+   ]
+  },
+  "521816": {
+   "kcal": 342,
+   "protein": 14.0,
+   "fat": 15.0,
+   "carb": 36.0,
+   "sodium": 1044,
+   "calcium": 41,
+   "confidence": "exact",
+   "components": [
+    "酥酥多笋卷"
+   ]
+  },
+  "9900005428": {
+   "kcal": 1143,
+   "protein": 38.0,
+   "fat": 56.0,
+   "carb": 117.0,
+   "sodium": 1202,
+   "calcium": 189,
+   "confidence": "estimated",
+   "components": [
+    "培根安格斯厚牛堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "1450": {
+   "kcal": 369,
+   "protein": 15.0,
+   "fat": 17.0,
+   "carb": 39.0,
+   "sodium": 731,
+   "calcium": 73,
+   "confidence": "exact",
+   "components": [
+    "麦香鸡"
+   ]
+  },
+  "520445": {
+   "kcal": 192,
+   "protein": 17.0,
+   "fat": 11.0,
+   "carb": 6.0,
+   "sodium": 594,
+   "calcium": 15,
+   "confidence": "exact",
+   "components": [
+    "薄皮焦香V翅"
+   ]
+  },
+  "520689": {
+   "kcal": 15,
+   "protein": 1.0,
+   "fat": 0.0,
+   "carb": 3.0,
+   "sodium": 2,
+   "calcium": 6,
+   "confidence": "alias",
+   "components": [
+    "小杯鲜萃咖啡"
+   ]
+  },
+  "507409": {
+   "kcal": 186,
+   "protein": 11.0,
+   "fat": 8.0,
+   "carb": 17.0,
+   "sodium": 99,
+   "calcium": 320,
+   "confidence": "alias",
+   "components": [
+    "热奶铁中杯"
+   ]
+  },
+  "3505": {
+   "kcal": 2,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 0.0,
+   "sodium": 0,
+   "calcium": 5,
+   "confidence": "exact",
+   "components": [
+    "锡兰红茶"
+   ]
+  },
+  "1600": {
+   "kcal": 325,
+   "protein": 16.0,
+   "fat": 13.0,
+   "carb": 35.0,
+   "sodium": 556,
+   "calcium": 99,
+   "confidence": "exact",
+   "components": [
+    "麦香鱼"
+   ]
+  },
+  "507411": {
+   "kcal": 13,
+   "protein": 1.0,
+   "fat": 0.0,
+   "carb": 2.0,
+   "sodium": 0,
+   "calcium": 7,
+   "confidence": "alias",
+   "components": [
+    "热美式中杯"
+   ]
+  },
+  "9900003538": {
+   "kcal": 110,
+   "protein": 0.0,
+   "fat": 0.0,
+   "carb": 27.0,
+   "sodium": 0,
+   "calcium": 0,
+   "confidence": "alias",
+   "components": [
+    "中杯怡泉+C"
+   ]
+  },
+  "9900003537": {
+   "kcal": 1094,
+   "protein": 23.0,
+   "fat": 41.0,
+   "carb": 151.0,
+   "sodium": 1061,
+   "calcium": 119,
+   "confidence": "estimated",
+   "components": [
+    "麦香鸡",
+    "中薯条x1",
+    "可乐中杯x1",
+    "中薯条x1"
+   ]
+  },
+  "9900005430": {
+   "kcal": 1132,
+   "protein": 36.0,
+   "fat": 56.0,
+   "carb": 117.0,
+   "sodium": 1062,
+   "calcium": 178,
+   "confidence": "estimated",
+   "components": [
+    "芝士安格斯厚牛堡",
+    "中薯条x1",
+    "可乐中杯x1"
+   ]
+  },
+  "4437": {
+   "kcal": 87,
+   "protein": 4.0,
+   "fat": 1.0,
+   "carb": 12.0,
+   "sodium": 2,
+   "calcium": 10,
+   "confidence": "alias",
+   "components": [
+    "大杯玉米杯"
+   ]
+  },
+  "9900005432": {
+   "kcal": 332,
+   "protein": 22.0,
+   "fat": 18.0,
+   "carb": 16.0,
+   "sodium": 812,
+   "calcium": 25,
+   "confidence": "alias",
+   "components": [
+    "麦麦脆汁鸡-带骨里脊"
+   ]
+  }
+ },
+ "unmatched": [
+  "515955 浓浓燕麦黑巧（冰/热）",
+  "9900000891 麦辣鸡腿堡四件套",
+  "521817 【美汁源】“多汁柠柠”",
+  "515946 浓浓黑巧（冰/热）"
+ ]
+}
