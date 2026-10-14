@@ -103,7 +103,9 @@ def scene_menu_trap(idx: dict) -> list[dict]:
 
     traps = []
     for base, by_count in groups.items():
-        if 3 in by_count and 4 in by_count and by_count[4]["price"] < by_count[3]["price"]:
+        if 3 not in by_count or 4 not in by_count:
+            continue
+        if by_count[4]["price"] < by_count[3]["price"]:
             traps.append({
                 "base": base,
                 "three": by_count[3],

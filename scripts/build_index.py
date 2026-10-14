@@ -22,7 +22,6 @@ build_index.py —— 把 MCP 原始快照归一化成引擎可直接消费的�
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -143,6 +142,7 @@ ROLE_RULES: list[tuple[str, tuple[str, ...]]] = [
 
 
 def classify(name: str) -> str:
+    """按商品名判定角色：staple / side / drink / dessert / nonfood。"""
     for role, keys in ROLE_RULES:
         if any(k in name for k in keys):
             return role
@@ -151,6 +151,7 @@ def classify(name: str) -> str:
 
 # ---------------------------------------------------------------- 营养库解析
 def load_nutrition() -> dict[str, dict]:
+    """解析营养库 CSV（首行是列定义），返回 名称 -> 营养 的映射。"""
     path = RAW / "nutrition.txt"
     lines = [l for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
     table: dict[str, dict] = {}
@@ -174,6 +175,7 @@ def load_nutrition() -> dict[str, dict]:
 
 
 def add_nutrition(a: dict, b: dict, times: int = 1) -> dict:
+    """把 b 的营养按倍数加到 a 上，返回新字典（不改原对象）。"""
     out = dict(a)
     for k in ("kcal", "protein", "fat", "carb", "sodium", "calcium"):
         out[k] = round(out.get(k, 0) + b.get(k, 0) * times, 2)
@@ -209,6 +211,7 @@ def resolve_bundle(name: str, table: dict[str, dict]) -> dict | None:
 
 # ---------------------------------------------------------------- 主流程
 def main() -> None:
+    """读取原始快照，生成 data/index.json 并打印覆盖率统计。"""
     table = load_nutrition()
 
     meal_files = sorted(RAW.glob("meals_*.json"))
@@ -241,11 +244,13 @@ def main() -> None:
         # 营养：先直查，再别名，最后按「套餐主体拆分 / 兜底代表单品」建模
         nutri = None
         if name in table:
-            nutri = {"nutri": dict(table[name]), "components": [name], "confidence": "exact"}
+            nutri = {"nutri": dict(table[name]), "components": [name],
+                     "confidence": "exact"}
         else:
             alias = ALIAS.get(name)
             if alias and alias in table:
-                nutri = {"nutri": dict(table[alias]), "components": [alias], "confidence": "alias"}
+                nutri = {"nutri": dict(table[alias]), "components": [alias],
+                         "confidence": "alias"}
 
         if nutri is None:
             nutri = resolve_bundle(name, table)
@@ -294,7 +299,8 @@ def main() -> None:
     for it in items.values():
         by_role[it["role"]] = by_role.get(it["role"], 0) + 1
     print(f"✅ 索引已生成：{OUT}")
-    print(f"   商品 {len(items)} 个 | 营养覆盖 {len(nutrition)} 个 ({index['nutritionCoverage']:.0%})")
+    print(f"   商品 {len(items)} 个 | 营养覆盖 {len(nutrition)} 个 "
+          f"({index['nutritionCoverage']:.0%})")
     print(f"   角色分布 {by_role}")
     if unmatched:
         print(f"   ⚠️ 无营养数据 {len(unmatched)} 个：{', '.join(unmatched[:12])}"

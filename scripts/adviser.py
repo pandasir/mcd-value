@@ -44,19 +44,26 @@ TAG_RULES: dict[str, tuple[str, ...]] = {
     "fried": ("薯条", "炸", "脆", "鸡翅", "麦乐鸡", "油条", "脆汁鸡", "鸡排"),
 }
 
-# 优惠券规则库（来源：mcd-mcp `available-coupons` 实际返回）
-# 说明：MCP 只给券名不给细则，故这里按券名推断规则，并统一标注"待门店核验"。
+# 券名兜底规则：仅在**没有券快照**时使用。
+# 有快照时请用 `--coupons`，走 `coupon_doctor` 的「实测 > 菜单反查 > 未知」口径 ——
+# 那条路径有真实券码与实测价值，比这里的按名字猜要可靠得多。
 COUPON_RULES: list[dict] = [
-    {"id": "fries_bogo", "title": "中薯条买一送一", "kind": "bogo", "match": ("薯条",)},
-    {"id": "mcflurry_bogo", "title": "人气麦旋风买一送一", "kind": "bogo", "match": ("麦旋风",)},
-    {"id": "americano_99", "title": "9.9元中杯冰美式", "kind": "fixed", "match": ("美式",), "price": 9.9},
+    {"id": "fries_bogo", "title": "中薯条买一送一", "kind": "bogo",
+     "match": ("薯条",)},
+    {"id": "mcflurry_bogo", "title": "人气麦旋风买一送一", "kind": "bogo",
+     "match": ("麦旋风",)},
+    {"id": "americano_99", "title": "9.9元中杯冰美式", "kind": "fixed",
+     "match": ("美式",), "price": 9.9},
 ]
 
 MODE_TARGETS = {
-    "value":    {"kcal": (450, 1000), "protein": 15, "required": {"staple"}},
-    "balanced": {"kcal": (500, 900),  "protein": 20, "required": {"staple", "side", "drink"}},
-    "protein":  {"kcal": (600, 1200), "protein": 33, "required": {"staple", "side", "drink"}},
-    "light":    {"kcal": (330, 650),  "protein": 17, "required": {"staple", "drink"}},
+    "value": {"kcal": (450, 1000), "protein": 15, "required": {"staple"}},
+    "balanced": {"kcal": (500, 900), "protein": 20,
+                 "required": {"staple", "side", "drink"}},
+    "protein": {"kcal": (600, 1200), "protein": 33,
+                "required": {"staple", "side", "drink"}},
+    "light": {"kcal": (330, 650), "protein": 17,
+              "required": {"staple", "drink"}},
 }
 
 # 各模式下的价格权重：只有「最省」以压价为主目标，其余模式把钱当约束而非目标，
@@ -76,10 +83,12 @@ class Line:
 
     @property
     def subtotal(self) -> float:
+        """未用券时的小计（元）。"""
         return round(self.unit_price * self.qty, 2)
 
     @property
     def paid(self) -> float:
+        """用券后的实付小计（元）。"""
         return round(self.paid_price * self.qty, 2)
 
 
@@ -100,6 +109,7 @@ class Plan:
     coupons: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
+        """转成可 JSON 序列化的字典；剔除内部打分，附上下单参数。"""
         d = asdict(self)
         d.pop("score", None)
         d["nutrition"] = {k: (round(v, 1) if isinstance(v, float) else v)
@@ -111,12 +121,14 @@ class Plan:
 
 # ------------------------------------------------------------------ 索引装载
 def load_index() -> dict:
+    """读取归一化索引；缺失时给出可执行的修复提示。"""
     if not INDEX.exists():
         raise SystemExit("缺少 data/index.json，请先运行 scripts/build_index.py")
     return json.loads(INDEX.read_text(encoding="utf-8"))
 
 
 def tags_of(name: str) -> set[str]:
+    """按商品名推断忌口标签（beef / spicy / dairy ……）。"""
     return {t for t, keys in TAG_RULES.items() if any(k in name for k in keys)}
 
 
@@ -126,6 +138,7 @@ EXCLUDE_NAME_KEYS = ("单品精选", "百宝袋", "任选")
 
 
 def build_pool(idx: dict, banned: set[str]) -> list[dict]:
+    """构造候选池：剔除周边商品、盲盒类商品与忌口项，并挂上营养与标签。"""
     pool = []
     for code, it in idx["items"].items():
         if it["role"] == "nonfood":
@@ -141,8 +154,13 @@ def build_pool(idx: dict, banned: set[str]) -> list[dict]:
 
 
 # ------------------------------------------------------------------ 优惠券
-def apply_coupons(codes: list[tuple[str, int]], idx: dict) -> tuple[list[Line], float, list[str], list[str]]:
-    """返回 (明细行, 券后总价, 命中券名, 待核验提示)"""
+def apply_coupons(
+    codes: list[tuple[str, int]], idx: dict,
+) -> tuple[list[Line], float, list[str], list[str]]:
+    """把券规则套到商品行上。
+
+    返回 (明细行, 券后总价, 命中券名, 待核验提示)。
+    """
     lines: list[Line] = []
     hits: list[str] = []
     verify: list[str] = []
@@ -176,7 +194,9 @@ def apply_coupons(codes: list[tuple[str, int]], idx: dict) -> tuple[list[Line], 
 
 # ------------------------------------------------------------------ 营养汇总
 def sum_nutrition(lines: list[Line], idx: dict) -> tuple[dict, str]:
-    total = {"kcal": 0.0, "protein": 0.0, "fat": 0.0, "carb": 0.0, "sodium": 0.0, "calcium": 0.0}
+    """汇总整单营养，并给出置信度：exact / estimated / partial。"""
+    total = {"kcal": 0.0, "protein": 0.0, "fat": 0.0,
+             "carb": 0.0, "sodium": 0.0, "calcium": 0.0}
     conf = "exact"
     for l in lines:
         n = idx["nutrition"].get(l.code)
@@ -192,6 +212,7 @@ def sum_nutrition(lines: list[Line], idx: dict) -> tuple[dict, str]:
 
 # ------------------------------------------------------------------ 打分
 def score_plan(mode: str, total: float, people: int, nut: dict) -> float:
+    """按模式给方案打分。只有 value 模式以压价为主目标，其余把钱当约束。"""
     pp_price = total / people
     kcal, prot = nut["kcal"] / people, nut["protein"] / people
     fat, sodium = nut["fat"] / people, nut["sodium"] / people
@@ -219,8 +240,14 @@ def score_plan(mode: str, total: float, people: int, nut: dict) -> float:
 SHARE_KEYS = ("拼盘", "十翅", "双人餐", "四宫格", "任选", "七件")
 
 
-def solve(idx: dict, pool: list[dict], budget: float, people: int,
-          mode: str, top: int, max_kcal: float | None, min_protein: float | None) -> list[Plan]:
+def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
+          top: int, max_kcal: float | None,
+          min_protein: float | None) -> list[Plan]:
+    """在候选池上枚举组合，施加硬约束过滤，打分后返回 Top-K。
+
+    硬约束：结构完整 → 券后总价 ≤ 预算 → 人均热量落区间 → 人均蛋白达标。
+    不满足直接淘汰，不做"尽量满足"。
+    """
     tgt = MODE_TARGETS[mode]
     kcal_lo, kcal_hi = tgt["kcal"]
     if max_kcal:
@@ -339,6 +366,7 @@ def coupons_for_plan(plan: Plan, idx: dict, coupons: list) -> list[dict]:
 
 # ------------------------------------------------------------------ 渲染
 def render(idx: dict, plans: list[Plan], args) -> str:
+    """把方案渲染成终端可读的文本（含营养、备注、券标注与下单参数）。"""
     store = idx["store"]
     out: list[str] = []
     out.append(f"🍟 麦麦点餐参谋 · {store['storeCode']} {store['storeName']}")
@@ -362,8 +390,9 @@ def render(idx: dict, plans: list[Plan], args) -> str:
             cp = f"  ← {l.applied_coupon}" if l.applied_coupon else ""
             out.append(f"  · {l.name} ×{l.qty}　¥{l.subtotal:.1f}{cp}")
         n = p.nutrition
-        out.append(f"  营养/人：{n['kcal']/p.people:.0f} kcal | 蛋白 {n['protein']/p.people:.1f}g "
-                   f"| 脂肪 {n['fat']/p.people:.1f}g | 钠 {n['sodium']/p.people:.0f}mg")
+        pp = p.people
+        out.append(f"  营养/人：{n['kcal']/pp:.0f} kcal | 蛋白 {n['protein']/pp:.1f}g "
+                   f"| 脂肪 {n['fat']/pp:.1f}g | 钠 {n['sodium']/pp:.0f}mg")
         for note in p.notes:
             out.append(f"  ⓘ {note}")
         for c in p.coupons:
@@ -372,11 +401,13 @@ def render(idx: dict, plans: list[Plan], args) -> str:
         out.append("  下单参数：" + json.dumps([{"productCode": l.code, "quantity": l.qty}
                                             for l in p.lines], ensure_ascii=False))
     out.append("─" * 46)
-    out.append("⚠️ 价格为门店实时快照口径，最终以 calculate-price 结果为准；券需门店核验。")
+    out.append("⚠️ 价格为门店实时快照口径，最终以 calculate-price 结果为准；"
+               "券需门店核验。")
     return "\n".join(out)
 
 
 def main() -> int:
+    """命令行入口：解析参数 → 求解 → 渲染或输出 JSON。"""
     ap = argparse.ArgumentParser(description="麦麦点餐参谋 —— 约束求解式套餐推荐")
     ap.add_argument("--budget", type=float, default=40, help="总预算（元）")
     ap.add_argument("--people", type=int, default=1, help="人数")

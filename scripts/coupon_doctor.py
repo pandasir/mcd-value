@@ -248,9 +248,11 @@ def wallet_checkup(coupons: list[Coupon], baseline: float,
         "named_total": round(sum(r["face_value"] for r in rows
                                  if r["face_value"] is not None), 2),
         "realizable": round(sum(r["net_value"] for r in rows
-                                if r["net_value"] is not None and r["net_value"] > 0), 2),
+                                if r["net_value"] is not None
+                                and r["net_value"] > 0), 2),
         "unusable": round(sum(r["net_value"] for r in rows
-                              if r["net_value"] is not None and r["net_value"] <= 0), 2),
+                              if r["net_value"] is not None
+                              and r["net_value"] <= 0), 2),
         "counts": {k: sum(1 for r in rows if r["verdict"] == k)
                    for k in VERDICT_ORDER},
     }
@@ -284,10 +286,12 @@ def schedule(coupons: list[Coupon], orders_per_week: float, now: datetime) -> di
     """
     window = window_days(coupons, now)
     slots = orders_in_window(window, orders_per_week)
-    usable = sorted(usable_coupons(coupons), key=lambda c: c.net_value or 0, reverse=True)
+    usable = sorted(usable_coupons(coupons),
+                    key=lambda c: c.net_value or 0, reverse=True)
     assigned, dropped = usable[:slots], usable[slots:]
 
     def row(c: Coupon) -> dict:
+        """把一张券压成排程输出用的最小字典。"""
         return {"title": c.title, "net_value": c.net_value,
                 "days_left": days_left(c.end_at, now)}
 
@@ -368,7 +372,8 @@ def render(report: dict) -> str:
         out.append(f"   [无法判断] {len(unknown)} 张价值未知：{names}")
 
     out.append("")
-    out.append(f"   名义总额 ¥{chk['named_total']:.1f} → 按你的消费水平可实现 ¥{chk['realizable']:.1f}")
+    out.append(f"   名义总额 ¥{chk['named_total']:.1f} → "
+               f"按你的消费水平可实现 ¥{chk['realizable']:.1f}")
     counts = chk["counts"]
     if counts[UNKNOWN]:
         out.append(f"   ⓘ {counts[UNKNOWN]} 张价值未知 —— 券面推不出来，我们就不猜；"

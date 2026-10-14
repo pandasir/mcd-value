@@ -14,6 +14,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  style:
+    name: style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # 零依赖规范检查：行宽 / 行尾空白 / 返回类型标注 / docstring / 未使用 import
+      - name: 项目规范检查
+        run: python scripts/style_check.py
+
   test:
     name: test (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
@@ -40,3 +54,6 @@ jobs:
 
       - name: 端到端演示（同时是不变量回归）
         run: python demo.py
+
+      - name: 券包体检（CLI 冒烟）
+        run: python scripts/coupon_doctor.py --budget 45 --orders-per-week 3
