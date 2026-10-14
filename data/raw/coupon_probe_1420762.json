@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "source": "mcp.mcd.cn / calculate-price",
+    "capturedAt": "2026-10-14 17:27:02",
+    "storeCode": "1420762",
+    "orderType": 1,
+    "beType": 1,
+    "note": "把券自带的商品码 + couponId + couponCode 传给 calculate-price，返回的 discount 就是这张券的精确价值（单位：分）。这是唯一能拿到券真实价值的路径 —— 券名里没有数字的券（如「王牌小食拼」），靠菜单反查只会返回 0。"
+  },
+  "probes": [
+    {
+      "couponId": "8692944B045928451618BFF22F535D2A",
+      "couponCode": "MCD6117LV900K0110L087",
+      "title": "中薯条买一送一",
+      "productCode": "9900012387",
+      "productName": "中薯条买一送一",
+      "originalPriceCents": 2700,
+      "priceCents": 1350,
+      "discountCents": 1350
+    },
+    {
+      "couponId": "E05F6BFB4BAFAA5DB44B233583BFE711",
+      "couponCode": "MCD610070K09VK66L0176",
+      "title": "王牌小食拼",
+      "productCode": "9900016371",
+      "productName": "王牌小食拼",
+      "originalPriceCents": 2200,
+      "priceCents": 1590,
+      "discountCents": 610
+    },
+    {
+      "couponId": "32EC0AE5FAE33F46B20027B94A7D7143",
+      "couponCode": "MCD696139102S02FW0100",
+      "title": "13.9浓浓黑巧",
+      "productCode": "9900016270",
+      "productName": "浓浓黑巧中杯（冰/热）",
+      "originalPriceCents": 2100,
+      "priceCents": 1390,
+      "discountCents": 710
+    }
+  ]
+}

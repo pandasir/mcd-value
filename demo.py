@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import adviser as A  # noqa: E402  # 需先把 scripts/ 注入 sys.path
+import coupon_doctor as CD  # noqa: E402
 
 BAR = "─" * 52
 
@@ -159,7 +160,8 @@ def print_trap(traps: list[dict]) -> None:
     print()
 
 
-def print_plan(title: str, note: str, idx: dict, args: SimpleNamespace, plans: list) -> None:
+def print_plan(title: str, note: str, args: SimpleNamespace, idx: dict,
+               plans: list) -> None:
     """打印一个求解场景。"""
     print(title)
     if note:
@@ -169,10 +171,41 @@ def print_plan(title: str, note: str, idx: dict, args: SimpleNamespace, plans: l
     print()
 
 
+def print_coupons(idx: dict, plans: list, coupons: list) -> dict:
+    """场景三：券的价值、体检、排程与可领取券。返回体检报告供断言使用。"""
+    baseline = plans[0].total if plans else 45.0
+    report = CD.analyze(baseline=baseline, orders_per_week=3.0)
+    print("③ 你的券在漏水：券不是「可用资源」，是有保质期的钱")
+    print()
+    for line in CD.render(report).splitlines():
+        print("   " + line)
+    print()
+    print("   券还能叠到具体方案上（本单真的有券覆盖的商品时才标注）：")
+    print("     $ python scripts/adviser.py --budget 30 --mode light --top 5 --coupons")
+    _, light = advise(idx, budget=30, people=1, mode="light", top=5)
+    for p in light:
+        hits = A.coupons_for_plan(p, idx, coupons)
+        if hits:
+            names = " + ".join(line.name for line in p.lines)
+            print(f"     方案 ¥{p.total:.1f}　{names}")
+            for h in hits:
+                print(f"       🎟️ 本单可用：{h['title']}　再省 ¥{h['face_value']:.1f}"
+                      f"（{h['value_source']}，需门店核验）")
+            break
+    print()
+    return report
+
+
 def main() -> int:
     """跑通全部演示场景；任一断言失败即返回非零退出码。"""
     idx = A.load_index()
     head(idx)
+
+    # 先算「这一单」：券的体检要以它为基准，所以求解要走在券场景之前。
+    args_b, plans_b = advise(idx, budget=45, people=1, mode="balanced", top=1)
+
+    coupons, _ = CD.load_coupons()
+    CD.attach_values(coupons, CD.load_probes(), items_by_name(idx))
 
     # ---- 场景一：冤枉钱 -------------------------------------------------
     wasted = scene_wasted_money(idx)
@@ -182,30 +215,36 @@ def main() -> int:
     traps = scene_menu_trap(idx)
     print_trap(traps)
 
-    # ---- 场景三：预算内的均衡一餐 ---------------------------------------
-    args3, plans3 = advise(idx, budget=45, people=1, mode="balanced", top=1)
-    print_plan("③ 预算 ¥45 吃一餐均衡的", "约束：主食 + 小食 + 饮品，热量 500–900 kcal",
-               idx, args3, plans3)
+    # ---- 场景三：券 ------------------------------------------------------
+    report = print_coupons(idx, plans_b, coupons)
 
-    # ---- 场景四：硬约束（忌口） -----------------------------------------
-    args4, plans4 = advise(idx, budget=45, people=1, mode="balanced", top=1,
+    # ---- 场景四：预算内的均衡一餐 ---------------------------------------
+    print_plan("④ 预算 ¥45 吃一餐均衡的", "约束：主食 + 小食 + 饮品，热量 500–900 kcal",
+               args_b, idx, plans_b)
+
+    # ---- 场景五：硬约束（忌口） -----------------------------------------
+    args5, plans5 = advise(idx, budget=45, people=1, mode="balanced", top=1,
                            banned=("beef", "fried"))
-    print_plan("④ 同样的预算，忌牛肉 + 忌油炸",
+    print_plan("⑤ 同样的预算，忌牛肉 + 忌油炸",
                "忌口是硬约束：候选池里直接剔除，不是「尽量避开」",
-               idx, args4, plans4)
+               args5, idx, plans5)
 
     # ---- 断言：关键不变量 ------------------------------------------------
-    assert plans3, "均衡模式应给出方案"
-    p3 = plans3[0]
-    assert p3.total <= 45 + 1e-6, "预算是硬约束：券后总价不得超过预算"
-    roles3 = {l.role for l in p3.lines}
-    assert A.MODE_TARGETS["balanced"]["required"] <= roles3, "均衡模式必须构成完整一餐"
-    if plans4:
-        for line in plans4[0].lines:
-            assert not (A.tags_of(line.name) & {"beef", "fried"}), \
-                f"忌口未生效：{line.name}"
-    assert wasted["alc_total"] > 0, "单点基线应大于 0"
+    assert plans_b, "均衡模式应给出方案"
+    assert plans_b[0].total <= 45 + 1e-6, "预算是硬约束：券后总价不得超过预算"
+    roles = {line.role for line in plans_b[0].lines}
+    assert A.MODE_TARGETS["balanced"]["required"] <= roles, "均衡模式必须构成完整一餐"
+    for line in (plans5[0].lines if plans5 else []):
+        assert not (A.tags_of(line.name) & {"beef", "fried"}), f"忌口未生效：{line.name}"
     assert wasted["gap"] is not None and wasted["gap"] > 0, "应能找到更便宜的套餐买法"
+
+    for c in coupons:
+        assert c.value_source in ("probe", "reverse", "unknown"), \
+            f"未知的价值来源：{c.value_source}"
+        assert (c.face_value is None) == (c.value_source == "unknown"), \
+            f"券面价值与来源不一致：{c.title}"
+    chk = report["checkup"]
+    assert chk["realizable"] <= chk["named_total"] + 1e-6, "可实现不应超过券面名义总额"
 
     # ---- 尾 --------------------------------------------------------------
     print(BAR)
@@ -213,6 +252,7 @@ def main() -> int:
     print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced")
     print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced"
           " --no-beef --no-fried")
+    print("  python scripts/coupon_doctor.py --budget 45 --orders-per-week 3")
     print("  python -m unittest discover -s tests -v")
     print()
     print("价格为门店实时快照口径，最终以 calculate-price 结果为准；营养为估算的已标注。")

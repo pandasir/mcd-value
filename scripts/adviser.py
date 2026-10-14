@@ -97,6 +97,7 @@ class Plan:
     score: float = 0.0
     notes: list[str] = field(default_factory=list)
     needs_verify: list[str] = field(default_factory=list)
+    coupons: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -302,6 +303,40 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int,
     return kept
 
 
+# ------------------------------------------------------------------ 券标注
+def plan_components(plan: Plan, idx: dict) -> set[str]:
+    """方案里实际会吃到的东西 —— 取营养索引记录的组件名。
+
+    套餐类商品在营养索引里有 components（如 ["巨无霸", "中薯条x1", "可乐中杯x1"]），
+    所以「方案里有没有薯条」这件事能被真实回答，而不是靠猜。
+    """
+    comps: set[str] = set()
+    for line in plan.lines:
+        comps.add(line.name)
+        nutri = idx["nutrition"].get(line.code) or {}
+        for comp in nutri.get("components", []):
+            comps.add(comp.split("x")[0])
+    return comps
+
+
+def coupons_for_plan(plan: Plan, idx: dict, coupons: list) -> list[dict]:
+    """本单能用上的券：券对齐到的商品出现在方案的实际组成里。"""
+    import build_index as BI
+    import coupon_doctor as CD
+
+    comps = plan_components(plan, idx)
+    hits = []
+    for c in coupons:
+        target = CD.NAME_ALIGN.get(c.title)
+        if not target or c.face_value is None:
+            continue
+        nutri_name = BI.ALIAS.get(target, target)
+        if nutri_name in comps or target in comps:
+            hits.append({"title": c.title, "face_value": c.face_value,
+                         "value_source": c.value_source, "kind": c.kind})
+    return hits
+
+
 # ------------------------------------------------------------------ 渲染
 def render(idx: dict, plans: list[Plan], args) -> str:
     store = idx["store"]
@@ -331,6 +366,9 @@ def render(idx: dict, plans: list[Plan], args) -> str:
                    f"| 脂肪 {n['fat']/p.people:.1f}g | 钠 {n['sodium']/p.people:.0f}mg")
         for note in p.notes:
             out.append(f"  ⓘ {note}")
+        for c in p.coupons:
+            src = {"probe": "实测", "reverse": "菜单反查"}.get(c["value_source"], "来源未知")
+            out.append(f"  🎟️ 本单可用：{c['title']}　再省 ¥{c['face_value']:.1f}（{src}）")
         out.append("  下单参数：" + json.dumps([{"productCode": l.code, "quantity": l.qty}
                                             for l in p.lines], ensure_ascii=False))
     out.append("─" * 46)
@@ -354,6 +392,8 @@ def main() -> int:
     ap.add_argument("--no-caffeine", action="store_true")
     ap.add_argument("--no-dairy", action="store_true")
     ap.add_argument("--no-fried", action="store_true")
+    ap.add_argument("--coupons", action="store_true",
+                    help="读取仓库内置券快照，在方案上标注本单可用的券")
     ap.add_argument("--json", action="store_true", help="输出结构化 JSON")
     args = ap.parse_args()
 
@@ -363,6 +403,14 @@ def main() -> int:
     pool = build_pool(idx, args.banned)
     plans = solve(idx, pool, args.budget, args.people, args.mode, args.top,
                   args.max_kcal, args.min_protein)
+
+    if args.coupons:
+        import coupon_doctor as CD
+        coupons, _ = CD.load_coupons()
+        menu_by_name = {it["name"]: it for it in idx["items"].values()}
+        CD.attach_values(coupons, CD.load_probes(), menu_by_name)
+        for p in plans:
+            p.coupons = coupons_for_plan(p, idx, coupons)
 
     if args.json:
         print(json.dumps({
