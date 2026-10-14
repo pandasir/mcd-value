@@ -13,6 +13,7 @@ style_check.py —— 零依赖的项目规范检查
   5. 非双下划线函数都有 docstring
   6. 未使用的 import
   7. `__all__` 与模块内公开定义一致（仅在模块定义了 `__all__` 时检查）
+  8. 顶层函数/类重复定义（后者会静默覆盖前者，是一整类真 bug）
 
 为什么自己写而不用 ruff / flake8：本项目的卖点之一是**零第三方依赖**，
 连开发期的 linter 依赖也不引入。CI 会跑这个脚本，不达标直接失败。
@@ -137,6 +138,21 @@ def check_ast(path: Path) -> list[str]:
     return problems
 
 
+def check_duplicate_defs(tree: ast.Module) -> list[str]:
+    """检查顶层函数/类是否被重复定义（后者静默覆盖前者）。"""
+    seen: dict[str, int] = {}
+    problems: list[str] = []
+    for node in tree.body:
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name in seen:
+                problems.append(
+                    f"L{node.lineno}: {node.name} 重复定义"
+                    f"（首次在 L{seen[node.name]}，后者会覆盖前者）")
+            else:
+                seen[node.name] = node.lineno
+    return problems
+
+
 def main() -> int:
     """扫描所有目标文件，打印问题并返回非零退出码（若有不达标项）。"""
     files = py_files()
@@ -144,7 +160,8 @@ def main() -> int:
     for path in files:
         rel = path.relative_to(ROOT)
         try:
-            problems = check_lines(path) + check_ast(path)
+            problems = check_lines(path) + check_ast(path) + check_duplicate_defs(
+                ast.parse(path.read_text(encoding="utf-8")))
         except SyntaxError as exc:
             problems = [f"语法错误：{exc}"]
         if problems:
@@ -157,7 +174,7 @@ def main() -> int:
         print(f"✗ {failures}/{len(files)} 个文件不达标")
         return 1
     print(f"✅ 规范检查通过（{len(files)} 个文件，行宽 ≤ {MAX_WIDTH}，"
-          f"返回类型与 docstring 齐全，无未使用 import）")
+          f"返回类型与 docstring 齐全，无未使用 import、无重复定义）")
     return 0
 
 
