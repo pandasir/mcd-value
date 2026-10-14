@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 430" width="100%" role="img">
+  <title>同一个订单，两种买法差多少钱</title>
+  <desc>左边是随手点，右边是约束求解器给出的买法；同样的内容，差价 16.5 元。</desc>
+
+  <rect x="0" y="0" width="1280" height="430" rx="16" fill="#ffffff" stroke="#e3e3e3"/>
+
+  <text x="640" y="52" text-anchor="middle"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="24" font-weight="700" fill="#0C447C">同一个订单，两种买法</text>
+  <text x="640" y="80" text-anchor="middle"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="15" fill="#8a8a8a">门店 1420762 · 深圳同方信息港餐厅（到店自取）· 价格来自 query-meals 实时快照</text>
+
+  <!-- 左panel -->
+  <rect x="48" y="106" width="560" height="258" rx="12" fill="#FDF6F5" stroke="#E8B4AE" stroke-width="1"/>
+  <text x="76" y="146"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="18" font-weight="700" fill="#A33A2E">随手点</text>
+  <text x="76" y="172"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="14" fill="#9a6b64">想到什么搜什么，一样一样加进购物车</text>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+     font-size="16" fill="#5a5a5a">
+    <text x="76" y="216">巨无霸</text>
+    <text x="580" y="216" text-anchor="end">¥25.5</text>
+    <text x="76" y="248">薯条</text>
+    <text x="580" y="248" text-anchor="end">¥13.5</text>
+    <text x="76" y="280">可乐</text>
+    <text x="580" y="280" text-anchor="end">¥9.5</text>
+  </g>
+  <line x1="76" y1="300" x2="580" y2="300" stroke="#E8B4AE" stroke-width="1"/>
+  <text x="76" y="336"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="22" font-weight="700" fill="#A33A2E">合计 ¥48.5</text>
+
+  <!-- 右panel -->
+  <rect x="672" y="106" width="560" height="258" rx="12" fill="#F2FAF5" stroke="#8CCBA8" stroke-width="1"/>
+  <text x="700" y="146"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="18" font-weight="700" fill="#1F6B45">约束求解器</text>
+  <text x="700" y="172"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="14" fill="#5e8a74">在真实菜单上枚举组合，硬约束过滤后取最优</text>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+     font-size="16" fill="#3f5a4c">
+    <text x="700" y="216">巨无霸四件套（含这三样，还多一份麦乐鸡）</text>
+    <text x="1204" y="216" text-anchor="end">¥32.0</text>
+  </g>
+
+  <line x1="700" y1="300" x2="1204" y2="300" stroke="#8CCBA8" stroke-width="1"/>
+  <text x="700" y="336"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="22" font-weight="700" fill="#1F6B45">合计 ¥32.0</text>
+
+  <!-- 中间连接 -->
+  <line x1="610" y1="235" x2="670" y2="235" stroke="#8a8a8a" stroke-width="1.4"/>
+  <path d="M662 229 L670 235 L662 241" fill="none" stroke="#8a8a8a" stroke-width="1.4" stroke-linecap="round"/>
+
+  <!-- 底部结论条 -->
+  <rect x="48" y="382" width="1184" height="0" fill="none"/>
+  <text x="640" y="396" text-anchor="middle"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="17" font-weight="700" fill="#C0392B">差价 ¥16.5 —— 而且菜单里还有 8 组「三件套比四件套更贵」的倒挂，人眼看不出来</text>
+</svg>

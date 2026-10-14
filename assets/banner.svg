@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 340" width="100%" role="img">
+  <title>麦麦点餐参谋 —— 用约束求解器算出一顿饭</title>
+  <desc>基于麦当劳中国 MCP 的约束求解式点餐推荐。零依赖、零 Token、可复现。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#F4F8FD"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="340" rx="16" fill="url(#bg)" stroke="#e3e3e3"/>
+
+  <!-- 左侧主标题区 -->
+  <text x="64" y="96" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="46" font-weight="700" fill="#0C447C">麦麦点餐参谋</text>
+
+  <text x="64" y="146" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="22" font-weight="600" fill="#185FA5">用约束求解器算出一顿饭，而不是让大模型随口推荐。</text>
+
+  <text x="64" y="186" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="20" fill="#3C3489">同样一顿麦当劳，你多花了多少钱——这个数字，我们算得出来。</text>
+
+  <!-- 能力 chip -->
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+     font-size="15" font-weight="600">
+    <rect x="64" y="220" width="118" height="36" rx="18" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.8"/>
+    <text x="123" y="243" text-anchor="middle" fill="#0C447C">零第三方依赖</text>
+
+    <rect x="194" y="220" width="112" height="36" rx="18" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.8"/>
+    <text x="250" y="243" text-anchor="middle" fill="#0C447C">无需 Token</text>
+
+    <rect x="318" y="220" width="128" height="36" rx="18" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.8"/>
+    <text x="382" y="243" text-anchor="middle" fill="#3C3489">真实商品编码</text>
+
+    <rect x="458" y="220" width="146" height="36" rx="18" fill="#EAF3DE" stroke="#97C459" stroke-width="0.8"/>
+    <text x="531" y="243" text-anchor="middle" fill="#27500A">预算 · 热量 · 忌口</text>
+  </g>
+
+  <!-- 右侧结果卡 -->
+  <rect x="700" y="64" width="516" height="212" rx="14" fill="#ffffff" stroke="#EF9F27" stroke-width="1.2"/>
+  <text x="728" y="102" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="16" font-weight="700" fill="#854F0B">真实门店快照 · 深圳同方信息港餐厅</text>
+  <line x1="728" y1="118" x2="1188" y2="118" stroke="#F0E0C8" stroke-width="1"/>
+
+  <text x="728" y="150" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="15" fill="#5a5a5a">想吃到：巨无霸 + 薯条 + 可乐</text>
+
+  <text x="728" y="186" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="17" fill="#8a5a00">单点买法　　　　　　　　　　 ¥48.5</text>
+
+  <text x="728" y="216" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="17" font-weight="600" fill="#27500A">求解器买法（巨无霸四件套）　　¥32.0</text>
+
+  <line x1="728" y1="232" x2="1188" y2="232" stroke="#e3e3e3" stroke-width="1"/>
+
+  <text x="728" y="262" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="24" font-weight="700" fill="#C0392B">你多花了 ￥16.5</text>
+</svg>

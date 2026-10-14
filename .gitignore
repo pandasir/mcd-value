@@ -4,6 +4,7 @@ __pycache__/
 venv/
 .env
 .env.*
+!.env.example
 *.local.json
 .DS_Store
 .idea/

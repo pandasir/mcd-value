@@ -2,17 +2,74 @@
 
 # 麦麦点餐参谋
 
-**🍟 用约束求解器算出一顿饭，而不是让大模型随口推荐。**
+**用约束求解器算出一顿饭，而不是让大模型随口推荐。**
+**同样一顿麦当劳，你多花了多少钱——这个数字，我们算得出来。**
 
-基于麦当劳中国 MCP 的 WorkBuddy Skill —— 输入预算、人数、热量/蛋白目标与忌口，
-输出多套**可解释、券后算清、可直接下单**的套餐方案。
+基于麦当劳中国 MCP 的点餐推荐 Skill：给定预算、人数、热量/蛋白目标与忌口，
+在真实门店菜单上枚举组合、施加硬约束，输出多套**可解释、券后算清、可直接下单**的方案。
 
+![tests](https://github.com/pandasir/mcd-value/actions/workflows/tests.yml/badge.svg)
 ![python](https://img.shields.io/badge/python-3.9%2B-3776AB?logo=python&logoColor=white)
+![deps](https://img.shields.io/badge/dependencies-0-brightgreen)
+![token](https://img.shields.io/badge/Token-%E4%B8%8D%E9%9C%80%E8%A6%81-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
-![tests](https://img.shields.io/badge/tests-13%20passed-brightgreen)
 ![mcp](https://img.shields.io/badge/MCP-mcd.cn-DA291C)
 
+[30 秒体验](#30-秒体验) · [多花了多少钱](#这一单你多花了多少钱) · [和让大模型推荐的区别](#它和让大模型推荐套餐有什么不同) · [工作原理](#工作原理)
+
 </div>
+
+---
+
+## 30 秒体验
+
+```bash
+git clone https://github.com/pandasir/mcd-value && cd mcd-value
+python demo.py
+```
+
+**零第三方依赖、不需要 MCP Token、不联网。** `demo.py` 读仓库内置的真实门店快照
+（2026-10-14 抓取自「麦当劳深圳同方信息港餐厅 1420762」，已脱敏，不含任何个人数据），
+一次跑通全部叙事。
+
+![同一个订单，两种买法：随手点 ¥48.5，约束求解器 ¥32.0](assets/demo-dual-view.svg)
+
+---
+
+## 这一单你多花了多少钱
+
+```
+① 这一单，你多花了多少钱
+   意图：想吃到「巨无霸 + 薯条 + 可乐」
+
+   单点买法      巨无霸 ¥25.5 + 薯条 ¥13.5 + 可乐 ¥9.5 = ¥48.5
+   求解器买法    巨无霸四件套 ×1 = ¥32.0（含这三样，还多一份麦乐鸡）
+                 ──────────────────────
+   你多花了      ¥16.5
+```
+
+**同一个订单，两种买法，差 ¥16.5 —— 而且求解器选的那个还多给一份麦乐鸡。**
+这不是估算，`¥25.5 / ¥13.5 / ¥9.5 / ¥32.0` 四个数字全部直接来自 `query-meals` 的原始返回。
+
+## 菜单里的坑，肉眼看不见
+
+```
+② 菜单里本来就有坑：份数更多，反而更便宜
+   全菜单扫出 8 组（直接来自 query-meals 的原始价格）：
+     · 培根安格斯厚牛堡：三件套 ¥45.5 > 四件套 ¥37.0　→ 省 ¥8.5
+     · 板烧鸡腿堡：三件套 ¥34.5 > 四件套 ¥28.0　→ 省 ¥6.5
+     · 不素之霸双层牛堡：三件套 ¥37.5 > 四件套 ¥32.0　→ 省 ¥5.5
+     · 芝士安格斯厚牛堡：三件套 ¥42.5 > 四件套 ¥37.0　→ 省 ¥5.5
+     · 巨无霸：三件套 ¥36.5 > 四件套 ¥32.0　→ 省 ¥4.5
+     · 酥酥多笋卷：三件套 ¥31.5 > 四件套 ¥28.0　→ 省 ¥3.5
+     · 培根蔬萃双层牛堡：三件套 ¥35.5 > 四件套 ¥32.0　→ 省 ¥3.5
+     · 双层深海鳕鱼堡：三件套 ¥35.0 > 四件套 ¥32.0　→ 省 ¥3.0
+
+   同一份主食，点『三件套』的人多花钱、还少拿一份。
+```
+
+这条结论是一次全菜单扫描的结果，**不需要任何人猜**：把同一主食的三件套和四件套价格两两相减即可。
+它是这个项目存在的理由的浓缩 —— **推荐常有，账算得清的少。**
 
 ---
 
@@ -26,7 +83,7 @@
 | | 常见做法 | 本项目 |
 |---|---|---|
 | 商品来源 | 模型凭印象生成 | `query-meals` 真实返回，编码可直接下单 |
-| 价格 | 估价 | 门店实时价 + 券规则计算，下单前再用 `calculate-price` 复核 |
+| 价格 | 估价 | 门店实时快照 + 券规则计算，下单前再用 `calculate-price` 复核 |
 | 营养 | 凭印象 | 营养库实测值；套餐用显式建模，**并标注置信度** |
 | 选品逻辑 | 模型主观偏好 | 预算/热量/蛋白/忌口作为**硬约束**，不满足直接淘汰 |
 | 输出 | 一段话 | Top-K 方案 + 营养达成度 + `order_items` 直传下单 |
@@ -36,50 +93,6 @@
 ## 工作原理
 
 ![pipeline](docs/pipeline.svg)
-
-## 快速开始
-
-```bash
-git clone <this-repo> && cd mcd-value
-python scripts/build_index.py            # 从内置真实快照生成索引，无需 Token
-
-# 均衡：预算 45 元，一个人
-python scripts/adviser.py --budget 45 --people 1 --mode balanced
-
-# 最省：预算 30 元，避开牛肉
-python scripts/adviser.py --budget 30 --people 1 --mode value --no-beef
-
-# 高蛋白：60 元预算，不要辣（健身场景）
-python scripts/adviser.py --budget 60 --people 1 --mode protein --no-spicy
-
-# 轻负担：热量压到 600 kcal 以内
-python scripts/adviser.py --budget 40 --people 1 --mode light --max-kcal 600
-
-# 机器可读输出（供 Agent / 脚本消费）
-python scripts/adviser.py --budget 40 --people 1 --json
-```
-
-> 无需 MCP Token 即可跑通：仓库内置了 2026-10-14 抓取自
-> 「麦当劳深圳同方信息港餐厅（1420762）」的**真实菜单与营养快照**（已脱敏，不含任何个人数据）。
-> 要换成你附近的门店，见下方「接入你自己的门店」。
-
-## 实际输出
-
-```
-🍟 麦麦点餐参谋 · 1420762 麦当劳深圳同方信息港餐厅
-   预算 ¥45 / 1 人 · 模式 balanced
-──────────────────────────────────────────────
-方案 1　¥45.0
-  · 高达吉士双牛堡 ×1　¥22.5
-  · 玉米杯 ×1　¥13.0
-  · 可乐 ×1　¥9.5
-  营养/人：663 kcal | 蛋白 31.0g | 脂肪 23.0g | 钠 1019mg
-  下单参数：[{"productCode": "521316", "quantity": 1},
-             {"productCode": "4437", "quantity": 1},
-             {"productCode": "9900008751", "quantity": 1}]
-```
-
-更多场景（含最省 / 高蛋白 / 轻负担 / 多人分享装）见 [`docs/demo-output.md`](docs/demo-output.md)。
 
 ## 四种点餐模式
 
@@ -103,16 +116,37 @@ python scripts/adviser.py --budget 40 --people 1 --json
 --json 结构化输出
 ```
 
-忌口同时支持**精确标签**（no-beef = 牛肉类）与**组合过滤**，两者叠加。
+```bash
+python scripts/adviser.py --budget 45 --people 1 --mode balanced
+python scripts/adviser.py --budget 45 --people 1 --mode balanced --no-beef --no-fried
+python scripts/adviser.py --budget 60 --people 2 --mode protein --json
+```
+
+`data/index.json` 已随仓库提交，全新 clone 可直接跑，无需先建索引。
+忌口同时支持**精确标签**（`no-beef` = 牛肉类）与**组合过滤**，两者叠加。
+
+## 这个项目可能对你有用，如果……
+
+- 🌱 **你在做 MCP 相关的项目** —— [`MCP_INTEGRATION.md`](MCP_INTEGRATION.md) 记录了官方文档没写、
+  但跑通链路必须知道的 5 条实测契约（**`query-meals` 用元、`calculate-price` 用分**、
+  到店自取禁止传 `beCode`、套餐营养无法直接对齐……）。
+- 🧮 **你在学约束求解 / 组合优化** —— [`scripts/adviser.py`](scripts/adviser.py) 是一个完整的
+  「分桶 → 枚举 → 硬约束过滤 → 多目标打分 → 帕累托去重」实现，**零第三方依赖**，可直接读。
+- 🍔 **你只想少吃点冤枉钱** —— `python demo.py` 跑一遍，看看你的常用搭配贵在哪。
+- 💡 **你也在做麦当劳 MCP 的点餐工具** —— 欢迎对比，也欢迎来 issue 讨论"菜单结构倒挂"这个现象。
+
+**如果它帮你少花了一杯可乐的钱，一个 star 就是最好的反馈。** ⭐
 
 ## 接入你自己的门店
 
 本项目通过 WorkBuddy 调用麦当劳 MCP 取实时数据：
 
-1. 在 [麦当劳 MCP Server](https://github.com/M-China/mcd-mcp-server) 申请 Token（手机号登录 → 控制台 → 激活）。
-2. 在 WorkBuddy 的【连接器 → 自定义连接器 → 配置 MCP】填入 [`mcp-config.example.json`](mcp-config.example.json) 的内容，把 `Bearer ${MCD_MCP_TOKEN}` 换成你的 Token。
+1. 在 [麦当劳 MCP 开放平台](https://open.mcd.cn/mcp) 用手机号登录 → 控制台 → 激活，复制 MCP Token。
+2. 在 WorkBuddy 的【连接器 → 自定义连接器 → 配置 MCP】填入 [`mcp-config.example.json`](mcp-config.example.json)
+   的内容，把 `Bearer ${MCD_MCP_TOKEN}` 换成你的 Token（也可参考 [`.env.example`](.env.example)）。
 3. 让 Agent 执行 [`SKILL.md`](SKILL.md) 中的流程：`query-nearby-stores` → `query-meals` → `list-nutrition-foods`，
-   把返回写入 `data/raw/`，再跑 `scripts/build_index.py`。
+   把返回写入 `data/raw/`，再跑 `python scripts/build_index.py`。
+   快照的字段说明与换店方法见 [`data/raw/README.md`](data/raw/README.md)。
 
 **Token 只放环境变量，不要提交到仓库。** 仓库内的快照已脱敏。
 
@@ -120,44 +154,54 @@ python scripts/adviser.py --budget 40 --people 1 --json
 
 ```
 mcd-value/
+├── demo.py                    30 秒演示：零依赖跑通全部场景，同时是端到端回归
 ├── SKILL.md                   WorkBuddy Skill 定义（Agent 执行流程与红线）
 ├── scripts/
 │   ├── build_index.py         归一化：名称对齐 → 角色分类 → 套餐营养建模
 │   └── adviser.py             核心引擎：约束求解 + 多目标打分 + CLI
 ├── data/
 │   ├── raw/                   真实 MCP 返回快照（已脱敏）
-│   └── index.json             生成的索引（可直接使用）
+│   │   ├── meals_1420762.json   query-meals
+│   │   └── nutrition.txt        list-nutrition-foods
+│   └── index.json             生成的索引（已提交，可直接使用）
 ├── tests/test_adviser.py      13 项回归测试
+├── assets/                    README 展示图（banner / 两种买法对比）
 ├── docs/
 │   ├── pipeline.svg           处理流程图
 │   └── demo-output.md         多场景真实输出
+├── .github/workflows/tests.yml CI：索引可复现校验 + 单测 + 端到端演示
 ├── MCP_INTEGRATION.md         使用的 MCP Tool、调用链与工程要点
 ├── CONTEST_DECLARATION.md     参赛声明（官方原文，未改动）
 └── workbuddy.md               WorkBuddy 开发上下文
 ```
 
-## 测试
+## 测试与 CI
 
 ```bash
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -v   # 13 项单元测试
+python demo.py                            # 端到端：断言关键不变量，失败退出码非 0
 ```
 
 覆盖的不变量：角色分类正确性、**预算是硬约束**、均衡模式必须构成完整一餐、
 忌口过滤生效、热量上限生效、买一送一券正确计价、下单参数结构契约、预算过低时返回空集而非硬凑。
+
+CI 在 Python 3.9 / 3.10 / 3.12 / 3.13 上跑同一套流程，并**校验 `data/index.json` 可复现**
+（`build_index.py` 重建结果必须与提交版本逐字节一致，否则 CI 失败）。全流程零 `pip install`。
 
 ## 已知局限
 
 - **营养覆盖率为 92%**：营养库按单品给数，套餐类商品由 `resolve_bundle()` 显式建模推算，
   输出中标注为"估算"。剩余无营养数据的条目（调味酱、部分新品）不参与营养打分。
 - **券规则靠券名推断**：`available-coupons` 不返回使用细则，计算结果统一标注"需门店核验"。
+- **价格是快照口径**：演示用数据来自 2026-10-14 的门店快照，实时价格请用 `calculate-price` 复核。
 - **不是营养或医疗建议**：数据与结论仅供参考，以麦当劳官方渠道实时信息为准。
 
 ## Roadmap
 
+- [ ] 券的净价值计算与用券排程（券不是"可用资源"，是**有保质期的钱**）
 - [ ] 多人场景接入「分享装 / 拼盘」的组合优化（当前已支持但打分权重待调）
 - [ ] 早餐 / 夜市时段专属菜单与菜单切换
 - [ ] 积分商城兑换组合建议（`mall-points-products`）
-- [ ] 历史偏好记忆，减少重复输入
 
 ## 目标用户
 
