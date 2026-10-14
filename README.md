@@ -36,6 +36,32 @@ python demo.py
 
 ---
 
+## 两种用法
+
+**① 当工具跑** —— 上面那条 `python demo.py` 就是全部。三个入口，都能直接出结果：
+
+```bash
+python demo.py                                          # 五场景演示 + 断言，失败退出码非 0
+python scripts/adviser.py --budget 40 --mode light      # 出方案：商品 / 价格 / 营养 / 下单参数
+python scripts/coupon_doctor.py --budget 40             # 券包体检 + 消费审计 + 用券排程
+```
+
+**② 当 Skill 用** —— [`SKILL.md`](SKILL.md) 是一份标准 Skill 定义，把它所在目录放进
+WorkBuddy 的用户级技能目录即可：
+
+```bash
+ln -s "$(pwd)" ~/.workbuddy/skills/mcd-meal-adviser
+```
+
+之后在任意对话里直接说人话就会命中它 ——「今天麦当劳吃什么，预算 40」
+「减脂期能点哪套」「这几张券怎么用最划算」「3 个人聚餐 80 块怎么点」。
+Agent 会按 `SKILL.md` 的六步流程执行：**收集约束 → 取真实门店与菜单 → 求解 →
+券的口径 → 呈现 → （你确认后）下单**，并且不凭印象报商品编码和价格。
+
+> Skill 目录用软链指向本仓库，好处是 `git pull` 后技能自动跟着更新，不用复制第二份代码。
+
+---
+
 ## 这一单你多花了多少钱
 
 ```
