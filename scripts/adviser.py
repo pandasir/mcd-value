@@ -11,12 +11,19 @@ adviser.py —— 麦麦点餐参谋核心引擎（约束求解式套餐推荐�
   python scripts/adviser.py --budget 40 --people 1 --mode balanced
   python scripts/adviser.py --budget 60 --people 2 --mode protein --no-beef
   python scripts/adviser.py --budget 35 --mode light --max-kcal 650 --json
+  python scripts/adviser.py --discounts            # 扫全菜单的划线价与门店标称优惠
 
 模式：
   value     最省      —— 满足饱腹底线的前提下总价最低
   balanced  均衡      —— 蛋白 / 性价比 / 热量结构 / 脂肪钠 加权
   protein   高蛋白    —— 蛋白总量与每元蛋白优先，适配健身
   light     轻负担    —— 控热量与脂肪钠，保底蛋白
+
+价格口径（三种「省」必须分清，否则就是在编数字）：
+  ① 结构省  同一批商品换买法省下的钱。全部是真实现价 → 确定，本文件的主线。
+  ② 标价差  门店划线价 − 现价。**不等于你省了钱**（你本来也不会按划线价买），
+            只说明门店把优惠标成了多少。由 `--discounts` 单独呈现，不与 ① 相加。
+  ③ 券后省  券带来的实测抵扣，口径在 coupon_doctor.py。
 """
 
 from __future__ import annotations
@@ -25,6 +32,7 @@ import argparse
 import itertools
 import json
 import math
+import re
 import sys
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
@@ -80,6 +88,7 @@ class Line:
     paid_price: float
     role: str
     applied_coupon: str | None = None
+    list_price: float | None = None
 
     @property
     def subtotal(self) -> float:
@@ -90,6 +99,20 @@ class Line:
     def paid(self) -> float:
         """用券后的实付小计（元）。"""
         return round(self.paid_price * self.qty, 2)
+
+    @property
+    def list_subtotal(self) -> float | None:
+        """门店划线价小计（元）；没有划线价时返回 None，**不拿现价顶替**。"""
+        if self.list_price is None:
+            return None
+        return round(self.list_price * self.qty, 2)
+
+    @property
+    def list_gap(self) -> float:
+        """门店标称优惠 = 划线价 − 现价；无划线价时为 0。"""
+        if self.list_price is None:
+            return 0.0
+        return round((self.list_price - self.unit_price) * self.qty, 2)
 
 
 @dataclass
@@ -107,6 +130,9 @@ class Plan:
     notes: list[str] = field(default_factory=list)
     needs_verify: list[str] = field(default_factory=list)
     coupons: list[dict] = field(default_factory=list)
+    list_total: float = 0.0
+    list_gap: float = 0.0
+    price_tier: str = "standard"
 
     def to_dict(self) -> dict:
         """转成可 JSON 序列化的字典；剔除内部打分，附上下单参数。"""
@@ -132,16 +158,32 @@ def tags_of(name: str) -> set[str]:
     return {t for t, keys in TAG_RULES.items() if any(k in name for k in keys)}
 
 
-# 不参与推荐的商品：内容随机（"单品精选"类盲盒）或纯周边。
-# 推荐器必须对「买到的东西」有确定性，否则营养与价格估算都不可信。
+# 不参与推荐的商品：内容随机（"单品精选"类盲盒 / "任选"类自选拼盘）或纯周边。
+# 推荐器必须对「买到的东西」有确定性，否则营养与价格估算都不可信 ——
+# 「堡堡随心拼（7件任选）」¥72.5 是 7 件，但营养库里没有对应行，只能建模成一个巨无霸
+# （513 kcal）。放进来会让求解器以为 ¥72.5 只吃到 513 kcal，比不推荐更糟。
 EXCLUDE_NAME_KEYS = ("单品精选", "百宝袋", "任选")
 
 
-def build_pool(idx: dict, banned: set[str]) -> list[dict]:
-    """构造候选池：剔除周边商品、盲盒类商品与忌口项，并挂上营养与标签。"""
+def member_items(idx: dict) -> list[dict]:
+    """菜单里必须持有麦金卡才能拿到那个价的商品。
+
+    把 member 价当成人人可买，预算约束会被系统性放宽 ——
+    本门店 8 组「三件套 > 四件套」的倒挂，四件套那一侧**全部**是会员价。
+    """
+    return [it for it in idx["items"].values() if it.get("priceTier") == "member"]
+
+
+def build_pool(idx: dict, banned: set[str], allow_member: bool = False) -> list[dict]:
+    """构造候选池：剔除周边商品、盲盒类商品、忌口项，默认再剔除会员价商品。
+
+    挂上营养、标签、角色槽位与价格口径。
+    """
     pool = []
     for code, it in idx["items"].items():
         if it["role"] == "nonfood":
+            continue
+        if it.get("priceTier") == "member" and not allow_member:
             continue
         name = it["name"]
         if any(k in name for k in EXCLUDE_NAME_KEYS):
@@ -149,8 +191,25 @@ def build_pool(idx: dict, banned: set[str]) -> list[dict]:
         if tags_of(name) & banned:
             continue
         nut = idx["nutrition"].get(code)
-        pool.append({**it, "tags": sorted(tags_of(name)), "nut": nut})
+        pool.append({**it, "tags": sorted(tags_of(name)), "nut": nut,
+                     "roles": it.get("roles") or [it["role"]]})
     return pool
+
+
+def provided_roles(idx: dict, codes: list[tuple[str, int]]) -> set[str]:
+    """一个组合实际能占用的角色槽位。
+
+    套餐在索引里带 `roles`（由 build_index 依套餐的**结构化组成**推出：
+    三件套/四件套明确含薯条与饮品），所以「巨无霸三件套本身就算一份完整一餐」
+    这件事能被回答，而不是看它被分进哪个 role 桶。
+    内容自选的「随心配」不带额外槽位 —— 那是建模假设，不能拿来放宽结构约束。
+    """
+    roles: set[str] = set()
+    for code, _ in codes:
+        it = idx["items"][code]
+        roles.update(it.get("roles") or [it["role"]])
+    roles.discard("nonfood")
+    return roles
 
 
 # ------------------------------------------------------------------ 优惠券
@@ -169,6 +228,9 @@ def apply_coupons(
     for code, qty in codes:
         it = idx["items"][code]
         unit = float(it["price"])
+        listed = float(it.get("originalPrice") or unit)
+        # 划线价只在**确实高于**现价时才带上；相等就当没有，不制造 0 优惠。
+        list_price = listed if listed > unit + 1e-9 else None
         paid_unit = unit
         used = None
         for rule in COUPON_RULES:
@@ -186,7 +248,7 @@ def apply_coupons(
                 break
         lines.append(Line(code=code, name=it["name"], qty=qty, unit_price=unit,
                           paid_price=round(paid_unit, 2), role=it["role"],
-                          applied_coupon=used))
+                          applied_coupon=used, list_price=list_price))
         total_paid += paid_unit * qty
 
     return lines, round(total_paid, 2), hits, verify
@@ -237,7 +299,11 @@ def score_plan(mode: str, total: float, people: int, nut: dict) -> float:
 
 
 # ------------------------------------------------------------------ 求解
-SHARE_KEYS = ("拼盘", "十翅", "双人餐", "四宫格", "任选", "七件")
+# 多人分享装的识别关键词。
+# 注意：这里曾经有 "任选" 与 "七件" 两个键 —— 两个都是死规则，永远匹配不到：
+# 「任选」类商品在 build_pool 就被剔除（内容不可确定），菜单里写的是阿拉伯数字「7件」。
+# 已经删掉，避免读代码的人以为分享装覆盖到了自选拼盘。
+SHARE_KEYS = ("拼盘", "十翅", "双人餐", "四宫格")
 
 
 def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
@@ -264,9 +330,9 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
     required = tgt["required"]
     candidates: list[Plan] = []
 
-    def evaluate(codes: list[tuple[str, int]], roles: set[str]) -> None:
+    def evaluate(codes: list[tuple[str, int]]) -> None:
         """codes 为 (商品code, 数量)；数量已按人数展开。"""
-        if not required <= roles:
+        if not required <= provided_roles(idx, codes):
             return
         lines, total, hits, verify = apply_coupons(codes, idx)
         if total > budget + 1e-6:
@@ -279,11 +345,15 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
             return
 
         subtotal = round(sum(l.subtotal for l in lines), 2)
+        list_total = round(sum(l.list_subtotal or l.subtotal for l in lines), 2)
+        tiers = {idx["items"][code].get("priceTier", "standard") for code, _ in codes}
         plan = Plan(
             mode=mode, people=people, lines=lines,
             subtotal=subtotal, total=total, saved=round(subtotal - total, 2),
             per_person=round(total / people, 2), nutrition=nut, confidence=conf,
             score=round(score_plan(mode, total, people, nut), 3),
+            list_total=list_total, list_gap=round(list_total - subtotal, 2),
+            price_tier="promo" if "promo" in tiers else "standard",
             needs_verify=verify or ["价格与库存以门店实时结果为准"],
         )
         if hits:
@@ -301,7 +371,7 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
         picks = [x for x in (staple, side, drink, dessert) if x]
         if sum(x["price"] for x in picks) * people > budget + 1e-6:
             continue
-        evaluate([(x["code"], people) for x in picks], {x["role"] for x in picks})
+        evaluate([(x["code"], people) for x in picks])
 
     # 模式 B：多人分享装（分享盘按 1 份计，主食与饮品按人数计）
     if people >= 2 and share_sides:
@@ -313,7 +383,7 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
                 continue
             codes = [(staple["code"], people), (share["code"], 1)]
             codes += [(x["code"], people) for x in (drink, dessert) if x]
-            evaluate(codes, {x["role"] for x in picks})
+            evaluate(codes)
 
     candidates.sort(key=lambda p: p.score, reverse=True)
 
@@ -332,16 +402,18 @@ def solve(idx: dict, pool: list[dict], budget: float, people: int, mode: str,
 
 # ------------------------------------------------------------------ 券标注
 def plan_components(plan: Plan, idx: dict) -> set[str]:
-    """方案里实际会吃到的东西 —— 取营养索引记录的组件名。
+    """方案里实际会吃到的东西 —— 取营养索引记录的**确定组成**（identity）。
 
-    套餐类商品在营养索引里有 components（如 ["巨无霸", "中薯条x1", "可乐中杯x1"]），
+    套餐在营养索引里有 identity（如 ["巨无霸", "中薯条", "可乐中杯"]），
     所以「方案里有没有薯条」这件事能被真实回答，而不是靠猜。
+    用 identity 而不是 components：靠兜底代餐得到的主体不算，
+    否则「大堡口福三件套」会被当成含巨无霸的去匹配巨无霸的券。
     """
     comps: set[str] = set()
     for line in plan.lines:
         comps.add(line.name)
         nutri = idx["nutrition"].get(line.code) or {}
-        for comp in nutri.get("components", []):
+        for comp in nutri.get("identity") or nutri.get("components", []):
             comps.add(comp.split("x")[0])
     return comps
 
@@ -364,16 +436,201 @@ def coupons_for_plan(plan: Plan, idx: dict, coupons: list) -> list[dict]:
     return hits
 
 
+# ------------------------------------------------------------------ 按意图比价
+def parse_intent(text: str) -> list[str]:
+    """把「巨无霸+薯条+可乐」切成清单，并按菜单别名归一成营养库里的名字。
+
+    归一很重要：菜单叫「薯条」「可乐」，营养库按「中薯条」「可乐中杯」分，
+    不归一就没法判断某个套餐到底含不含你要的东西。
+    """
+    import build_index as BI
+
+    parts = [p.strip() for p in re.split(r"[+＋、,，/]", text) if p.strip()]
+    return [BI.ALIAS.get(p, p) for p in parts]
+
+
+def cheapest_for(idx: dict, want: str, allow_member: bool = False) -> dict | None:
+    """买到一个指定组件的最便宜**单品**买法。找不到返回 None —— 不猜。
+
+    只认 identity 长度为 1 的商品，也就是真正的单品。否则会拿套餐自己来当它的组件：
+    「吉士汉堡包套餐」的 identity 里含「吉士汉堡包」，于是「单点」一侧会把套餐价
+    再算一遍，比价变成循环论证。
+    """
+    best = None
+    for code, it in idx["items"].items():
+        if it["role"] == "nonfood":
+            continue
+        if it.get("priceTier") == "member" and not allow_member:
+            continue
+        identity = (idx["nutrition"].get(code) or {}).get("identity") or []
+        if len(identity) != 1:
+            continue
+        if it["name"] == want or want in identity:
+            if best is None or it["price"] < best["price"]:
+                best = it
+    return best
+
+
+def intent_covers(idx: dict, want: list[str], allow_member: bool = False) -> list[dict]:
+    """找出**确定含有** want 全部组件的商品，按价格升序。
+
+    判据是 `identity` 而不是 `components`：靠兜底代餐得到的主体不算
+    （「大堡口福三件套」的营养按巨无霸估算，但它并不含巨无霸）。
+    """
+    want_set = set(want)
+    rows = []
+    for code, it in idx["items"].items():
+        if it["role"] == "nonfood":
+            continue
+        if it.get("priceTier") == "member" and not allow_member:
+            continue
+        nutri = idx["nutrition"].get(code) or {}
+        identity = nutri.get("identity") or []
+        if not identity:
+            continue
+        if want_set <= set(identity):
+            rows.append({"code": code, "name": it["name"], "price": it["price"],
+                         "price_tier": it.get("priceTier", "standard")})
+    rows.sort(key=lambda r: (r["price"], r["name"]))
+    return rows
+
+
+def compare_intent(idx: dict, want: list[str], allow_member: bool = False) -> dict:
+    """同一个意图的两种买法：逐个单点 vs 本门店已有的组合商品。"""
+    parts = []
+    for name in want:
+        item = cheapest_for(idx, name, allow_member)
+        parts.append({"name": name,
+                      "menu_name": item["name"] if item else None,
+                      "price": item["price"] if item else None})
+    cover = intent_covers(idx, want, allow_member)
+    alcove = (round(sum(p["price"] for p in parts), 2)
+              if all(p["price"] is not None for p in parts) else None)
+    best = cover[0] if cover else None
+    gap = (round(alcove - best["price"], 2)
+           if alcove is not None and best is not None else None)
+    # 会员口令只列**靠会员身份才拿得到**的那些，否则会把同一件商品列两遍。
+    member_only = [r for r in intent_covers(idx, want, True)
+                   if r["price_tier"] == "member"] if not allow_member else []
+    return {"intent": want, "parts": parts, "single_total": alcove,
+            "cover": cover, "best": best, "gap": gap, "member_cover": member_only}
+
+
+def render_intent(idx: dict, result: dict, allow_member: bool) -> str:
+    """把按意图比价的结果渲染成终端文本。"""
+    store = idx["store"]
+    out = [f"🎯 按意图比价 · {store['storeCode']} {store['storeName']}",
+           f"   想吃到：{' + '.join(result['intent'])}",
+           f"   价格口径：{'麦金卡会员价' if allow_member else '无条件价'}", ""]
+
+    if result["single_total"] is None:
+        missing = "、".join(p["name"] for p in result["parts"] if p["price"] is None)
+        out.append(f"   ⚠️ 菜单里找不到「{missing}」的单价，无法给出单点合计。")
+        out.append("      （菜单只有它的套餐形态，或它属于会员价商品。）")
+        return "\n".join(out)
+
+    line = " + ".join(f"{p['menu_name']} ¥{p['price']:.1f}" for p in result["parts"])
+    out.append("   单点买法")
+    out.append(f"     {line} = ¥{result['single_total']:.1f}")
+
+    if not result["best"]:
+        out.append("")
+        out.append("   菜单里没有能确定覆盖这个意图的组合商品。")
+        return "\n".join(out)
+
+    out.append("")
+    out.append("   结构买法（本门店已有的组合，价格更低者在前）")
+    for row in result["cover"][:3]:
+        extra = ""
+        if row["name"] != result["best"]["name"]:
+            over = row["price"] - result["best"]["price"]
+            extra = f"　（比 {result['best']['name']} 贵 ¥{over:.1f}）"
+        out.append(f"     ¥{row['price']:>6.1f}　{row['name']}{extra}")
+    out.append(f"     {'─' * 26}")
+    gap = result["gap"]
+    if gap is not None and gap > 0.005:
+        out.append(f"   你多花了 ¥{gap:.1f}")
+    else:
+        out.append("   单点更便宜或持平 —— 这个意图没有「份数更多反而更便宜」的空间。")
+
+    if result["member_cover"]:
+        out.append("")
+        out.append("   麦金卡会员价（这些价需要持卡）")
+        for row in result["member_cover"][:2]:
+            out.append(f"     ¥{row['price']:>6.1f}　{row['name']}")
+        best_m = result["member_cover"][0]["price"]
+        out.append(f"     ⓘ 持卡后这个意图最低 ¥{best_m:.1f}"
+                   f"，比无门槛最低价再低 ¥{result['best']['price'] - best_m:.1f}。")
+
+    out.append("")
+    out.append("   ⚠️ 组合商品「确定含有」的判据是它的建模组成（identity），"
+               "营养估算已标注；")
+    out.append("      实际可选范围与价格以门店/App 实时结果为准。")
+    return "\n".join(out)
+
+
+# ------------------------------------------------------------------ 折扣扫描
+def discount_scan(idx: dict, top: int = 12) -> list[dict]:
+    """扫全菜单的「门店标价 − 现价」，按差额降序。
+
+    **口径提醒**：划线价是门店标注的参考价，不等于你真省下了这个数 ——
+    你本来也不会按划线价买。它与「结构省」（同一批商品换买法）不是一回事，
+    两者**不可相加**。本函数只回答「门店把优惠标成了多少」。
+    带 `member` 口径的条目会如实标注，不混进无门槛优惠里。
+    """
+    rows: list[dict] = []
+    for code, it in idx["items"].items():
+        if it["role"] == "nonfood":
+            continue
+        price = float(it["price"])
+        listed = float(it.get("originalPrice") or price)
+        if listed <= price + 1e-9:
+            continue
+        rows.append({
+            "code": code, "name": it["name"], "price": price,
+            "list_price": listed, "gap": round(listed - price, 2),
+            "off": round(1 - price / listed, 3),
+            "price_tier": it.get("priceTier", "standard"),
+        })
+    rows.sort(key=lambda r: (-r["gap"], r["name"]))
+    return rows[:top]
+
+
 # ------------------------------------------------------------------ 渲染
+def render_discounts(idx: dict, rows: list[dict]) -> str:
+    """把折扣扫描渲染成终端文本，逐条标出价格口径。"""
+    store = idx["store"]
+    out = [f"🏷️  门店标价与现价差额 · {store['storeCode']} {store['storeName']}",
+           f"   快照 {store['capturedAt']} · 全菜单扫描（只列差额最大的 {len(rows)} 件）",
+           ""]
+    if not rows:
+        out.append("   本门店没有带划线价的商品。")
+        return "\n".join(out)
+
+    tier_label = {"standard": "无条件价", "promo": "限时促销价",
+                  "member": "需麦金卡"}
+    for r in rows:
+        tag = tier_label.get(r["price_tier"], r["price_tier"])
+        out.append(f"   ¥{r['price']:>6.1f}　{r['name']}")
+        out.append(f"       标价 ¥{r['list_price']:.1f} → 差额 ¥{r['gap']:.1f}"
+                   f"（-{r['off']:.0%}）· {tag}")
+    out.append("")
+    out.append("   ⚠️ 差额是**门店标价口径**，不等于你省了这些钱 —— 你本来也不会按标价买。")
+    out.append("      真正算得清的是「同一批商品换买法」的结构差，见 adviser 的方案输出。")
+    return "\n".join(out)
+
+
 def render(idx: dict, plans: list[Plan], args) -> str:
     """把方案渲染成终端可读的文本（含营养、备注、券标注与下单参数）。"""
     import coupon_doctor as CD
 
     store = idx["store"]
+    member = bool(getattr(args, "member", False))
     out: list[str] = []
     out.append(f"🍟 麦麦点餐参谋 · {store['storeCode']} {store['storeName']}")
     out.append(f"   预算 ¥{args.budget:.0f} / {args.people} 人 · 模式 {args.mode}"
                + (f" · 忌口 {','.join(sorted(args.banned))}" if args.banned else ""))
+    out.append(f"   价格口径：{'麦金卡会员价（含 --member）' if member else '无条件价'}")
     out.append("")
 
     if not plans:
@@ -390,11 +647,18 @@ def render(idx: dict, plans: list[Plan], args) -> str:
         out.append(head)
         for l in p.lines:
             cp = f"  ← {l.applied_coupon}" if l.applied_coupon else ""
-            out.append(f"  · {l.name} ×{l.qty}　¥{l.subtotal:.1f}{cp}")
+            mark = ""
+            if l.list_price is not None:
+                mark = f"（标价 ¥{l.list_subtotal:.1f}）"
+            out.append(f"  · {l.name} ×{l.qty}　¥{l.subtotal:.1f}{mark}{cp}")
         n = p.nutrition
         pp = p.people
         out.append(f"  营养/人：{n['kcal']/pp:.0f} kcal | 蛋白 {n['protein']/pp:.1f}g "
                    f"| 脂肪 {n['fat']/pp:.1f}g | 钠 {n['sodium']/pp:.0f}mg")
+        if p.list_gap > 0.01:
+            note_gap = "（门店标价口径，不等于你省下的钱）"
+            out.append(f"  🏷️ 门店标价合计 ¥{p.list_total:.1f}"
+                       f"，标称优惠 ¥{p.list_gap:.1f}{note_gap}")
         for note in p.notes:
             out.append(f"  ⓘ {note}")
         for c in p.coupons:
@@ -403,6 +667,11 @@ def render(idx: dict, plans: list[Plan], args) -> str:
         out.append("  下单参数：" + json.dumps([{"productCode": l.code, "quantity": l.qty}
                                             for l in p.lines], ensure_ascii=False))
     out.append("─" * 46)
+    if not member:
+        excluded = len(member_items(idx))
+        if excluded:
+            out.append(f"ⓘ 已排除 {excluded} 件需麦金卡会员价的商品"
+                       "（用 --member 按会员价纳入）。")
     out.append("⚠️ 价格为门店实时快照口径，最终以 calculate-price 结果为准；"
                "券需门店核验。")
     return "\n".join(out)
@@ -427,13 +696,38 @@ def main() -> int:
     ap.add_argument("--no-fried", action="store_true")
     ap.add_argument("--coupons", action="store_true",
                     help="读取仓库内置券快照，在方案上标注本单可用的券")
+    ap.add_argument("--member", action="store_true",
+                    help="按麦金卡会员价计入（默认只用无条件价；促销价始终计入）")
+    ap.add_argument("--discounts", action="store_true",
+                    help="不求解，改为扫描全菜单的门店标价与现价差额")
+    ap.add_argument("--intent", default=None,
+                    help="按意图比价，如 --intent \"巨无霸+薯条+可乐\"")
     ap.add_argument("--json", action="store_true", help="输出结构化 JSON")
     args = ap.parse_args()
 
     args.banned = {k for k in TAG_RULES if getattr(args, f"no_{k}")}
 
     idx = load_index()
-    pool = build_pool(idx, args.banned)
+
+    if args.intent:
+        result = compare_intent(idx, parse_intent(args.intent), args.member)
+        if args.json:
+            print(json.dumps({"store": idx["store"], "compare": result},
+                             ensure_ascii=False, indent=2))
+        else:
+            print(render_intent(idx, result, args.member))
+        return 0
+
+    if args.discounts:
+        rows = discount_scan(idx, top=args.top if args.top > 3 else 12)
+        if args.json:
+            print(json.dumps({"store": idx["store"], "discounts": rows},
+                             ensure_ascii=False, indent=2))
+        else:
+            print(render_discounts(idx, rows))
+        return 0
+
+    pool = build_pool(idx, args.banned, allow_member=args.member)
     plans = solve(idx, pool, args.budget, args.people, args.mode, args.top,
                   args.max_kcal, args.min_protein)
 
@@ -449,7 +743,7 @@ def main() -> int:
         print(json.dumps({
             "store": idx["store"],
             "query": {"budget": args.budget, "people": args.people, "mode": args.mode,
-                      "banned": sorted(args.banned)},
+                      "banned": sorted(args.banned), "member": args.member},
             "plans": [p.to_dict() for p in plans],
         }, ensure_ascii=False, indent=2))
     else:

@@ -92,10 +92,15 @@ class TestEngine(unittest.TestCase):
                                      f"{mode} 突破预算")
 
     def test_balanced_requires_full_meal(self) -> None:
-        """均衡模式必须构成「主食 + 小食 + 饮品」。"""
+        """均衡模式必须构成「主食 + 小食 + 饮品」。
+
+        判据是方案**能提供的槽位**，不是每条 line 的 role —— 套餐（三件套/四件套）
+        自带薯条与饮品，它一个人就构成完整一餐。
+        """
         for plan in self._plans(mode="balanced"):
-            roles = {line.role for line in plan.lines}
-            self.assertLessEqual({"staple", "side", "drink"}, roles,
+            codes = [(line.code, line.qty) for line in plan.lines]
+            provided = adviser.provided_roles(self.idx, codes)
+            self.assertLessEqual({"staple", "side", "drink"}, provided,
                                  "均衡模式必须包含主食 + 小食 + 饮品")
 
     def test_exclusion_is_respected(self) -> None:
@@ -134,6 +139,203 @@ class TestEngine(unittest.TestCase):
         """预算过低时应返回空集，而不是硬凑一个方案。"""
         self.assertEqual(self._plans(budget=3, mode="balanced"), [],
                          "预算过低时应返回空集而不是硬凑")
+
+
+class TestPriceTier(unittest.TestCase):
+    """价格口径：会员价不能当成人人可买的价格。
+
+    这条不是理论洁癖。本门店 8 组「三件套 > 四件套」的倒挂，四件套那一侧
+    **全部**是麦金卡会员价 —— 早先把它们当普通价，README 的招牌数字就变成了
+    拿会员价与非会员价比。
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """装载一次索引，供全部用例复用。"""
+        cls.idx = adviser.load_index()
+
+    def test_member_items_exist_and_are_tagged(self) -> None:
+        """会员价商品必须被识别出来，且带 membershipCode 佐证。"""
+        members = adviser.member_items(self.idx)
+        self.assertGreater(len(members), 0, "应能识别出会员价商品")
+        for it in members:
+            self.assertEqual(it["priceTier"], "member")
+            self.assertEqual(it["discountType"], "随单购麦金卡优惠")
+            self.assertTrue(it["withOrder"], "会员价商品应带 withOrder 信息")
+
+    def test_member_excluded_by_default(self) -> None:
+        """默认候选池里不得出现会员价商品。"""
+        pool = adviser.build_pool(self.idx, set())
+        tiers = {x.get("priceTier") for x in pool}
+        self.assertNotIn("member", tiers)
+
+    def test_member_included_when_asked(self) -> None:
+        """--member 时会员价商品应进入候选池。"""
+        pool = adviser.build_pool(self.idx, set(), allow_member=True)
+        self.assertIn("member", {x.get("priceTier") for x in pool})
+
+    def test_plans_never_use_member_price_by_default(self) -> None:
+        """默认求解结果里不得混进会员价商品。"""
+        for mode in ("value", "balanced", "protein", "light"):
+            pool = adviser.build_pool(self.idx, set())
+            for plan in self._solve(pool, mode=mode, budget=60):
+                for line in plan.lines:
+                    tier = self.idx["items"][line.code].get("priceTier")
+                    self.assertNotEqual(tier, "member", f"{mode} 混入会员价：{line.name}")
+
+    def _solve(self, pool: list, **kw) -> list:
+        """按给定约束跑一次求解。"""
+        args = dict(budget=45, people=1, mode="balanced", top=2,
+                    max_kcal=None, min_protein=None)
+        args.update(kw)
+        return adviser.solve(self.idx, pool, **args)
+
+
+class TestBundleRoles(unittest.TestCase):
+    """套餐的角色槽位：结构化套餐才扩展，建模假设不算。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """装载一次索引，供全部用例复用。"""
+        cls.idx = adviser.load_index()
+
+    def _by_name(self, name: str) -> dict:
+        """按商品名取条目（菜单内名称唯一）。"""
+        for it in self.idx["items"].values():
+            if it["name"] == name:
+                return it
+        raise AssertionError(f"菜单里没有「{name}」")
+
+    def test_three_piece_set_covers_meal(self) -> None:
+        """三件套应同时占主食 + 小食 + 饮品三个槽位。"""
+        roles = set(self._by_name("巨无霸三件套")["roles"])
+        self.assertLessEqual({"staple", "side", "drink"}, roles)
+
+    def test_self_select_keeps_single_role(self) -> None:
+        """「随心配」内容自选，配件是建模假设 —— 不得据此占额外槽位。"""
+        self.assertEqual(self._by_name("人气经典随心配")["roles"], ["staple"])
+
+    def test_three_piece_alone_is_a_full_meal(self) -> None:
+        """一件三件套自己就应满足均衡模式的结构要求。"""
+        it = self._by_name("巨无霸三件套")
+        provided = adviser.provided_roles(self.idx, [(it["code"], 1)])
+        self.assertLessEqual({"staple", "side", "drink"}, provided)
+
+
+class TestIdentity(unittest.TestCase):
+    """identity 与 components 的区别：营养代餐不是身份。
+
+    拿代餐当身份会让「牛肉堡单品精选」（盲盒，¥15）冒充巨无霸，
+    比价与券对齐全错。
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """装载一次索引，供全部用例复用。"""
+        cls.idx = adviser.load_index()
+
+    def _nutri(self, name: str) -> dict:
+        """按商品名取营养条目。"""
+        for it in self.idx["items"].values():
+            if it["name"] == name:
+                return self.idx["nutrition"].get(it["code"], {})
+        raise AssertionError(f"菜单里没有「{name}」")
+
+    def test_blind_box_has_no_identity(self) -> None:
+        """盲盒商品内容随机 → identity 必须为空，不能凭代餐认领巨无霸。"""
+        for name in ("牛肉堡单品精选", "鸡肉堡单品精选"):
+            self.assertEqual(self._nutri(name)["identity"], [],
+                             f"{name} 不应有确定身份")
+
+    def test_fallback_base_is_not_identity(self) -> None:
+        """靠兜底代餐得到的主体不算身份：大堡口福三件套不含巨无霸。"""
+        identity = self._nutri("大堡口福三件套")["identity"]
+        self.assertNotIn("巨无霸", identity)
+        self.assertIn("中薯条", identity)
+
+    def test_real_bundle_keeps_identity(self) -> None:
+        """真名对齐的套餐保留完整身份。"""
+        identity = self._nutri("巨无霸三件套")["identity"]
+        self.assertLessEqual({"巨无霸", "中薯条", "可乐中杯"}, set(identity))
+
+    def test_no_duplicated_components(self) -> None:
+        """营养不得重复计入。
+
+        菜单名以「随心选」结尾的商品会先经套餐拆分拿到「主体+薯条+可乐」，
+        若 EXTRA_COMPONENTS 再补一次同样的配件，「学生专享汉堡小食随心选」
+        会被算成两份中薯条（1094 kcal）。
+        """
+        for code, nut in self.idx["nutrition"].items():
+            comps = [c.split("x")[0] for c in nut.get("components", [])]
+            self.assertEqual(len(comps), len(set(comps)),
+                             f"组件重复计入：{self.idx['items'][code]['name']}")
+
+
+class TestIntentCompare(unittest.TestCase):
+    """按意图比价：同一价格口径内比较，差额必须确定。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """装载一次索引，供全部用例复用。"""
+        cls.idx = adviser.load_index()
+
+    def test_parse_intent_normalizes_names(self) -> None:
+        """「薯条」「可乐」要归一成营养库口径。"""
+        self.assertEqual(adviser.parse_intent("巨无霸+薯条+可乐"),
+                         ["巨无霸", "中薯条", "可乐中杯"])
+
+    def test_compare_uses_same_tier(self) -> None:
+        """招牌比价的结论不得建立在会员价上。"""
+        result = adviser.compare_intent(self.idx, adviser.parse_intent("巨无霸+薯条+可乐"))
+        self.assertIsNotNone(result["best"])
+        self.assertNotEqual(result["best"]["price_tier"], "member")
+        self.assertEqual(result["best"]["name"], "巨无霸三件套")
+        self.assertIsNotNone(result["gap"])
+        self.assertGreater(result["gap"], 0)
+
+    def test_member_side_reported_separately(self) -> None:
+        """会员价另列，且只列靠会员身份才拿得到的那些。"""
+        result = adviser.compare_intent(self.idx, adviser.parse_intent("巨无霸+薯条+可乐"))
+        self.assertTrue(result["member_cover"], "应能列出会员价买法")
+        for row in result["member_cover"]:
+            self.assertEqual(row["price_tier"], "member")
+
+    def test_member_flag_changes_price_basis(self) -> None:
+        """--member 时比价按会员价口径，结构买法应更便宜。"""
+        base = adviser.compare_intent(self.idx, ["巨无霸", "中薯条", "可乐中杯"])
+        member = adviser.compare_intent(self.idx, ["巨无霸", "中薯条", "可乐中杯"],
+                                        allow_member=True)
+        self.assertLess(member["best"]["price"], base["best"]["price"])
+
+
+class TestDiscountScan(unittest.TestCase):
+    """门店标价口径：只做事实陈述，不与「结构省」混淆。"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """装载一次索引，供全部用例复用。"""
+        cls.idx = adviser.load_index()
+
+    def test_rows_have_real_gap(self) -> None:
+        """只有划线价确实高于现价的商品才入列，且差额算得对。"""
+        rows = adviser.discount_scan(self.idx, top=999)
+        self.assertTrue(rows)
+        for r in rows:
+            self.assertGreater(r["list_price"], r["price"])
+            self.assertAlmostEqual(r["gap"], round(r["list_price"] - r["price"], 2), 2)
+
+    def test_sorted_desc(self) -> None:
+        """按差额降序。"""
+        rows = adviser.discount_scan(self.idx, top=999)
+        self.assertEqual(rows, sorted(rows, key=lambda r: (-r["gap"], r["name"])))
+
+    def test_member_rows_are_labelled(self) -> None:
+        """会员价条目必须如实标注，不混进无门槛优惠里。"""
+        rows = adviser.discount_scan(self.idx, top=999)
+        tiers = {r["price_tier"] for r in rows}
+        self.assertIn("member", tiers)
+        for r in rows:
+            self.assertIn(r["price_tier"], ("standard", "promo", "member"))
 
 
 class TestCli(unittest.TestCase):

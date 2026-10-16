@@ -26,12 +26,6 @@ import coupon_doctor as CD  # noqa: E402
 
 BAR = "─" * 52
 
-# 套餐类后缀：用于把套餐名还原成「主体」，也用于识别一个商品是不是套餐。
-SET_SUFFIXES = ("三件套", "四件套", "套餐", "随心选")
-
-# 明确标注「件数」的后缀，用于检测菜单结构倒挂（件数更多反而更便宜）。
-COUNTED_SUFFIX = {"三件套": 3, "四件套": 4}
-
 
 # ------------------------------------------------------------------ 小工具
 def yuan(x: float) -> str:
@@ -42,14 +36,6 @@ def yuan(x: float) -> str:
 def items_by_name(idx: dict) -> dict[str, dict]:
     """按商品名建索引（菜单内名称唯一）。"""
     return {it["name"]: it for it in idx["items"].values()}
-
-
-def bundle_base(name: str) -> tuple[str, str] | None:
-    """把套餐名拆成 (主体, 后缀)；非套餐返回 None。"""
-    for suffix in SET_SUFFIXES:
-        if name.endswith(suffix):
-            return name[: -len(suffix)], suffix
-    return None
 
 
 def advise(idx: dict, budget: float, people: int, mode: str, top: int = 1,
@@ -65,55 +51,64 @@ def advise(idx: dict, budget: float, people: int, mode: str, top: int = 1,
 
 
 # ------------------------------------------------------------------ 场景一
-def cheapest_bundle_for(base: str, idx: dict) -> dict | None:
-    """在同一主食名下，取最便宜的套餐（三件套/四件套/套餐）。"""
-    best = None
-    for it in idx["items"].values():
-        split = bundle_base(it["name"])
-        if not split or split[0] != base or split[1] == "随心选":
-            continue
-        if best is None or it["price"] < best["price"]:
-            best = it
-    return best
-
-
 def scene_wasted_money(idx: dict) -> dict:
-    """同内容的两种买法：单点 vs 套餐，算出「多花了多少钱」。"""
-    by_name = items_by_name(idx)
-    intent = ("巨无霸", "薯条", "可乐")
-    parts = [(n, by_name[n]["price"]) for n in intent]
-    alc_total = round(sum(p for _, p in parts), 2)
-    bundle = cheapest_bundle_for(intent[0], idx)
-    gap = round(alc_total - bundle["price"], 2) if bundle else None
-    return {"intent": intent, "parts": parts, "alc_total": alc_total,
-            "bundle": bundle, "gap": gap}
+    """同一意图的两种买法：逐个单点 vs 本门店已有的组合商品。
+
+    这里刻意**不用**"全菜单最便宜的套餐"这种找法：那会把麦金卡会员价
+    混进无门槛价里比较，得出的差额不成立。比价必须同一价格口径。
+    """
+    return A.compare_intent(idx, A.parse_intent("巨无霸+薯条+可乐"))
 
 
 # ------------------------------------------------------------------ 场景二
-def scene_menu_trap(idx: dict) -> list[dict]:
-    """扫描菜单，找出「件数更多反而更便宜」的结构倒挂。"""
-    groups: dict[str, dict[int, dict]] = {}
-    for it in idx["items"].values():
-        split = bundle_base(it["name"])
-        if not split:
-            continue
-        base, suffix = split
-        if suffix in COUNTED_SUFFIX:
-            groups.setdefault(base, {})[COUNTED_SUFFIX[suffix]] = it
+BUNDLE_MARKS = ("三件套", "四件套", "套餐")
 
-    traps = []
-    for base, by_count in groups.items():
-        if 3 not in by_count or 4 not in by_count:
+
+def scene_bundle_gap(idx: dict) -> list[dict]:
+    """全菜单扫描：套餐价 比「按它的确定组成逐个单点」便宜多少。
+
+    只在**同一价格口径**内比（会员价商品整条排除），所以结论无门槛、可复现。
+    """
+    rows = []
+    for it in idx["items"].values():
+        if it.get("priceTier") == "member":
             continue
-        if by_count[4]["price"] < by_count[3]["price"]:
-            traps.append({
-                "base": base,
-                "three": by_count[3],
-                "four": by_count[4],
-                "gap": round(by_count[3]["price"] - by_count[4]["price"], 2),
-            })
-    traps.sort(key=lambda t: t["gap"], reverse=True)
-    return traps
+        if not any(k in it["name"] for k in BUNDLE_MARKS):
+            continue
+        ident = (idx["nutrition"].get(it["code"]) or {}).get("identity") or []
+        if len(ident) < 2:
+            continue
+        parts = [A.cheapest_for(idx, c) for c in ident]
+        if any(p is None for p in parts):
+            continue
+        alcove = round(sum(p["price"] for p in parts), 2)
+        rows.append({"name": it["name"], "bundle": float(it["price"]),
+                     "alcove": alcove, "gap": round(alcove - float(it["price"]), 2)})
+    rows.sort(key=lambda r: (-r["gap"], r["name"]))
+    return rows
+
+
+# ------------------------------------------------------------------ 场景三
+def scene_member_gap(idx: dict) -> list[dict]:
+    """麦金卡把同一份主食的四件套压到多少钱 —— 与同主食的三件套比。
+
+    这两侧**都在会员可享的范围内**（会员同样买得到三件套），所以「四件套更便宜
+    且多一份」这个结论成立。但它成立的前提是**你有卡**；没卡时四件套那个价拿不到。
+    这正是 README 早先把会员价当普通价时会踩的坑。
+    """
+    by_name = items_by_name(idx)
+    rows = []
+    for it in idx["items"].values():
+        if it.get("priceTier") != "member" or not it["name"].endswith("四件套"):
+            continue
+        three = by_name.get(it["name"].replace("四件套", "三件套"))
+        if not three:
+            continue
+        rows.append({"name": it["name"].replace("四件套", ""),
+                     "four": float(it["price"]), "three": float(three["price"]),
+                     "gap": round(float(three["price"]) - float(it["price"]), 2)})
+    rows.sort(key=lambda r: (-r["gap"], r["name"]))
+    return rows
 
 
 # ------------------------------------------------------------------ 输出
@@ -129,36 +124,73 @@ def head(idx: dict) -> None:
     print(BAR)
 
 
-def print_wasted(idx: dict, wasted: dict) -> None:
+def print_wasted(result: dict) -> None:
     """场景一：这一单你多花了多少钱。"""
-    bundle = wasted["bundle"]
     print()
     print("① 这一单，你多花了多少钱")
-    print(f"   意图：想吃到「{' + '.join(wasted['intent'])}」")
+    print(f"   意图：想吃到「{' + '.join(result['intent'])}」")
     print()
-    line = " + ".join(f"{n} {yuan(p)}" for n, p in wasted["parts"])
-    print(f"   单点买法      {line} = {yuan(wasted['alc_total'])}")
-    if bundle:
-        extra = "（含这三样，还多一份麦乐鸡）" if "四件套" in bundle["name"] else ""
-        print(f"   求解器买法    {bundle['name']} ×1 = {yuan(bundle['price'])}{extra}")
+    line = " + ".join(f"{p['menu_name']} {yuan(p['price'])}" for p in result["parts"])
+    print(f"   单点买法      {line} = {yuan(result['single_total'])}")
+    best = result["best"]
+    if best:
+        print(f"   结构买法      {best['name']} ×1 = {yuan(best['price'])}")
         print(f"                 {'─' * 22}")
-        print(f"   你多花了      {yuan(wasted['gap'])}")
+        print(f"   你多花了      {yuan(result['gap'])}")
+    if result["member_cover"]:
+        m = result["member_cover"][0]
+        print(f"                 （持麦金卡还能到 {m['name']} {yuan(m['price'])}）")
+    print()
+    print("   两个数字都来自 query-meals 的原始返回，且**同一价格口径**（无条件价）。")
     print()
 
 
-def print_trap(traps: list[dict]) -> None:
-    """场景二：菜单本身的结构倒挂。"""
-    print("② 菜单里本来就有坑：份数更多，反而更便宜")
-    if not traps:
-        print("   本门店未发现「三件套 > 四件套」的倒挂。")
+def print_bundle_gap(rows: list[dict]) -> None:
+    """场景二：全菜单里，套餐比按组成单点便宜多少。"""
+    print("② 全菜单：套餐比「按组成逐个单点」便宜多少")
+    if not rows:
+        print("   本门店没有可比对的套餐。")
         print()
         return
-    print(f"   全菜单扫出 {len(traps)} 组（直接来自 query-meals 的原始价格）：")
-    for t in traps:
-        print(f"     · {t['base']}：三件套 {yuan(t['three']['price'])}"
-              f" > 四件套 {yuan(t['four']['price'])}　→ 省 {yuan(t['gap'])}")
+    gap_sum = sum(r["gap"] for r in rows if r["gap"] > 0)
+    print(f"   扫出 {len(rows)} 组可比对套餐（全部为无条件价，不含会员价商品）：")
+    for r in rows[:8]:
+        print(f"     · {r['name']}：套餐 {yuan(r['bundle'])} < 单点 {yuan(r['alcove'])}"
+              f"　→ 省 {yuan(r['gap'])}")
     print()
-    print("   同一份主食，点『三件套』的人多花钱、还少拿一份。")
+    print(f"   其中正的组合共 {sum(1 for r in rows if r['gap'] > 0)} 组，"
+          f"合计可省 {yuan(gap_sum)}。")
+    print()
+
+
+def print_member_gap(rows: list[dict]) -> None:
+    """场景三：麦金卡把四件套压到多少钱（只在会员可享范围内比较）。"""
+    print("③ 麦金卡值多少：同一份主食，四件套比三件套便宜且多一份")
+    if not rows:
+        print("   本门店没有可比对的三件套/四件套。")
+        print()
+        return
+    for r in rows[:6]:
+        print(f"     · {r['name']}：三件套 {yuan(r['three'])} > 四件套 {yuan(r['four'])}"
+              f"　→ 省 {yuan(r['gap'])}")
+    print()
+    print("   ⚠️ 这 8 组的四件套那一侧**全部是麦金卡会员价**。没卡时这个价拿不到，")
+    print("      「份数更多反而更便宜」不成立 —— 成立的是「有卡每单省 ¥3~¥6.5」。")
+    print("      本项目默认把会员价排除在推荐之外，用 --member 才会纳入。")
+    print()
+
+
+def print_discounts(rows: list[dict]) -> None:
+    """场景四：门店标价口径的优惠幅度（与「结构省」严格分开）。"""
+    print("④ 门店标价口径：标价与现价差多少（不是「你省了多少」）")
+    for r in rows[:5]:
+        tag = {"standard": "无条件价", "promo": "限时促销价",
+               "member": "需麦金卡"}.get(r["price_tier"], r["price_tier"])
+        print(f"     · {r['name']}：标价 {yuan(r['list_price'])} → {yuan(r['price'])}"
+              f"（-{r['off']:.0%}）· {tag}")
+    print()
+    print("   ⚠️ 划线价是门店标注的参考价，不等于你省下了这些钱 —— 你本来也不会按标价买。")
+    print("      本项目只把「同一批商品换买法」的结构差当作确定的省。")
     print()
 
 
@@ -178,7 +210,7 @@ def print_coupons(idx: dict, plans: list, coupons: list) -> dict:
     baseline = plans[0].total if plans else 45.0
     report = CD.analyze(baseline=baseline, orders_per_week=3.0,
                         orders=CD.load_orders() or None)
-    print("③ 你的券在漏水：券不是「可用资源」，是有保质期的钱")
+    print("⑤ 你的券在漏水：券不是「可用资源」，是有保质期的钱")
     print()
     for line in CD.render(report).splitlines():
         print("   " + line)
@@ -213,34 +245,51 @@ def main() -> int:
 
     # ---- 场景一：冤枉钱 -------------------------------------------------
     wasted = scene_wasted_money(idx)
-    print_wasted(idx, wasted)
+    print_wasted(wasted)
 
-    # ---- 场景二：菜单倒挂 -----------------------------------------------
-    traps = scene_menu_trap(idx)
-    print_trap(traps)
+    # ---- 场景二：套餐 vs 单点（同价口径，全菜单） -------------------------
+    gaps = scene_bundle_gap(idx)
+    print_bundle_gap(gaps)
 
-    # ---- 场景三：券 ------------------------------------------------------
+    # ---- 场景三：麦金卡值多少 -------------------------------------------
+    member_gaps = scene_member_gap(idx)
+    print_member_gap(member_gaps)
+
+    # ---- 场景四：门店标价口径（与「结构省」严格分开） ---------------------
+    print_discounts(A.discount_scan(idx, top=5))
+
+    # ---- 场景五：券 ------------------------------------------------------
     report = print_coupons(idx, plans_b, coupons)
 
-    # ---- 场景四：预算内的均衡一餐 ---------------------------------------
-    print_plan("④ 预算 ¥45 吃一餐均衡的", "约束：主食 + 小食 + 饮品，热量 500–900 kcal",
+    # ---- 场景六：预算内的均衡一餐 ---------------------------------------
+    print_plan("⑥ 预算 ¥45 吃一餐均衡的", "约束：主食 + 小食 + 饮品，热量 500–900 kcal",
                args_b, idx, plans_b)
 
-    # ---- 场景五：硬约束（忌口） -----------------------------------------
-    args5, plans5 = advise(idx, budget=45, people=1, mode="balanced", top=1,
+    # ---- 场景七：硬约束（忌口） -----------------------------------------
+    args7, plans7 = advise(idx, budget=45, people=1, mode="balanced", top=1,
                            banned=("beef", "fried"))
-    print_plan("⑤ 同样的预算，忌牛肉 + 忌油炸",
+    print_plan("⑦ 同样的预算，忌牛肉 + 忌油炸",
                "忌口是硬约束：候选池里直接剔除，不是「尽量避开」",
-               args5, idx, plans5)
+               args7, idx, plans7)
 
     # ---- 断言：关键不变量 ------------------------------------------------
     assert plans_b, "均衡模式应给出方案"
     assert plans_b[0].total <= 45 + 1e-6, "预算是硬约束：券后总价不得超过预算"
-    roles = {line.role for line in plans_b[0].lines}
-    assert A.MODE_TARGETS["balanced"]["required"] <= roles, "均衡模式必须构成完整一餐"
-    for line in (plans5[0].lines if plans5 else []):
+    provided = A.provided_roles(idx, [(l.code, l.qty) for l in plans_b[0].lines])
+    assert A.MODE_TARGETS["balanced"]["required"] <= provided, \
+        "均衡模式必须构成完整一餐（套餐可同时占多个槽位）"
+    for line in (plans7[0].lines if plans7 else []):
         assert not (A.tags_of(line.name) & {"beef", "fried"}), f"忌口未生效：{line.name}"
     assert wasted["gap"] is not None and wasted["gap"] > 0, "应能找到更便宜的套餐买法"
+    assert wasted["best"]["price_tier"] != "member", \
+        "招牌比价不得建立在会员价上"
+    # 会员价默认不得进入任何方案 —— 这是本项目踩过的坑，用断言钉住。
+    for plan in (plans_b + plans7):
+        for line in plan.lines:
+            tier = idx["items"][line.code].get("priceTier")
+            assert tier != "member", f"会员价商品不该出现在默认方案里：{line.name}"
+    assert gaps and gaps[0]["gap"] > 0, "应能扫到套餐比单点便宜的组"
+    assert all(r["bundle"] > 0 for r in gaps), "套餐扫描不应出现非正价格"
 
     for c in coupons:
         assert c.value_source in ("probe", "reverse", "unknown"), \
@@ -258,13 +307,15 @@ def main() -> int:
     # ---- 尾 --------------------------------------------------------------
     print(BAR)
     print("上面每一行都能在你自己的机器上复现：")
+    print("  python scripts/adviser.py --intent \"巨无霸+薯条+可乐\"")
     print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced")
-    print("  python scripts/adviser.py --budget 45 --people 1 --mode balanced"
-          " --no-beef --no-fried")
+    print("  python scripts/adviser.py --discounts")
+    print("  python scripts/adviser.py --intent \"巨无霸+薯条+可乐\" --member")
     print("  python scripts/coupon_doctor.py --budget 45")
     print("  python -m unittest discover -s tests -v")
     print()
     print("价格为门店实时快照口径，最终以 calculate-price 结果为准；营养为估算的已标注。")
+    print("会员价默认排除（--member 才纳入）；券的价值没有实测来源就报「未知」。")
     print("如果它帮你少花了一杯可乐的钱 → ⭐")
     print(BAR)
     return 0

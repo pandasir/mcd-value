@@ -7,7 +7,7 @@
 
 | 文件 | 来源 Tool | 采集时间 | 说明 |
 |---|---|---|---|
-| `meals_1420762.json` | `query-meals` | 2026-10-14 16:41:06 | 门店 1420762（深圳同方信息港）的完整菜单：分类、商品编码、现价、划线价、优惠标签 |
+| `meals_1420762.json` | `query-meals` | 2026-10-14 16:41:06 | 门店 1420762（深圳同方信息港）的完整菜单：分类、商品编码、现价、划线价、**价格口径（`discountType`）**、随单购信息 |
 | `nutrition.txt` | `list-nutrition-foods` | 2026-10-14 | 营养库，160 条，含能量/蛋白/脂肪/碳水/钠/钙 |
 | `coupons_1420762.json` | `query-store-coupons` + `query-my-coupons` + `available-coupons` | 2026-10-14 17:26:54 | 12 张券：券名、状态、有效期、券自带商品码与用券实付。**不含券码**（`couponCode`） |
 | `coupon_probe_1420762.json` | `calculate-price` | 2026-10-14 17:27:02 | 券价值实测缓存：把券商品码 + `couponId` + `couponCode` 传给 `calculate-price`，返回的 `discount`（单位**分**）就是券的精确价值。归档版**只留 `couponId` 与结果，不留券码** |

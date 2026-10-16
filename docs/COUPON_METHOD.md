@@ -2,6 +2,11 @@
 
 本文说明「券包体检」与「用券排程」是怎么算的。所有假设写在这里，不藏在代码里。
 
+> **先分清三种「省」，不要相加。** 本文讲的是**券后省**（`calculate-price` 返回的
+> `discount`，单位分）。另外两种是**结构省**（同一批商品换买法的价差，见
+> `adviser.py --intent`）和**标价差**（门店划线价 − 现价，见 `adviser.py --discounts`）。
+> 三者口径不同，混着说就会得出一个谁也对不上的数字。
+
 对应实现：[`scripts/coupon_doctor.py`](../scripts/coupon_doctor.py)
 数据快照：[`data/raw/coupons_1420762.json`](../data/raw/coupons_1420762.json)、
 [`data/raw/coupon_probe_1420762.json`](../data/raw/coupon_probe_1420762.json)、

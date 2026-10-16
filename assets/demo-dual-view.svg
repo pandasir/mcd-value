@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 430" width="100%" role="img">
-  <title>同一个订单，两种买法差多少钱</title>
-  <desc>左边是随手点，右边是约束求解器给出的买法；同样的内容，差价 16.5 元。</desc>
+  <title>同一个意图，两种买法差多少钱</title>
+  <desc>左边是随手单点，右边是按意图比价给出的组合买法；同样的三样东西，差价 12.0 元。</desc>
 
   <rect x="0" y="0" width="1280" height="430" rx="16" fill="#ffffff" stroke="#e3e3e3"/>
 
   <text x="640" y="52" text-anchor="middle"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="24" font-weight="700" fill="#0C447C">同一个订单，两种买法</text>
+        font-size="24" font-weight="700" fill="#0C447C">想吃到「巨无霸 + 薯条 + 可乐」，两种买法</text>
   <text x="640" y="80" text-anchor="middle"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="15" fill="#8a8a8a">门店 1420762 · 深圳同方信息港餐厅（到店自取）· 价格来自 query-meals 实时快照</text>
+        font-size="15" fill="#8a8a8a">门店 1420762 · 深圳同方信息港餐厅（到店自取）· 两侧同为「无条件价」口径，价格来自 query-meals 原始返回</text>
 
   <!-- 左panel -->
   <rect x="48" y="106" width="560" height="258" rx="12" fill="#FDF6F5" stroke="#E8B4AE" stroke-width="1"/>
   <text x="76" y="146"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="18" font-weight="700" fill="#A33A2E">随手点</text>
+        font-size="18" font-weight="700" fill="#A33A2E">单点买法</text>
   <text x="76" y="172"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
         font-size="14" fill="#9a6b64">想到什么搜什么，一样一样加进购物车</text>
@@ -38,21 +38,22 @@
   <rect x="672" y="106" width="560" height="258" rx="12" fill="#F2FAF5" stroke="#8CCBA8" stroke-width="1"/>
   <text x="700" y="146"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="18" font-weight="700" fill="#1F6B45">约束求解器</text>
+        font-size="18" font-weight="700" fill="#1F6B45">结构买法</text>
   <text x="700" y="172"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="14" fill="#5e8a74">在真实菜单上枚举组合，硬约束过滤后取最优</text>
+        font-size="14" fill="#5e8a74">按意图找出「确定含有这三样」的组合商品，比单点更便宜</text>
 
   <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
      font-size="16" fill="#3f5a4c">
-    <text x="700" y="216">巨无霸四件套（含这三样，还多一份麦乐鸡）</text>
-    <text x="1204" y="216" text-anchor="end">¥32.0</text>
+    <text x="700" y="220">巨无霸三件套</text>
+    <text x="1204" y="220" text-anchor="end">¥36.5</text>
+    <text x="700" y="256" font-size="13" fill="#7aa08d">contains: 巨无霸 · 中薯条 · 可乐中杯（确定组成）</text>
   </g>
 
   <line x1="700" y1="300" x2="1204" y2="300" stroke="#8CCBA8" stroke-width="1"/>
   <text x="700" y="336"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="22" font-weight="700" fill="#1F6B45">合计 ¥32.0</text>
+        font-size="22" font-weight="700" fill="#1F6B45">合计 ¥36.5</text>
 
   <!-- 中间连接 -->
   <line x1="610" y1="235" x2="670" y2="235" stroke="#8a8a8a" stroke-width="1.4"/>
@@ -60,7 +61,10 @@
 
   <!-- 底部结论条 -->
   <rect x="48" y="382" width="1184" height="0" fill="none"/>
-  <text x="640" y="396" text-anchor="middle"
+  <text x="640" y="392" text-anchor="middle"
         font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="17" font-weight="700" fill="#C0392B">差价 ¥16.5 —— 而且菜单里还有 8 组「三件套比四件套更贵」的倒挂，人眼看不出来</text>
+        font-size="17" font-weight="700" fill="#C0392B">你多花了 ¥12.0 —— 四个数字都来自 query-meals 原始返回，两侧同一价格口径</text>
+  <text x="640" y="414" text-anchor="middle"
+        font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="13" fill="#8a8a8a">（另有麦金卡会员价 巨无霸四件套 ¥32.0，需持卡才拿得到 —— 项目默认不把它算进来）</text>
 </svg>
