@@ -49,10 +49,10 @@
         font-size="17" fill="#8a5a00">单点买法　　　　　　　　　　 ¥48.5</text>
 
   <text x="728" y="216" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="17" font-weight="600" fill="#27500A">求解器买法（巨无霸四件套）　　¥32.0</text>
+        font-size="17" font-weight="600" fill="#27500A">结构买法（巨无霸三件套）　　　¥36.5</text>
 
   <line x1="728" y1="232" x2="1188" y2="232" stroke="#e3e3e3" stroke-width="1"/>
 
   <text x="728" y="262" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="24" font-weight="700" fill="#C0392B">你多花了 ￥16.5</text>
+        font-size="24" font-weight="700" fill="#C0392B">你多花了 ￥12.0</text>
 </svg>

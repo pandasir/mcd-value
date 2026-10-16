@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img">
+  <title>麦麦点餐参谋 —— 同一顿麦当劳，你多花了多少钱</title>
+  <desc>GitHub 社交预览卡。数字来自门店快照的无条件价口径：单点 ¥48.5 vs 巨无霸三件套 ¥36.5，多花 ¥12.0。
+    渲染命令：rsvg-convert -w 1280 -h 640 assets/social-card.svg -o assets/social-preview.png</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#FBFCFE"/>
+      <stop offset="1" stop-color="#F2F7FC"/>
+    </linearGradient>
+    <radialGradient id="glowRed" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#DA291C" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#DA291C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowYellow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFC72C" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#FFC72C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowBlue" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#378ADD" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#378ADD" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1180" cy="60" r="260" fill="url(#glowYellow)"/>
+  <circle cx="40" cy="640" r="300" fill="url(#glowRed)"/>
+  <circle cx="600" cy="330" r="320" fill="url(#glowBlue)"/>
+
+  <!-- 左侧：定位 -->
+  <g font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+
+    <rect x="80" y="104" width="286" height="46" rx="23" fill="#FDECEA" stroke="#E8A79F"/>
+    <circle cx="108" cy="127" r="6" fill="#DA291C"/>
+    <text x="126" y="134" font-size="20" font-weight="600" fill="#C0392B">麦当劳 MCP · 点餐推荐 Skill</text>
+
+    <text x="80" y="252" font-size="76" font-weight="700" fill="#0C447C"
+          letter-spacing="2">麦麦点餐参谋</text>
+
+    <text x="80" y="320" font-size="29" font-weight="600" fill="#185FA5">用约束求解器算出一顿饭，</text>
+    <text x="80" y="362" font-size="29" font-weight="600" fill="#185FA5">而不是让大模型随口推荐。</text>
+
+    <text x="80" y="428" font-size="25" fill="#3C3489">同样一顿麦当劳，你多花了多少钱</text>
+    <text x="80" y="466" font-size="25" fill="#3C3489">——这个数字，我们算得出来。</text>
+
+    <g font-size="15" font-weight="600">
+      <rect x="80" y="512" width="120" height="38" rx="19" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.8"/>
+      <text x="140" y="536" text-anchor="middle" fill="#0C447C">零第三方依赖</text>
+
+      <rect x="212" y="512" width="106" height="38" rx="19" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.8"/>
+      <text x="265" y="536" text-anchor="middle" fill="#0C447C">无需 Token</text>
+
+      <rect x="330" y="512" width="150" height="38" rx="19" fill="#EAF3DE" stroke="#97C459" stroke-width="0.8"/>
+      <text x="405" y="536" text-anchor="middle" fill="#27500A">预算 · 热量 · 忌口</text>
+
+      <rect x="492" y="512" width="120" height="38" rx="19" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.8"/>
+      <text x="552" y="536" text-anchor="middle" fill="#3C3489">真实商品编码</text>
+    </g>
+
+    <!-- 底部命令 -->
+    <rect x="80" y="578" width="248" height="44" rx="10" fill="#1F2430"/>
+    <text x="100" y="607" font-size="20" fill="#8AE234"
+          font-family="'SF Mono','Menlo','Consolas',monospace">$</text>
+    <text x="122" y="607" font-size="20" fill="#E6E6E6"
+          font-family="'SF Mono','Menlo','Consolas',monospace">python demo.py</text>
+
+    <text x="1240" y="607" font-size="18" fill="#7A8699" text-anchor="end">零依赖 · 不联网 · 一条命令跑完全部叙事　⭐</text>
+  </g>
+
+  <!-- 右侧：真实结果卡 -->
+  <rect x="676" y="140" width="564" height="386" rx="20" fill="#ffffff" stroke="#EF9F27" stroke-width="1.5"/>
+
+  <g font-family="'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+    <circle cx="708" cy="184" r="6" fill="#EF9F27"/>
+    <text x="726" y="191" font-size="19" font-weight="700" fill="#854F0B">真实门店快照 · 深圳同方信息港餐厅</text>
+    <line x1="708" y1="214" x2="1208" y2="214" stroke="#F0E0C8" stroke-width="1"/>
+
+    <text x="708" y="268" font-size="19" fill="#5a5a5a">想吃到：巨无霸 + 薯条 + 可乐</text>
+
+    <text x="708" y="326" font-size="20" fill="#8a5a00">单点买法</text>
+    <text x="1208" y="326" font-size="20" fill="#8a5a00" text-anchor="end">¥48.5</text>
+
+    <text x="708" y="374" font-size="20" font-weight="600" fill="#27500A">结构买法 · 巨无霸三件套</text>
+    <text x="1208" y="374" font-size="20" font-weight="600" fill="#27500A" text-anchor="end">¥36.5</text>
+
+    <line x1="708" y1="404" x2="1208" y2="404" stroke="#e3e3e3" stroke-width="1"/>
+
+    <text x="708" y="478" font-size="46" font-weight="700" fill="#C0392B">¥12.0</text>
+    <text x="888" y="478" font-size="26" fill="#C0392B">你多花了</text>
+
+    <text x="708" y="504" font-size="15" fill="#9aa4b2">价格为门店快照的无条件价口径，会员价需持卡、单独标注</text>
+  </g>
+</svg>

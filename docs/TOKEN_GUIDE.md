@@ -10,7 +10,10 @@
 1. 打开麦当劳 MCP 开放平台：<https://open.mcd.cn/mcp>
 2. 用手机号登录，在控制台**激活**服务并复制 MCP Token。
 
-## 2. 配置到 WorkBuddy
+## 2. 配置到客户端
+
+下面以 WorkBuddy 为例；**Claude Desktop / Claude Code / Cursor / VS Code / Cline / Windsurf**
+的配置位置与字段写法见 README 的「安装 · 方式二」。
 
 1. 打开 WorkBuddy，左侧边栏进入 **专家 · 技能 · 连接器 → 连接器**。
 2. 点击右上角 **自定义连接器 → 配置 MCP**。
