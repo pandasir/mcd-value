@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>麦麦点餐参谋 · 在线试玩</title>
-<meta name="description" content="同一家麦当劳门店，同一份东西，单点比买套餐多花多少钱？用真实菜单快照现场算一遍，不用安装。">
-<meta property="og:title" content="麦麦点餐参谋 · 在线试玩">
-<meta property="og:description" content="同一家麦当劳门店，同一份东西，单点比买套餐多花多少钱？">
+<title>麦当劳怎么点最划算 · 单点还是套餐，当场算一遍</title>
+<meta name="description" content="同一家麦当劳门店，同一份东西，单点比买套餐多花多少钱？用真实菜单快照当场算：预算 30 或 45 元怎么点、优惠券值多少、减脂期能吃什么、忌口怎么避开。不用安装，不用登录。">
+<meta property="og:title" content="同一份麦当劳，你多花了多少？">
+<meta property="og:description" content="单点 ¥48.5，换个买法 ¥36.5 —— 用它当场算一遍。">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://pandasir.github.io/mcd-value/og.png">
 <meta property="og:image:width" content="1280">
@@ -150,6 +150,14 @@
   .fact .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
   .fact .v small{font-size:12px;font-weight:500;color:var(--muted);margin-left:4px}
 
+  /* ---------- 说明正文（静态可索引） ---------- */
+  .seo-body{font-size:13.5px;color:var(--muted);line-height:1.85;margin:0 0 30px}
+  .seo-body p{margin:0 0 12px}
+  .seo-body b{color:var(--ink);font-weight:600}
+  .seo-body ul{margin:0 0 12px;padding-left:18px}
+  .seo-body li{margin:3px 0}
+  .seo-body a{color:var(--red);text-decoration:none;border-bottom:1px solid rgba(218,41,28,.28)}
+
   /* ---------- 页脚 ---------- */
   footer{margin-top:34px;font-size:13px;color:var(--muted);line-height:1.75}
   footer a{color:var(--red);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(218,41,28,.28)}
@@ -186,6 +194,23 @@
       <div class="k">菜单快照</div>
       <div class="v" id="fact-date" style="font-size:15px">—</div>
     </div>
+  </div>
+
+  <h2 class="section-label">这个页面在算什么</h2>
+  <div class="seo-body">
+    <p>麦当劳的菜单里，同一批东西常常有好几种买法：单点、三件套、四件套、加购、优惠券。
+      单看一样差不了几块，但每次点单都会重演一次。</p>
+    <p>这个页面做一件很窄的事：拿一家门店的真实菜单快照，把同一批商品的两种买法摆在一起，
+      算出你多花了多少。<b>价格来自麦当劳 MCP 的门店菜单，不是估算，也不是举例凑的。</b></p>
+    <p>常见的几种点法这里都能算：</p>
+    <ul>
+      <li>三十块、四十五块在麦当劳能吃到什么，怎么配最划算；</li>
+      <li>在减脂或增肌，有热量和蛋白目标，忌口会被当成硬门槛直接剔除；</li>
+      <li>手里一堆优惠券，想知道哪张先用、哪张注定过期；</li>
+      <li>一群人吃饭，要在总预算里给一桌人配餐。</li>
+    </ul>
+    <p>这个页面只是最直观的一段。完整的比价口径（带券实测计价、按真实点单频率排出的用券顺序）
+      在 <a href="https://github.com/pandasir/mcd-value">GitHub 仓库</a> 里，需要接入麦当劳 MCP 使用。</p>
   </div>
 
   <footer>
