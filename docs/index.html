@@ -165,6 +165,51 @@
   .fineprint{font-size:12px;color:var(--faint);margin-top:14px}
   .loading{padding:40px 0;text-align:center;color:var(--faint);font-size:14px}
   .err{background:var(--red-soft);color:#8a1c12;border-radius:12px;padding:14px;font-size:13px}
+
+  /* ---------- 静态比价表（预渲染，爬虫可读） ---------- */
+  .matrix-wrap{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:8px 6px;overflow-x:auto;margin:14px 0 0;
+  }
+  .matrix{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
+  .matrix caption{
+    text-align:left;font-size:12.5px;color:var(--faint);
+    padding:6px 8px 10px;line-height:1.6;
+  }
+  .matrix th,.matrix td{
+    text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  .matrix thead th{
+    font-size:12px;color:var(--faint);font-weight:600;white-space:nowrap;
+    border-bottom:1px solid var(--line);
+  }
+  .matrix th[scope="row"]{font-weight:600;color:var(--ink)}
+  .matrix th[scope="row"] small{
+    display:block;font-weight:400;color:var(--faint);font-size:12px;
+    margin-top:3px;line-height:1.6;
+  }
+  .matrix td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .matrix td.gap{text-align:right;font-variant-numeric:tabular-nums;color:var(--red);font-weight:700;white-space:nowrap}
+  .matrix tbody tr:last-child td,.matrix tbody tr:last-child th{border-bottom:0}
+  .matrix .sub{display:block;font-size:12px;color:var(--faint);margin-top:2px}
+
+  /* ---------- star 引导 ---------- */
+  .cta{
+    margin:30px 0 0;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px 20px;display:flex;gap:16px;
+    align-items:center;justify-content:space-between;flex-wrap:wrap;
+  }
+  .cta p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.65;flex:1 1 260px}
+  .cta p b{color:var(--ink);font-weight:600}
+  .cta a{
+    display:inline-flex;align-items:center;gap:7px;background:var(--red);color:#fff;
+    text-decoration:none;font-weight:700;font-size:14px;padding:11px 20px;
+    border-radius:99px;white-space:nowrap;
+  }
+  .cta a:hover{background:#b8201a}
+  .fact a{color:var(--red);text-decoration:none;font-weight:700}
+  .fact a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -176,9 +221,13 @@
 
   <div class="section-label">我想吃</div>
   <div class="chips" id="chips" role="group" aria-label="选择汉堡"></div>
+  <noscript>
+    <p class="note">上面这块互动区需要 JavaScript。不想开也行 ——
+      <a href="#matrix">下面那张表把每一行的数字都列全了</a>。</p>
+  </noscript>
 
   <div id="result">
-    <div class="loading">正在读取菜单快照…</div>
+    <div class="loading">正在读取菜单快照…（没反应就看下面的表，数据是一样的）</div>
   </div>
 
   <div class="facts" id="facts" hidden>
@@ -194,7 +243,142 @@
       <div class="k">菜单快照</div>
       <div class="v" id="fact-date" style="font-size:15px">—</div>
     </div>
+    <div class="fact">
+      <div class="k">觉得有用？</div>
+      <div class="v" style="font-size:15px"><a id="fact-star" href="https://github.com/pandasir/mcd-value" target="_blank" rel="noopener">⭐ 去 GitHub star</a></div>
+    </div>
   </div>
+
+<!-- prerender:start -->
+  <h2 class="section-label" id="matrix">全部场景：单点 vs 套餐，一行一个汉堡</h2>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <caption>这家店 12 个汉堡，套餐全都便宜 ¥12.0。12 个能逐个单点的汉堡，全部匹配到本店已有的套餐；每一个的差价都正好是 ¥12.0 —— 差价不挑商品，变的是起点价。 数据来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价（会员价不参与，否则会拿一个你拿不到的价格去比）。</caption>
+      <thead>
+        <tr><th scope="col">想吃到</th><th scope="col" style="text-align:right">单点合计</th><th scope="col">换个买法</th><th scope="col" style="text-align:right">多花了</th></tr>
+      </thead>
+      <tbody>
+          <tr id="s-1100"><th scope="row">巨无霸<small>单点：巨无霸 + 薯条 + 可乐</small></th><td class="num">¥48.5</td><td class="num">巨无霸三件套<span class="sub">¥36.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1450"><th scope="row">麦香鸡<small>单点：麦香鸡 + 薯条 + 可乐</small></th><td class="num">¥40.0</td><td class="num">麦香鸡套餐<span class="sub">¥28.0</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-521816"><th scope="row">酥酥多笋卷<small>单点：酥酥多笋卷 + 薯条 + 可乐</small></th><td class="num">¥43.5</td><td class="num">酥酥多笋卷三件套<span class="sub">¥31.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1440"><th scope="row">麦辣鸡腿汉堡<small>单点：麦辣鸡腿汉堡 + 薯条 + 可乐</small></th><td class="num">¥45.5</td><td class="num">麦辣鸡腿汉堡三件套<span class="sub">¥33.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1600"><th scope="row">麦香鱼<small>单点：麦香鱼 + 薯条 + 可乐</small></th><td class="num">¥45.5</td><td class="num">麦香鱼套餐<span class="sub">¥33.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1120"><th scope="row">双层吉士汉堡<small>单点：双层吉士汉堡 + 薯条 + 可乐</small></th><td class="num">¥46.0</td><td class="num">双层吉士汉堡套餐<span class="sub">¥34.0</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1406"><th scope="row">板烧鸡腿堡<small>单点：板烧鸡腿堡 + 薯条 + 可乐</small></th><td class="num">¥46.5</td><td class="num">板烧鸡腿堡三件套<span class="sub">¥34.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-9900003586"><th scope="row">双层深海鳕鱼堡<small>单点：双层深海鳕鱼堡 + 薯条 + 可乐</small></th><td class="num">¥47.0</td><td class="num">双层深海鳕鱼堡三件套<span class="sub">¥35.0</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-1106"><th scope="row">培根蔬萃双层牛堡<small>单点：培根蔬萃双层牛堡 + 薯条 + 可乐</small></th><td class="num">¥47.5</td><td class="num">培根蔬萃双层牛堡三件套<span class="sub">¥35.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-4648"><th scope="row">不素之霸双层牛堡<small>单点：不素之霸双层牛堡 + 薯条 + 可乐</small></th><td class="num">¥49.5</td><td class="num">不素之霸双层牛堡三件套<span class="sub">¥37.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-511782"><th scope="row">芝士安格斯厚牛堡<small>单点：芝士安格斯厚牛堡 + 薯条 + 可乐</small></th><td class="num">¥54.5</td><td class="num">芝士安格斯厚牛堡三件套<span class="sub">¥42.5</span></td><td class="gap">¥12.0</td></tr>
+          <tr id="s-511781"><th scope="row">培根安格斯厚牛堡<small>单点：培根安格斯厚牛堡 + 薯条 + 可乐</small></th><td class="num">¥57.5</td><td class="num">培根安格斯厚牛堡三件套<span class="sub">¥45.5</span></td><td class="gap">¥12.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note" style="margin-top:10px">「多花了」= 同一批商品的单点合计 − 本店套餐价，两侧都是这家店的真实现价。这里不算「划线价省了多少」—— 你本来也不会按划线价买，把划线价当基准能把「省」吹得很漂亮，但那是假的。完整的比价口径见 <a href="https://github.com/pandasir/mcd-value/blob/main/docs/COUPON_METHOD.md">券的口径</a>。</p>
+  <script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "巨无霸单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "巨无霸单点合计 ¥48.5（巨无霸 + 薯条 + 可乐），本店套餐「巨无霸三件套」¥36.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "麦香鸡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "麦香鸡单点合计 ¥40.0（麦香鸡 + 薯条 + 可乐），本店套餐「麦香鸡套餐」¥28.0，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "酥酥多笋卷单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "酥酥多笋卷单点合计 ¥43.5（酥酥多笋卷 + 薯条 + 可乐），本店套餐「酥酥多笋卷三件套」¥31.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "麦辣鸡腿汉堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "麦辣鸡腿汉堡单点合计 ¥45.5（麦辣鸡腿汉堡 + 薯条 + 可乐），本店套餐「麦辣鸡腿汉堡三件套」¥33.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "麦香鱼单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "麦香鱼单点合计 ¥45.5（麦香鱼 + 薯条 + 可乐），本店套餐「麦香鱼套餐」¥33.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "双层吉士汉堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "双层吉士汉堡单点合计 ¥46.0（双层吉士汉堡 + 薯条 + 可乐），本店套餐「双层吉士汉堡套餐」¥34.0，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "板烧鸡腿堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "板烧鸡腿堡单点合计 ¥46.5（板烧鸡腿堡 + 薯条 + 可乐），本店套餐「板烧鸡腿堡三件套」¥34.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "双层深海鳕鱼堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "双层深海鳕鱼堡单点合计 ¥47.0（双层深海鳕鱼堡 + 薯条 + 可乐），本店套餐「双层深海鳕鱼堡三件套」¥35.0，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "培根蔬萃双层牛堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "培根蔬萃双层牛堡单点合计 ¥47.5（培根蔬萃双层牛堡 + 薯条 + 可乐），本店套餐「培根蔬萃双层牛堡三件套」¥35.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "不素之霸双层牛堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "不素之霸双层牛堡单点合计 ¥49.5（不素之霸双层牛堡 + 薯条 + 可乐），本店套餐「不素之霸双层牛堡三件套」¥37.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "芝士安格斯厚牛堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "芝士安格斯厚牛堡单点合计 ¥54.5（芝士安格斯厚牛堡 + 薯条 + 可乐），本店套餐「芝士安格斯厚牛堡三件套」¥42.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "培根安格斯厚牛堡单点还是套餐便宜？多少钱？",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "培根安格斯厚牛堡单点合计 ¥57.5（培根安格斯厚牛堡 + 薯条 + 可乐），本店套餐「培根安格斯厚牛堡三件套」¥45.5，两者相差 ¥12.0。价格来自麦当劳深圳同方信息港餐厅 2026-10-14 的菜单快照，只比较无条件价。"
+   }
+  }
+ ]
+}
+  </script>
+<!-- prerender:end -->
 
   <h2 class="section-label">这个页面在算什么</h2>
   <div class="seo-body">
@@ -213,6 +397,12 @@
       在 <a href="https://github.com/pandasir/mcd-value">GitHub 仓库</a> 里，需要接入麦当劳 MCP 使用。</p>
   </div>
 
+  <div class="cta">
+    <p>这个页面只是<b>一家门店、一个时间点</b>的回放。完整版会拉你常去那家店的实时菜单，
+      把优惠券和减脂目标一起算进去 —— <b>命令行一条命令就能跑，不需要 Token。</b></p>
+    <a class="star" href="https://github.com/pandasir/mcd-value" target="_blank" rel="noopener">⭐ 在 GitHub 给个 star</a>
+  </div>
+
   <footer>
     <p>这是 <a href="https://github.com/pandasir/mcd-value">麦麦点餐参谋</a> 的静态回放：数据来自一份真实门店菜单快照，算法与命令行版本是同一套。真正使用时它会通过麦当劳 MCP 拉你所在门店的实时菜单，并把优惠券一起算进去。</p>
     <p class="fineprint">只比较「无条件价」，会员价（麦金卡）不参与比价 —— 否则会拿一个你拿不到的价格去比。非麦当劳官方产品。</p>
@@ -223,6 +413,20 @@
 <script>
 (function () {
   const fmt = n => '¥' + n.toFixed(1);
+
+  // 商品名来自门店菜单（外部数据），拼进 innerHTML 前一律转义。
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+
+  // 渠道参数：从落地页 URL 带到 GitHub，日后接分析时才知道 star 从哪来。
+  const q = new URLSearchParams(location.search);
+  const from = q.get('utm_source') || q.get('from') || '';
+  const STAR = 'https://github.com/pandasir/mcd-value'
+    + '?utm_source=gh-pages&utm_medium=cta&utm_campaign=demo'
+    + (from ? '&utm_content=' + encodeURIComponent(from) : '');
+  document.getElementById('fact-star').href = STAR;
+  document.querySelector('.cta a.star').href = STAR;
 
   function render(data) {
     const chips = document.getElementById('chips');
@@ -242,7 +446,8 @@
       b.className = 'chip';
       b.type = 'button';
       b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-      b.innerHTML = s.staple.name + '<span class="p">' + fmt(s.staple.price) + '</span>';
+      b.innerHTML = esc(s.staple.name)
+        + '<span class="p">' + fmt(s.staple.price) + '</span>';
       b.addEventListener('click', () => {
         chips.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', 'false'));
         b.setAttribute('aria-pressed', 'true');
@@ -266,7 +471,7 @@
 
       box.innerHTML = `
         <div class="card">
-          <div class="intent">想吃到：<b>${s.want.join(' + ')}</b></div>
+          <div class="intent">想吃到：<b>${s.want.map(esc).join(' + ')}</b></div>
 
           <div class="row">
             <div class="row-head">
@@ -279,7 +484,7 @@
           ${b ? `
           <div class="row">
             <div class="row-head">
-              <div class="row-name">换个买法 <b>${b.name}</b> ×1</div>
+              <div class="row-name">换个买法 <b>${esc(b.name)}</b> ×1</div>
               <div class="row-amt">${fmt(cheaper)}</div>
             </div>
             <div class="bar two"><i style="width:0"></i></div>
@@ -289,7 +494,9 @@
             <div class="gap-label">同样的东西，你多花了</div>
             <div class="gap-value neg">${fmt(s.gap)}</div>
           </div>
-          ${data.stats.uniformGap != null ? `<p class="note">这家店 ${data.stats.verified} 个汉堡的套餐差价都是 ${fmt(data.stats.uniformGap)} —— 换着点差价不变，变的是起点价。</p>` : ''}` : `
+          ${data.stats.uniformGap != null ? `<p class="note">这家店 ${data.stats.verified} 个汉堡的套餐差价都是 ${fmt(data.stats.uniformGap)} —— 换着点差价不变，变的是起点价。</p>` : ''}
+          <p class="note">这一屏是回放。完整版会去拉你常去那家店的实时菜单，把券也算进去 ——
+            <a href="${STAR}" target="_blank" rel="noopener">⭐ 在 GitHub 给个 star</a>，让更多人少花这 ${fmt(s.gap)}。</p>` : `
           <div class="gap">
             <div class="gap-label">这家店没有能一次买齐的套餐</div>
             <div class="gap-value">—</div>
@@ -298,9 +505,9 @@
           <details>
             <summary>钱是怎么算出来的</summary>
             <ul class="bill">
-              ${s.parts.map(p => `<li><span>${p.name}</span><span>${fmt(p.price)}</span></li>`).join('')}
+              ${s.parts.map(p => `<li><span>${esc(p.name)}</span><span>${fmt(p.price)}</span></li>`).join('')}
               <li class="sum"><span>单点合计</span><span>${fmt(total)}</span></li>
-              ${b ? `<li><span>${b.name}（套餐价）</span><span>${fmt(b.price)}</span></li>` : ''}
+              ${b ? `<li><span>${esc(b.name)}（套餐价）</span><span>${fmt(b.price)}</span></li>` : ''}
             </ul>
             <p class="note">两边的价格来自同一次 <code>query-meals</code> 返回、同一个价格口径。这里不算「划线价省了多少」—— 你本来也不会按划线价买。</p>
           </details>

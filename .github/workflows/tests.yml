@@ -61,3 +61,9 @@ jobs:
           python scripts/coupon_doctor.py --budget 45 --no-orders
           python scripts/coupon_doctor.py --budget 45 --orders-per-week 1
           python scripts/coupon_doctor.py --budget 45 --json > /dev/null
+
+      # 网页层的数字必须与求解器一致：demo-data.json 与预渲染区块都不能手改
+      - name: 校验网页数据与页面预渲染同步
+        run: |
+          python scripts/build_demo.py --check
+          python scripts/build_pages.py --check

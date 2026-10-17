@@ -72,8 +72,12 @@ def staple_singles(idx: dict) -> list[dict]:
     return out
 
 
-def build(idx: dict) -> dict:
-    """把菜单索引压成网页 Demo 需要的数据（场景、统计、门店元信息）。"""
+def build(idx: dict, max_scenes: int | None = MAX_SCENES) -> dict:
+    """把菜单索引压成网页 Demo 需要的数据（场景、统计、门店元信息）。
+
+    `max_scenes=None` 保留全部场景：网页首屏只需要前几个，
+    但静态预渲染（build_pages.py）要用全部场景铺长尾关键词。
+    """
     # ---- 全菜单扫描：复用终端演示的口径 ----
     rows = D.scene_bundle_gap(idx)
     scan = {
@@ -138,7 +142,8 @@ def build(idx: dict) -> dict:
         "verified": len(scenes),
         "uniformGap": round(next(iter(gaps)), 1) if len(gaps) == 1 else None,
     }
-    scenes = scenes[:MAX_SCENES]
+    if max_scenes is not None:
+        scenes = scenes[:max_scenes]
 
     return {
         "store": idx["store"],

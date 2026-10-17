@@ -321,7 +321,11 @@ git clone https://github.com/pandasir/mcd-value && cd mcd-value
 python scripts/adviser.py --budget 45 --mode balanced   # 45 元吃一餐均衡的
 python scripts/coupon_doctor.py --budget 45             # 券包体检 + 用券排程
 python demo.py                                          # 开头那三个例子，七个场景一次跑完
+python scripts/build_pages.py                           # 把比价结果预渲染进网页（爬虫可读）
 ```
+
+> 网页 Demo（`docs/index.html`）里的那 12 行数字是**生成出来的**，不要手改：
+> 改 `data/` 之后跑 `build_demo.py` + `build_pages.py`，CI 会校验两边是否同源。
 
 它读的是项目自带的一份**真实门店快照**（2026-10-14 抓取，已脱敏，不含任何个人信息）。
 
