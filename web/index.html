@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>麦麦点餐参谋 · 在线试玩</title>
+<meta name="description" content="同一家麦当劳门店，同一份东西，单点比买套餐多花多少钱？用真实菜单快照现场算一遍，不用安装。">
+<meta property="og:title" content="麦麦点餐参谋 · 在线试玩">
+<meta property="og:description" content="同一家麦当劳门店，同一份东西，单点比买套餐多花多少钱？">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://pandasir.github.io/mcd-value/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pandasir.github.io/mcd-value/og.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍟</text></svg>">
+<style>
+  :root{
+    --ink:#191817;
+    --muted:#6f6a64;
+    --faint:#9c968e;
+    --line:#e7e3dc;
+    --bg:#fbfaf8;
+    --card:#fff;
+    --red:#da291c;
+    --red-soft:#fdeceb;
+    --yellow:#ffc72c;
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 64px}
+
+  /* ---------- 头部 ---------- */
+  .tag{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;letter-spacing:.04em;color:var(--red);
+    background:var(--red-soft);border-radius:999px;padding:4px 11px;
+    font-weight:600;
+  }
+  h1{font-size:clamp(26px,5.6vw,34px);line-height:1.25;margin:14px 0 6px;letter-spacing:-.01em}
+  .lede{margin:0;color:var(--muted);font-size:15px}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* ---------- 选择器 ---------- */
+  .section-label{
+    margin:30px 0 10px;font-size:12px;font-weight:700;letter-spacing:.06em;
+    color:var(--faint);text-transform:uppercase;
+  }
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    appearance:none;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;
+    cursor:pointer;transition:.16s ease;font-weight:500;
+    display:inline-flex;align-items:baseline;gap:6px;
+  }
+  .chip .p{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+  .chip:hover{border-color:#cfc9c0;transform:translateY(-1px)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip[aria-pressed="true"] .p{color:rgba(255,255,255,.62)}
+  .chip:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+
+  /* ---------- 结果卡 ---------- */
+  .card{
+    margin-top:22px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:22px 22px 18px;
+    box-shadow:0 1px 2px rgba(25,24,23,.04),0 12px 28px -18px rgba(25,24,23,.18);
+  }
+  .intent{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .intent b{color:var(--ink);font-weight:600}
+
+  .row{margin-bottom:14px}
+  .row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .row-name{font-size:13px;color:var(--muted)}
+  .row-name b{color:var(--ink);font-weight:600}
+  .row-amt{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .bar{height:10px;border-radius:99px;background:#f1eee9;overflow:hidden}
+  .bar > i{
+    display:block;height:100%;border-radius:99px;width:0;
+    transition:width .5s cubic-bezier(.22,.8,.3,1);
+  }
+  .bar.one > i{background:#c9c3ba}
+  .bar.two > i{background:linear-gradient(90deg,var(--red),#e8553f)}
+
+  .gap{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-top:18px;padding-top:16px;border-top:1px dashed var(--line);
+  }
+  .gap-label{font-size:14px;color:var(--muted)}
+  .gap-value{font-size:30px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .gap-value.neg{color:var(--red)}
+
+  /* ---------- 明细 ---------- */
+  details{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  summary{
+    cursor:pointer;font-size:13px;color:var(--muted);list-style:none;
+    display:flex;align-items:center;gap:6px;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"＋";color:var(--faint);font-weight:700}
+  details[open] summary::before{content:"−"}
+  .bill{margin:12px 0 0;padding:0;list-style:none;font-size:13.5px}
+  .bill li{display:flex;justify-content:space-between;padding:5px 0;color:var(--muted)}
+  .bill li span:last-child{font-variant-numeric:tabular-nums;color:var(--ink)}
+  .bill li.sum{border-top:1px solid var(--line);margin-top:6px;padding-top:8px;color:var(--ink);font-weight:600}
+  .note{font-size:12.5px;color:var(--faint);margin:10px 0 0;line-height:1.65}
+
+  /* ---------- 事实条 ---------- */
+  .facts{
+    margin-top:26px;display:grid;gap:10px;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  }
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .fact .k{font-size:12px;color:var(--faint);margin-bottom:3px}
+  .fact .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .fact .v small{font-size:12px;font-weight:500;color:var(--muted);margin-left:4px}
+
+  /* ---------- 页脚 ---------- */
+  footer{margin-top:34px;font-size:13px;color:var(--muted);line-height:1.75}
+  footer a{color:var(--red);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(218,41,28,.28)}
+  footer a:hover{border-bottom-color:var(--red)}
+  .fineprint{font-size:12px;color:var(--faint);margin-top:14px}
+  .loading{padding:40px 0;text-align:center;color:var(--faint);font-size:14px}
+  .err{background:var(--red-soft);color:#8a1c12;border-radius:12px;padding:14px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="tag">在线试玩 · 不用装任何东西</span>
+  <h1>同一份麦当劳，你多花了多少？</h1>
+  <p class="lede">挑一个汉堡。它把这家门店的<b>两种买法</b>摆在一起算给你看 —— 单点，还是买成套餐。</p>
+
+  <div class="section-label">我想吃</div>
+  <div class="chips" id="chips" role="group" aria-label="选择汉堡"></div>
+
+  <div id="result">
+    <div class="loading">正在读取菜单快照…</div>
+  </div>
+
+  <div class="facts" id="facts" hidden>
+    <div class="fact">
+      <div class="k">这家店的三件套</div>
+      <div class="v" id="fact-verified">—<small>个</small></div>
+    </div>
+    <div class="fact">
+      <div class="k">套餐比单点便宜</div>
+      <div class="v" id="fact-gap">—</div>
+    </div>
+    <div class="fact">
+      <div class="k">菜单快照</div>
+      <div class="v" id="fact-date" style="font-size:15px">—</div>
+    </div>
+  </div>
+
+  <footer>
+    <p>这是 <a href="https://github.com/pandasir/mcd-value">麦麦点餐参谋</a> 的静态回放：数据来自一份真实门店菜单快照，算法与命令行版本是同一套。真正使用时它会通过麦当劳 MCP 拉你所在门店的实时菜单，并把优惠券一起算进去。</p>
+    <p class="fineprint">只比较「无条件价」，会员价（麦金卡）不参与比价 —— 否则会拿一个你拿不到的价格去比。非麦当劳官方产品。</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  const fmt = n => '¥' + n.toFixed(1);
+
+  function render(data) {
+    const chips = document.getElementById('chips');
+    const box = document.getElementById('result');
+    const facts = document.getElementById('facts');
+
+    document.getElementById('fact-verified').innerHTML =
+      data.stats.verified + '<small>个</small>';
+    document.getElementById('fact-gap').textContent =
+      data.stats.uniformGap == null ? '不等' : fmt(data.stats.uniformGap);
+    document.getElementById('fact-date').textContent =
+      (data.store.capturedAt || '').slice(0, 10);
+    facts.hidden = false;
+
+    data.scenes.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.className = 'chip';
+      b.type = 'button';
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+      b.innerHTML = s.staple.name + '<span class="p">' + fmt(s.staple.price) + '</span>';
+      b.addEventListener('click', () => {
+        chips.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', 'false'));
+        b.setAttribute('aria-pressed', 'true');
+        show(s);
+      });
+      chips.appendChild(b);
+    });
+
+    show(data.scenes[0]);
+    selectFirst(chips);
+
+    function selectFirst(container) {
+      container.querySelectorAll('.chip')[0]?.setAttribute('aria-pressed', 'true');
+    }
+
+    function show(s) {
+      const b = s.bundle;
+      const total = s.singleTotal;
+      const cheaper = b ? b.price : null;
+      const pct = v => Math.max(6, Math.min(100, (v / total) * 100));
+
+      box.innerHTML = `
+        <div class="card">
+          <div class="intent">想吃到：<b>${s.want.join(' + ')}</b></div>
+
+          <div class="row">
+            <div class="row-head">
+              <div class="row-name">单点买法 <b>${s.parts.length} 件</b></div>
+              <div class="row-amt">${fmt(total)}</div>
+            </div>
+            <div class="bar one"><i style="width:100%"></i></div>
+          </div>
+
+          ${b ? `
+          <div class="row">
+            <div class="row-head">
+              <div class="row-name">换个买法 <b>${b.name}</b> ×1</div>
+              <div class="row-amt">${fmt(cheaper)}</div>
+            </div>
+            <div class="bar two"><i style="width:0"></i></div>
+          </div>
+
+          <div class="gap">
+            <div class="gap-label">同样的东西，你多花了</div>
+            <div class="gap-value neg">${fmt(s.gap)}</div>
+          </div>
+          ${data.stats.uniformGap != null ? `<p class="note">这家店 ${data.stats.verified} 个汉堡的套餐差价都是 ${fmt(data.stats.uniformGap)} —— 换着点差价不变，变的是起点价。</p>` : ''}` : `
+          <div class="gap">
+            <div class="gap-label">这家店没有能一次买齐的套餐</div>
+            <div class="gap-value">—</div>
+          </div>`}
+
+          <details>
+            <summary>钱是怎么算出来的</summary>
+            <ul class="bill">
+              ${s.parts.map(p => `<li><span>${p.name}</span><span>${fmt(p.price)}</span></li>`).join('')}
+              <li class="sum"><span>单点合计</span><span>${fmt(total)}</span></li>
+              ${b ? `<li><span>${b.name}（套餐价）</span><span>${fmt(b.price)}</span></li>` : ''}
+            </ul>
+            <p class="note">两边的价格来自同一次 <code>query-meals</code> 返回、同一个价格口径。这里不算「划线价省了多少」—— 你本来也不会按划线价买。</p>
+          </details>
+        </div>`;
+
+      if (b) {
+        requestAnimationFrame(() => {
+          const bar = box.querySelector('.bar.two > i');
+          if (bar) bar.style.width = pct(cheaper).toFixed(1) + '%';
+        });
+      }
+    }
+  }
+
+  fetch('demo-data.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(() => {
+      document.getElementById('result').innerHTML =
+        '<div class="err">数据没加载出来。这个页面需要和 <code>demo-data.json</code> 放在同一个目录下，并且通过 http 打开（直接双击本地文件会被浏览器的同源策略挡住）。</div>';
+    });
+})();
+</script>
+</body>
+</html>

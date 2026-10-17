@@ -27,7 +27,7 @@
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![mcp](https://img.shields.io/badge/MCP-mcd.cn-DA291C)
 
-[它是什么](#它是什么) · [能省多少钱](#三个你每天都在多花钱的地方) · [安装](#安装) · [怎么用](#怎么用) · [适合谁](#适合谁) · [诚实说明](#几个诚实的说明)
+[在线试玩](https://pandasir.github.io/mcd-value/) · [它是什么](#它是什么) · [能省多少钱](#三个你每天都在多花钱的地方) · [安装](#安装) · [怎么用](#怎么用) · [适合谁](#适合谁) · [诚实说明](#几个诚实的说明)
 
 <sub>麦当劳程序员创意开发大赛参赛作品 · 非麦当劳官方产品 · MIT</sub>
 
