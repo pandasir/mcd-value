@@ -253,8 +253,15 @@ def resolve_bundle(name: str, table: dict[str, dict]) -> dict | None:
     base = base.replace("（7件任选）", "").strip()
 
     key = ALIAS.get(base, base)
-    base_exact = key in table
-    if not base_exact:
+    # 代餐别名不算精确。ALIAS 里混着「真名对齐」和「营养代餐」两类，
+    # 后者（「龙焰鸡腿堡」→「麦辣鸡腿汉堡」）只是借一行营养来估算热量，
+    # 两个商品各自有独立编码与独立价格（¥24.0 / ¥22.5），不是同一件东西。
+    # 若在这里认成精确，`龙焰鸡腿堡三件套`（¥26.9）就会认领「麦辣鸡腿汉堡」，
+    # 于是问「麦辣+薯条+可乐怎么买」被答成 ¥26.9、多花 ¥18.6 —— 商品错了，
+    # 差价也在骗人（真实答案 ¥33.5、多花 ¥12.0）。
+    base_exact = key in table and base not in PROXY_ALIAS
+    if key not in table:
+        # 菜单名在营养库里连代餐都没有，退化为兜底代表单品（同样只用于建模）
         key = BUNDLE_BASE_FALLBACK.get(base) or BUNDLE_BASE_FALLBACK.get(name)
     if key is None or key not in table:
         return None

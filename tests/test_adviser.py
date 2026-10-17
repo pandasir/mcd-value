@@ -258,6 +258,18 @@ class TestIdentity(unittest.TestCase):
         identity = self._nutri("巨无霸三件套")["identity"]
         self.assertLessEqual({"巨无霸", "中薯条", "可乐中杯"}, set(identity))
 
+    def test_proxy_alias_bundle_is_not_identity(self) -> None:
+        """借代餐别名建模的套餐，不得认领代餐主体。
+
+        「龙焰鸡腿堡」在 ALIAS 里指向「麦辣鸡腿汉堡」，只为借一行营养估算热量；
+        两者是不同商品（¥24.0 / ¥22.5，各自独立编码）。若把这层别名当成精确命中，
+        「龙焰鸡腿堡三件套」（¥26.9）就会认领麦辣鸡腿汉堡 —— 问「麦辣+薯条+可乐
+        怎么买」被答成 ¥26.9、多花 ¥18.6，而真实答案是 ¥33.5、多花 ¥12.0。
+        """
+        identity = self._nutri("龙焰鸡腿堡三件套")["identity"]
+        self.assertNotIn("麦辣鸡腿汉堡", identity)
+        self.assertIn("中薯条", identity)
+
     def test_no_duplicated_components(self) -> None:
         """营养不得重复计入。
 
@@ -299,6 +311,17 @@ class TestIntentCompare(unittest.TestCase):
         self.assertTrue(result["member_cover"], "应能列出会员价买法")
         for row in result["member_cover"]:
             self.assertEqual(row["price_tier"], "member")
+
+    def test_other_burgers_bundle_cannot_win(self) -> None:
+        """别的汉堡的套餐不能顶替所问的汉堡，差价也不得被它放大。
+
+        龙焰鸡腿堡三件套（¥26.9）曾因代餐别名混进麦辣的候选里，
+        把「多花 ¥12.0」算成「多花 ¥18.6」。
+        """
+        result = adviser.compare_intent(
+            self.idx, adviser.parse_intent("麦辣鸡腿汉堡+薯条+可乐"))
+        self.assertEqual(result["best"]["name"], "麦辣鸡腿汉堡三件套")
+        self.assertAlmostEqual(result["gap"], 12.0, places=1)
 
     def test_member_flag_changes_price_basis(self) -> None:
         """--member 时比价按会员价口径，结构买法应更便宜。"""

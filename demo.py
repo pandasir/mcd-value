@@ -76,7 +76,12 @@ def scene_bundle_gap(idx: dict) -> list[dict]:
         if not any(k in it["name"] for k in BUNDLE_MARKS):
             continue
         ident = (idx["nutrition"].get(it["code"]) or {}).get("identity") or []
+        comps = (idx["nutrition"].get(it["code"]) or {}).get("components") or []
         if len(ident) < 2:
+            continue
+        # 身份缺件的套餐不参与比价：拿「套餐价」去比「只有薯条 + 可乐」，
+        # 得出的差价没有意义（实测会产出 +¥0.1、-¥13.5 这类噪声行）。
+        if len(ident) != len(comps):
             continue
         parts = [A.cheapest_for(idx, c) for c in ident]
         if any(p is None for p in parts):
@@ -104,9 +109,14 @@ def scene_member_gap(idx: dict) -> list[dict]:
         three = by_name.get(it["name"].replace("四件套", "三件套"))
         if not three:
             continue
+        gap = round(float(three["price"]) - float(it["price"]), 2)
+        # 只留「四件套确实更便宜」的主食。龙焰那两个例外（三件套 ¥26.9 / 四件套 ¥29.0）
+        # 四件套反而更贵，混进来会把「份数更多反而更便宜」讲成一句假话。
+        if gap <= 0:
+            continue
         rows.append({"name": it["name"].replace("四件套", ""),
                      "four": float(it["price"]), "three": float(three["price"]),
-                     "gap": round(float(three["price"]) - float(it["price"]), 2)})
+                     "gap": gap})
     rows.sort(key=lambda r: (-r["gap"], r["name"]))
     return rows
 
@@ -173,9 +183,12 @@ def print_member_gap(rows: list[dict]) -> None:
     for r in rows[:6]:
         print(f"     · {r['name']}：三件套 {yuan(r['three'])} > 四件套 {yuan(r['four'])}"
               f"　→ 省 {yuan(r['gap'])}")
+    if len(rows) > 6:
+        print(f"     · ……另有 {len(rows) - 6} 组，未列出")
     print()
-    print("   ⚠️ 这 8 组的四件套那一侧**全部是麦金卡会员价**。没卡时这个价拿不到，")
-    print("      「份数更多反而更便宜」不成立 —— 成立的是「有卡每单省 ¥3~¥6.5」。")
+    print(f"   ⚠️ 全部 {len(rows)} 组的四件套那一侧**都是麦金卡会员价**。没卡时这个价拿不到，")
+    print(f"      「份数更多反而更便宜」不成立 —— 成立的是「有卡每单省 "
+          f"{yuan(rows[-1]['gap'])}~{yuan(rows[0]['gap'])}」。")
     print("      本项目默认把会员价排除在推荐之外，用 --member 才会纳入。")
     print()
 
