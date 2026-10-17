@@ -14,8 +14,6 @@
 
 <a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a>
 
-<sub>参赛冲榜中 · 10 月 26 日定榜 · 现在离榜单门槛只差 1 颗星</sub>
-
 </div>
 
 ---
