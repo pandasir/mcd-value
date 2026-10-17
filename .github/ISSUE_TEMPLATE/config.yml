@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 在线试玩（不用装环境）
+    url: https://pandasir.github.io/mcd-value/
+    about: 想先看看它算什么，直接开网页，30 秒出结果。
+  - name: 安装与取数问题
+    url: https://github.com/pandasir/mcd-value/blob/main/docs/TOKEN_GUIDE.md
+    about: Token 申请、MCP 配置、拉自己门店菜单的完整步骤都在这里。
+  - name: 麦当劳 MCP 开放平台
+    url: https://open.mcd.cn/mcp
+    about: Token 申请、接口可用性、服务规则以官方为准。

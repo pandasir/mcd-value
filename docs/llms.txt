@@ -1,0 +1,34 @@
+# 麦麦点餐参谋（mcd-value）
+
+> 一个麦当劳点餐参谋：拉取门店真实菜单，把同一批商品的单点 / 套餐 / 组合买法摆在一起算，
+> 叠加优惠券后给出可直接下单的最省方案。非麦当劳官方产品。
+
+## 它解决的问题
+
+同一顿饭，换一种买法，价格能差出十几块钱。
+常见助手只做「推荐」，本项目把「算钱」交给确定性计算：预算、热量、蛋白、忌口是硬门槛，达不到就淘汰；
+算不出来的部分标注「不清楚」，不编数字。
+
+## 关键事实（来自 2026-10-14 深圳同方信息港门店真实快照）
+
+- 13 个能逐个单点的套餐，13 个全都比单点便宜，且每个都正好便宜 ¥12.0
+- 8 组套餐存在「三件套比四件套贵」，这些四件套全部需要麦金卡会员身份
+- 券包名义总额 ¥26.7，按用户真实点单频率（8 笔订单 / 212 天 / 0.26 单每周）只能兑现 ¥13.5，¥13.2 会随券过期
+
+## 链接
+
+- 在线试玩（免安装）：https://pandasir.github.io/mcd-value/
+- 源码仓库：https://github.com/pandasir/mcd-value
+- MCP 接入说明：https://github.com/pandasir/mcd-value/blob/main/MCP_INTEGRATION.md
+- 取数指南：https://github.com/pandasir/mcd-value/blob/main/docs/TOKEN_GUIDE.md
+
+## 使用方式
+
+1. 在支持 MCP 的客户端（WorkBuddy / Claude / Cursor / VS Code 等）里接入 `https://mcp.mcd.cn`
+2. 安装本仓库作为技能，按 SKILL.md 的口径执行
+3. 或者只用 Python 3.9+ 跑 `python demo.py`，不需要 Token 和网络
+
+## 数据来源
+
+麦当劳 MCP（mcp.mcd.cn）的门店菜单、营养库、优惠券与计价接口。
+餐品信息、价格及供应状态以麦当劳官方渠道的实时结果为准。

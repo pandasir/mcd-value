@@ -1,0 +1,42 @@
+name: 我想要我这家店
+description: 说一家你常去的门店和你的点单场景，我们会把它加进快照
+title: "[门店] "
+labels: ["store-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        目前仓库里带的是一份深圳门店的真实快照，用来演示口径。
+        你说一家店 + 你的场景，我们优先补那一家的数据。
+
+  - type: input
+    id: store
+    attributes:
+      label: 门店
+      description: 城市 + 门店名或门店号。
+      placeholder: 北京 · 中关村
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: scenario
+    attributes:
+      label: 你主要想解决哪件事
+      options:
+        - label: 每天一顿，固定预算，想知道怎么点最划算
+        - label: 在减脂 / 增肌，有热量和蛋白目标
+        - label: 有忌口，不想一个个翻菜单
+        - label: 手里券多，想知道先用哪张、哪张会用不掉
+        - label: 一群人一起吃，要在总预算里配餐
+
+  - type: input
+    id: budget
+    attributes:
+      label: 一顿大概花多少钱
+      placeholder: "45"
+
+  - type: textarea
+    id: note
+    attributes:
+      label: 还有别的想说的吗
+      description: 可选。比如你们那家店的套餐结构怪在哪儿。

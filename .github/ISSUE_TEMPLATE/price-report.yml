@@ -1,0 +1,60 @@
+name: 报一个算错的地方
+description: 价格、套餐组成、券金额、营养数值 —— 哪个结论和你在门店看到的对不上
+title: "[数据] "
+labels: ["data-accuracy"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这个项目的所有结论都建立在门店真实快照上。
+        快照过期、门店调价、套餐改组成 —— 只要你说得出来，我们改。
+
+        报错时最有用的是**同一批商品的两种买法各花了多少钱**，而不是一句「算错了」。
+
+  - type: input
+    id: store
+    attributes:
+      label: 哪家门店
+      description: 城市 + 门店名，或门店号。
+      placeholder: 深圳 · 同方信息港
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 哪一类不对
+      options:
+        - 价格对不上
+        - 套餐包含的商品不对
+        - 优惠券金额不对
+        - 热量 / 蛋白 / 钠 数值不对
+        - 忌口筛选漏了东西
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: case
+    attributes:
+      label: 具体是哪条结论
+      description: 贴它当时给你的输出，或者把商品和金额写下来。
+      placeholder: |
+        它说「巨无霸三件套 ¥36.5」，我在门店看到的是 ¥38.0。
+    validations:
+      required: true
+
+  - type: input
+    id: when
+    attributes:
+      label: 你是什么时候看到的
+      description: 日期就行，用于判断是不是快照过期。
+      placeholder: "2026-10-17"
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 上面没写手机号、券码、订单号这类个人信息
+          required: true

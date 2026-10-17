@@ -403,6 +403,17 @@ python demo.py                                          # 开头那三个例子�
 
 ---
 
+## 发现对不上的地方
+
+价格、套餐组成、券金额、营养数值 —— 只要和你在门店看到的对不上，说一声就行。
+
+快照会过期，门店会调价，套餐也会改组成。这些都只能靠真实反馈来修。
+
+- [报一个算错的地方](https://github.com/pandasir/mcd-value/issues/new?template=price-report.yml) —— 哪家店、哪条结论、你看到的是什么
+- [我想要我这家店](https://github.com/pandasir/mcd-value/issues/new?template=store-request.yml) —— 说城市和门店，优先补那一家
+
+---
+
 ## 免责声明
 
 本项目为「麦当劳程序员创意开发大赛」参赛作品，由参赛者独立开发，**非麦当劳官方产品**。
