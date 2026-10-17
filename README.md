@@ -4,16 +4,34 @@
 
 **同一顿饭，换一种买法，能差出十几块钱。**
 
+你说想吃「巨无霸 + 薯条 + 可乐」——
+
+顺手点 **¥48.5** 　→　 换个买法 **¥36.5** 　→　 你多花了 **¥12.0**
+
+![同一个意图，两种买法：顺手点 ¥48.5，换个买法 ¥36.5](assets/demo-dual-view.svg)
+
+东西一模一样，多拿的还是一份薯条和一杯可乐。
+
+<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a>
+
+<sub>参赛冲榜中 · 10 月 26 日定榜 · 现在离榜单门槛只差 1 颗星</sub>
+
+</div>
+
+---
+
+<div align="center">
+
 你想吃什么、预算多少、在减脂还是在忌口 —— 说一句人话，
 它把这家门店所有买法摆在一起，告诉你哪个划算、你贵在哪、券该怎么用。
-
-麦当劳程序员创意开发大赛参赛作品 · 非麦当劳官方产品 · MIT
 
 ![tests](https://github.com/pandasir/mcd-value/actions/workflows/tests.yml/badge.svg)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![mcp](https://img.shields.io/badge/MCP-mcd.cn-DA291C)
 
 [它是什么](#它是什么) · [能省多少钱](#三个你每天都在多花钱的地方) · [安装](#安装) · [怎么用](#怎么用) · [适合谁](#适合谁) · [诚实说明](#几个诚实的说明)
+
+<sub>麦当劳程序员创意开发大赛参赛作品 · 非麦当劳官方产品 · MIT</sub>
 
 </div>
 
@@ -34,20 +52,6 @@
 它**不猜、不编、不估**。算不出来的，它会直说算不出来。
 
 > 又名：麦麦点餐参谋 / 麦当劳点餐参谋 / 麦当劳省钱助手 / 减脂点餐助手 / MCD Value Strategist。
-
----
-
-## 一句话就懂
-
-你说想吃「巨无霸 + 薯条 + 可乐」：
-
-> **顺手点　¥48.5**
-> **同一家店，换个买法　¥36.5**
-> **你多花了　¥12.0**
-
-东西一模一样，多拿的还是一份薯条和一杯可乐。
-
-![同一个意图，两种买法：顺手点 ¥48.5，换个买法 ¥36.5](assets/demo-dual-view.svg)
 
 ---
 
