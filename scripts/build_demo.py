@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-build_demo.py —— 为网页 Demo 生成精简数据（web/demo-data.json）
+build_demo.py —— 为网页 Demo 生成精简数据（docs/demo-data.json）
 
 为什么不直接把 data/index.json 丢给前端：
   1. 前端只需要展示字段，index.json 里还有门店元信息、营养覆盖率等无关内容；
@@ -12,7 +12,7 @@ build_demo.py —— 为网页 Demo 生成精简数据（web/demo-data.json）
 所以：Python 算，JS 只切场景、渲染。
 
 用法：
-  python scripts/build_demo.py            # 写 web/demo-data.json
+  python scripts/build_demo.py            # 写 docs/demo-data.json
   python scripts/build_demo.py --check    # 只校验关键数字，不写文件
 """
 
@@ -31,7 +31,7 @@ import adviser as A  # noqa: E402
 import demo as D  # noqa: E402
 
 INDEX = ROOT / "data" / "index.json"
-OUT = ROOT / "web" / "demo-data.json"
+OUT = ROOT / "docs" / "demo-data.json"
 
 # 场景固定为「一个汉堡 + 中薯条 + 可乐中杯」——这是绝大多数人的真实点法
 SIDE = "中薯条"
