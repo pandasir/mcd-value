@@ -12,7 +12,7 @@ Order the obvious way **¥48.5** 　→　 Order it a different way **¥36.5** �
 
 Identical items. You even get the same fries and the same Coke.
 
-<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a>
+<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a> · <a href="https://pandasir.github.io/mcd-value/">Live demo (no token)</a>
 
 </div>
 
@@ -70,7 +70,7 @@ You overpaid                                            ¥12.0
 
 People who order the trio pay 12 yuan less and get exactly the same three items.
 
-This isn't a one-off. Scanning the whole menu: **13 combos whose items can each be ordered individually — all 13 are cheaper, and every single one is cheaper by exactly ¥12.0** —
+Across the **12 verified comparisons between single burgers and matching trios**, every trio is cheaper by exactly ¥12.0 — the price gap is the same across all 12 checked items:
 the combo discount is fixed at this store, regardless of items:
 
 ```

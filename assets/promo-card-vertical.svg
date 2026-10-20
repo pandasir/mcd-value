@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title id="title">同一顿麦当劳，换个买法差12元</title>
+  <desc id="desc">深圳同方信息港门店2026年10月14日快照：巨无霸加薯条加可乐单点48.5元，巨无霸三件套36.5元，差12元。在线演示免Token。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffaf4"/>
+      <stop offset="1" stop-color="#fff0ec"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#6d211b" flood-opacity=".10"/>
+    </filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <circle cx="1000" cy="120" r="210" fill="#ffc72c" opacity=".18"/>
+  <circle cx="45" cy="1160" r="250" fill="#da291c" opacity=".07"/>
+
+  <g font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif">
+    <rect x="72" y="72" width="345" height="54" rx="27" fill="#da291c"/>
+    <text x="244" y="108" text-anchor="middle" font-size="24" font-weight="700" fill="#fff">麦麦点餐参谋 · 实测比价</text>
+
+    <text x="72" y="235" font-size="66" font-weight="800" fill="#191817">同一顿麦当劳</text>
+    <text x="72" y="325" font-size="66" font-weight="800" fill="#191817">换个买法，差 <tspan fill="#da291c">¥12</tspan></text>
+    <text x="76" y="390" font-size="27" fill="#6f625d">想吃：巨无霸 + 薯条 + 可乐</text>
+
+    <g filter="url(#shadow)">
+      <rect x="72" y="458" width="936" height="258" rx="28" fill="#fff" stroke="#eadbd4" stroke-width="2"/>
+    </g>
+    <text x="120" y="520" font-size="22" font-weight="700" letter-spacing="2" fill="#998b85">单点买法</text>
+    <text x="120" y="590" font-size="34" fill="#332b28">巨无霸 + 薯条 + 可乐</text>
+    <text x="954" y="602" text-anchor="end" font-size="65" font-weight="800" fill="#6b625e">¥48.5</text>
+    <line x1="120" y1="636" x2="960" y2="636" stroke="#eee7e2" stroke-width="2"/>
+    <text x="120" y="685" font-size="25" font-weight="700" fill="#da291c">顺手逐个点</text>
+
+    <g filter="url(#shadow)">
+      <rect x="72" y="750" width="936" height="258" rx="28" fill="#fff" stroke="#b9dcc8" stroke-width="3"/>
+    </g>
+    <text x="120" y="812" font-size="22" font-weight="700" letter-spacing="2" fill="#648472">组合买法</text>
+    <text x="120" y="882" font-size="34" font-weight="700" fill="#1f5538">巨无霸三件套</text>
+    <text x="954" y="894" text-anchor="end" font-size="65" font-weight="800" fill="#1f6b45">¥36.5</text>
+    <line x1="120" y1="928" x2="960" y2="928" stroke="#e4eee8" stroke-width="2"/>
+    <text x="120" y="977" font-size="25" font-weight="700" fill="#1f6b45">同样三样东西</text>
+
+    <rect x="72" y="1044" width="936" height="132" rx="28" fill="#da291c"/>
+    <text x="540" y="1132" text-anchor="middle" font-size="56" font-weight="800" fill="#fff">多花了 ¥12.0</text>
+
+    <text x="72" y="1238" font-size="20" font-weight="600" fill="#4f4743">深圳同方信息港 · 菜单快照 2026-10-14 · 无条件价</text>
+    <text x="72" y="1280" font-size="19" fill="#6f625d">在线演示免 Token：pandasir.github.io/mcd-value</text>
+    <text x="1008" y="1280" text-anchor="end" font-size="17" fill="#9b8d87">非麦当劳官方产品 · 价格以门店为准</text>
+  </g>
+</svg>

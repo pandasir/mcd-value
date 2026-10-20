@@ -12,7 +12,7 @@
 
 东西一模一样，多拿的还是一份薯条和一杯可乐。
 
-<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a>
+<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a> · <a href="https://pandasir.github.io/mcd-value/">在线试玩（免 Token）</a>
 
 </div>
 
@@ -69,7 +69,7 @@
 
 点三件套的人，少花 12 块，拿到的是同样这三样东西。
 
-这不是个例。全菜单扫一遍：**13 个能逐个单点的套餐，13 个全都更便宜，而且每一个都正好便宜 ¥12.0** ——
+全菜单里有 **12 组已验证的汉堡单点与对应三件套**，每组三件套都便宜 ¥12.0：
 组合价差在这家店是固定的，不挑商品：
 
 ```
