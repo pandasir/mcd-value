@@ -1,16 +1,18 @@
 <div align="center">
 
-# McDonald's Ordering Strategist
+# 麦麦点餐参谋
 
-The same meal can cost a dozen yuan more depending on how you order it.
+同一顿饭，换一种买法，能差出十几块钱。
 
-Say you want a Big Mac, fries, and a Coke. Ordered the obvious way it costs ¥48.5. Ordered a different way it costs ¥36.5, so you overpaid ¥12.0.
+你说想吃「巨无霸 + 薯条 + 可乐」：
 
-![Same intent, two ways to buy: obvious order ¥48.5, better order ¥36.5](assets/demo-dual-view.svg)
+顺手点 **¥48.5** 　→　 换个买法 **¥36.5** 　→　 你多花了 **¥12.0**
 
-The items are identical: the same fries and the same Coke.
+![同一个意图，两种买法：顺手点 ¥48.5，换个买法 ¥36.5](assets/demo-dual-view.svg)
 
-<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a> · <a href="https://pandasir.github.io/mcd-value/">Live demo (no token)</a>
+东西一模一样，多拿的还是一份薯条和一杯可乐。
+
+<a href="https://github.com/pandasir/mcd-value/stargazers"><img src="https://img.shields.io/badge/%E2%AD%90_Star-this_repo-DA291C?style=for-the-badge&logo=github&logoColor=white" alt="Star this repo" height="28"></a> · <a href="https://pandasir.github.io/mcd-value/">在线试玩（免 Token）</a>
 
 </div>
 
@@ -18,126 +20,127 @@ The items are identical: the same fries and the same Coke.
 
 <div align="center">
 
-Tell it what you want to eat, your budget, and whether you are cutting fat or avoiding certain ingredients, in plain language. It lists every way to buy that meal at this store and shows which one is cheaper, where you are overpaying, and how your coupons apply.
+你想吃什么、预算多少、在减脂还是在忌口，说一句人话，
+它把这家门店所有买法摆在一起，告诉你哪个划算、你贵在哪、券该怎么用。
 
 ![tests](https://github.com/pandasir/mcd-value/actions/workflows/tests.yml/badge.svg)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![mcp](https://img.shields.io/badge/MCP-mcd.cn-DA291C)
 
-[Live demo](https://pandasir.github.io/mcd-value/) · [What it is](#what-it-is) · [How much you can save](#three-places-you-overpay-every-day) · [Install](#installation) · [How to use](#how-to-use) · [Who it's for](#who-its-for) · [Caveats](#caveats)
+[在线试玩](https://pandasir.github.io/mcd-value/) · [它是什么](#它是什么) · [能省多少钱](#三个你每天都在多花钱的地方) · [安装](#安装) · [怎么用](#怎么用) · [适合谁](#适合谁) · [几点说明](#几点说明)
 
-<sub>Entry for the McDonald's Programmer Creative Development Contest · Not an official McDonald's product · MIT</sub>
+<sub>麦当劳程序员创意开发大赛参赛作品 · 非麦当劳官方产品 · MIT</sub>
 
 </div>
 
 ---
 
-## What it is
+## 它是什么
 
-It is a McDonald's ordering strategist. You tell it, "I want a Big Mac, fries, and a Coke. What is the cheapest way to order that?" and it does three things:
+一个麦当劳点餐参谋。你对着它说「我想吃巨无霸 + 薯条 + 可乐，怎么点最划算？」，它会做三件事：
 
-1. It pulls the real menu for your store, so the prices are that store's prices for that day rather than items recalled from memory.
-2. It puts every way to buy the same items side by side, including à la carte, combos, and bundles, so you can see which is cheaper.
-3. It factors in the coupons you already have: what each is worth, which to use first, and which will expire unused.
+1. 拉你所在门店的真实菜单。价格就是这家店当天的价格，商品名称和标价都对得上。
+2. 把同一批商品的所有买法摆在一起算，包括单点、套餐和组合，哪个便宜一眼看清。
+3. 把你手里的优惠券一起算进去：每张券值多少钱、哪张先用、哪张会过期作废。
 
-It does not guess or estimate. If it cannot compute something, it says so.
+它不猜也不估。算不出来的，它会直说算不出来。
 
-> Also known as: McDonald's Ordering Strategist / McDonald's Savings Assistant / Fat-loss Ordering Helper / MCD Value Strategist.
-
----
-
-## Three places you overpay every day
-
-The three examples below come from the real menu snapshot of one store, Shenzhen Tongfang Information Port, captured on 2026-10-14. The numbers are that store's listed prices.
-
-### Same items, bought a different way, save ¥12.0
-
-```
-À la carte    Big Mac ¥25.5 + Fries ¥13.5 + Coke ¥9.5   = ¥48.5
-Other way     "Big Mac Trio" ×1                         = ¥36.5
-                                                        ─────────
-You overpaid                                            ¥12.0
-```
-
-People who order the trio pay 12 yuan less and get exactly the same three items.
-
-The menu has 12 verified comparisons between a single burger and its matching trio, and every trio costs exactly ¥12.0 less. The combo discount is fixed at this store regardless of the item:
-
-```
-Spicy Chicken Burger Trio      Combo ¥33.5  <  Items separately ¥45.5   → Save ¥12.0
-Double Beef Burger Trio        Combo ¥37.5  <  Items separately ¥49.5   → Save ¥12.0
-Big Mac Trio                   Combo ¥36.5  <  Items separately ¥48.5   → Save ¥12.0
-Bacon Veggie Double Beef Trio  Combo ¥35.5  <  Items separately ¥47.5   → Save ¥12.0
-```
-
-### Your coupons expire before you can use them
-
-A coupon is money with an expiration date.
-
-Coupon names often do not state an amount. The name "Ace Snack Platter" says nothing about value, and the menu has no such item. The only way to measure the coupon's face value is to price it at the store.
-
-For one account, the measurement came out like this:
-
-```
-[Ready to use]  Medium fries buy-one-get-one    worth ¥13.5 · 3 days left
-[Ready to use]  13.9 Rich Dark Chocolate        worth ¥7.1  · 6 days left
-[Ready to use]  Ace Snack Platter               worth ¥6.1  · 3 days left
-[Unclear]       6 breakfast coupons             amount can't be inferred from names, so we don't guess
-
-Nominal total ¥26.7, all achievable at your spending level, so it looks good.
-
-But look at your ordering habits: 8 orders over 212 days, average ticket ¥23.6, 0.26 orders/week.
-These coupons expire in 6 days, meaning you'll likely place only 1 more order.
-
-The coupon wallet can deliver ¥26.7, but you only have enough opportunities to use ¥13.5.
-The remaining ¥13.2 is guaranteed to expire unused. Wasted.
-```
-
-The useful distinction is between what a coupon is worth and whether you will use it. An assistant that sums only the face value tells you that you have ¥26.7 in coupons. This one tells you that you can use ¥13.5 and that the other ¥13.2 will go to waste.
-
-> The ordering frequency comes from your own order history of 8 real orders, not from an assumption. If we assumed three orders a week, the conclusion would change from "waste ¥13.2" to "almost no waste." A wrong assumption produces wrong advice.
-
-### "More portions for less money" comes with conditions
-
-The menu has 8 cases where the trio costs more than the quartet:
-
-```
-Bacon Angus Thick Beef Burger   Trio ¥45.5  >  Quartet ¥37.0   → Save ¥8.5, plus an extra item
-Grilled Chicken Burger          Trio ¥34.5  >  Quartet ¥28.0   → Save ¥6.5
-Big Mac                         Trio ¥36.5  >  Quartet ¥32.0   → Save ¥4.5
-```
-
-In all 8 cases, the quartet price requires McGold Card membership.
-
-People without the card cannot get that price, so for them there is no loophole, only a saving of ¥3 to ¥6.5 per order with the card.
-
-By default the project recommends using prices anyone can pay. Member prices are included only when you ask for them, because every conclusion should hold for people without the card too.
+> 又名：麦麦点餐参谋 / 麦当劳点餐参谋 / 麦当劳省钱助手 / 减脂点餐助手 / MCD Value Strategist。
 
 ---
 
-## Installation
+## 三个你每天都在多花钱的地方
 
-There are three installation paths. Use Option 1 or 2 if you want the live menu of your usual store. Option 3 is the quickest way to see what the project computes.
+下面三个例子，全部来自同一家门店（深圳同方信息港）2026-10-14 的真实菜单快照。数字是这家店的真实标价。
 
-| What you want | Which option | What you need |
+### ① 同一批东西，换个买法少花 ¥12.0
+
+```
+单点买法    巨无霸 ¥25.5 + 薯条 ¥13.5 + 可乐 ¥9.5   = ¥48.5
+换个买法    「巨无霸三件套」×1                       = ¥36.5
+                                                    ─────────
+你多花了                                            ¥12.0
+```
+
+点三件套的人，少花 12 块，拿到的是同样这三样东西。
+
+全菜单里有 12 组已验证的「汉堡单点 vs 对应三件套」，每组的三件套都便宜 ¥12.0。这家店的组合折扣是固定的，和点哪款商品无关：
+
+```
+麦辣鸡腿汉堡三件套        套餐 ¥33.5  <  逐个单点 ¥45.5   → 省 ¥12.0
+不素之霸双层牛堡三件套    套餐 ¥37.5  <  逐个单点 ¥49.5   → 省 ¥12.0
+巨无霸三件套              套餐 ¥36.5  <  逐个单点 ¥48.5   → 省 ¥12.0
+培根蔬萃双层牛堡三件套    套餐 ¥35.5  <  逐个单点 ¥47.5   → 省 ¥12.0
+```
+
+### ② 你手里的券，其实在漏水
+
+优惠券是有保质期的钱。
+
+麻烦的地方在于：券名里往往没有金额。「王牌小食拼」这张券值多少钱？券名没说，菜单里也没有这个商品。它的真实面值只能拿券去门店计价实测。
+
+某个账户实测下来是这样的：
+
+```
+[顺手可用] 中薯条买一送一    值 ¥13.5 · 还剩 3 天
+[顺手可用] 13.9浓浓黑巧      值 ¥7.1  · 还剩 6 天
+[顺手可用] 王牌小食拼        值 ¥6.1  · 还剩 3 天
+[不清楚]   6 张早餐券        券名推不出金额，我们就不猜
+
+名义总额 ¥26.7，按你的消费水平都能实现，看起来不错。
+
+但看你的点单习惯：8 笔订单，跨度 212 天，客单价 ¥23.6，平均 0.26 单/周。
+这几张券 6 天后就到期，也就是说你大概只会再点 1 单。
+
+券包能实现 ¥26.7，机会却只够用掉 ¥13.5。
+剩下 ¥13.2 注定随券过期，白扔。
+```
+
+券值多少是一回事，用不用得上完全是另一回事。只算「券面总额」的助手会告诉你「你有 ¥26.7 的券」；它告诉你的是「你只能用掉 ¥13.5，另外 ¥13.2 会浪费」。
+
+> 那个点单频率是从你自己的历史订单算出来的（8 笔真实订单），不是拍脑袋定的。用假设「每周点 3 单」去算，结论会从「浪费 ¥13.2」翻成「几乎不浪费」。假设错了，建议就是错的。
+
+### ③ 「份数更多反而更便宜」，是有条件的
+
+菜单里有 8 组「三件套比四件套还贵」的怪事：
+
+```
+培根安格斯厚牛堡   三件套 ¥45.5  >  四件套 ¥37.0   → 省 ¥8.5，还多一份
+板烧鸡腿堡         三件套 ¥34.5  >  四件套 ¥28.0   → 省 ¥6.5
+巨无霸             三件套 ¥36.5  >  四件套 ¥32.0   → 省 ¥4.5
+```
+
+看着像菜单的漏洞？这 8 组的四件套那一侧，全部需要麦金卡会员身份。
+
+没卡的人拿不到那个价，所以对他们来说这里没有漏洞，只是有卡的话每单能省 ¥3 到 ¥6.5。
+
+这个项目默认按「人人可买的价格」来推荐，会员价要你明确说一声才纳入。理由很直白：每一句结论，都要对没卡的人也成立。
+
+---
+
+## 安装
+
+三条路，按你的需要挑一条。想用自己常去那家店的实时菜单，就走方式一或方式二；只想先看看它算什么，方式三最省事。
+
+| 你想怎么用 | 选哪条 | 要准备什么 |
 |---|---|---|
-| Use it inside **WorkBuddy** | Option 1 | A WorkBuddy account + an MCP token |
-| Use it in **Claude / Cursor / VS Code / Cline / Windsurf**, etc. | Option 2 | Any MCP-capable client + an MCP token |
-| No AI client, just run commands yourself | Option 3 | Python (3.9+) |
+| 在 **WorkBuddy** 里用 | 方式一 | WorkBuddy 账号 + MCP Token |
+| 在 **Claude / Cursor / VS Code / Cline / Windsurf** 等里用 | 方式二 | 任意支持 MCP 的客户端 + MCP Token |
+| 不装 AI 客户端，自己跑命令看结果 | 方式三 | 一个 Python（3.9 以上） |
 
 ---
 
-Get a McDonald's MCP token first (required for Options 1 and 2).
+先做这一步（方式一、方式二都要）：申请麦当劳 MCP Token
 
-Open the [McDonald's MCP Open Platform](https://open.mcd.cn/mcp), sign in with your phone number, and go to "Console". Click "Activate" and copy the token, which is a long string like `xxxxxxxx-xxxx-...`. It is free.
+打开 [麦当劳 MCP 开放平台](https://open.mcd.cn/mcp)，用手机号登录，进入「控制台」，点「激活」，复制那串 Token（很长，像 `xxxxxxxx-xxxx-...`）。免费。
 
 ---
 
-### Option 1 · Use it in WorkBuddy
+### 方式一 · 在 WorkBuddy 里用
 
-Step 2: Put the token into WorkBuddy
+第 2 步：把 Token 填进 WorkBuddy
 
-Open WorkBuddy's [Connectors → Custom Connectors → Configure MCP] and paste the contents of [`mcp-config.example.json`](mcp-config.example.json). Replace `Bearer ${MCD_MCP_TOKEN}` with `Bearer <the token you copied>`:
+打开 WorkBuddy 的【连接器 → 自定义连接器 → 配置 MCP】，把项目里 [`mcp-config.example.json`](mcp-config.example.json) 的内容整段粘进去，只需要把 `Bearer ${MCD_MCP_TOKEN}` 换成 `Bearer 你刚才复制的Token`：
 
 ```json
 {
@@ -145,46 +148,46 @@ Open WorkBuddy's [Connectors → Custom Connectors → Configure MCP] and paste 
     "mcd-mcp": {
       "type": "streamablehttp",
       "url": "https://mcp.mcd.cn",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" }
+      "headers": { "Authorization": "Bearer 你的Token" }
     }
   }
 }
 ```
 
-After you save, an `mcd-mcp` entry appears in the top right of the connectors page. Click "Trust" next to it to enable it.
+保存后，连接器页面右上角会多出一个 `mcd-mcp` 条目，点它旁边的「信任」启用。
 
-Step 3: Install this skill
+第 3 步：装上这个技能
 
-Put the project folder in WorkBuddy's skills directory. On macOS or Linux, run:
+把项目文件夹放进 WorkBuddy 的技能目录。macOS / Linux 一行命令：
 
 ```bash
 ln -s "$(pwd)" ~/.workbuddy/skills/mcd-meal-adviser
 ```
 
-Windows users: copy the whole project folder to `%USERPROFILE%\.workbuddy\skills\mcd-meal-adviser`.
+Windows 用户：把整个项目文件夹复制到 `%USERPROFILE%\.workbuddy\skills\mcd-meal-adviser`。
 
-Step 4: Start using it
+第 4 步：开始用
 
-Once it is installed, go back to the chat window and say, "I want a Big Mac, fries, and a Coke. What is the cheapest way to order that?"
+装完就能用了。回到对话框说第一句话：「我想吃巨无霸 + 薯条 + 可乐，怎么点最划算」。
 
-The "How to use" section below lists more examples you can say directly.
+下面「怎么用」一节还列了更多可以直接照说的例子。
 
-> If you install with a symlink (`ln -s`), later `git pull` updates reach the skill automatically, so you do not install it again.
+> 用软链接（`ln -s`）装在技能目录里，以后 `git pull` 拉取更新，技能会自动跟着变，不用再装第二遍。
 
 ---
 
-### Option 2 · Use it in Claude / Cursor / VS Code, etc.
+### 方式二 · 在 Claude / Cursor / VS Code 等客户端里用
 
-Get the token first. Every client uses the same data channel; only the config file and the field names differ. Find your client in the table.
+同样先做完上面那一步拿到 Token。装的都是同一个「取数通道」，区别只是各家的配置放在哪个文件、字段怎么写，对号入座即可。
 
-| Client | Where the config goes | How the field names differ |
+| 客户端 | 配置放在哪 | 字段名有什么不同 |
 |---|---|---|
-| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json` (Windows: `%APPDATA%\Claude\claude_desktop_config.json`) | Top level is `mcpServers` |
-| Claude Code | No file editing, run one command | N/A |
-| Cursor | Global `~/.cursor/mcp.json`, or project `.cursor/mcp.json` | Only `url` + `headers` |
-| VS Code (Copilot) | Project `.vscode/mcp.json` | Top level is `servers`, not `mcpServers` |
-| Cline | Fill in via the extension panel; no file editing | Type is `streamableHttp` |
-| Windsurf | `~/.codeium/windsurf/mcp_config.json` | Use `serverUrl`, not `url` |
+| Claude Desktop | `~/Library/Application Support/Claude/claude_desktop_config.json`（Windows：`%APPDATA%\Claude\claude_desktop_config.json`） | 顶层是 `mcpServers` |
+| Claude Code | 不用改文件，跑一条命令 | 无 |
+| Cursor | 全局 `~/.cursor/mcp.json`，或项目里的 `.cursor/mcp.json` | 只写 `url` + `headers` |
+| VS Code（Copilot） | 项目里的 `.vscode/mcp.json` | 顶层是 `servers`，不是 `mcpServers` |
+| Cline | 扩展面板里填，不用手写文件 | 类型写 `streamableHttp` |
+| Windsurf | `~/.codeium/windsurf/mcp_config.json` | 写 `serverUrl`，不是 `url` |
 
 **Claude Desktop**
 
@@ -194,15 +197,15 @@ Get the token first. Every client uses the same data channel; only the config fi
     "mcd-mcp": {
       "type": "streamable-http",
       "url": "https://mcp.mcd.cn",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" }
+      "headers": { "Authorization": "Bearer 你的Token" }
     }
   }
 }
 ```
 
-After editing, quit the app completely and restart it. Closing the window is not enough, because the config is read only at startup.
+改完要完全退出再重开，关窗口不算，因为配置只在启动时读一次。
 
-If your version does not support the direct connection above, this proxy form works the same way:
+如果你的版本不认上面这种直连写法，换成这个「转发」写法效果一样：
 
 ```json
 {
@@ -210,17 +213,17 @@ If your version does not support the direct connection above, this proxy form wo
     "mcd-mcp": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.mcd.cn",
-               "--header", "Authorization: Bearer YOUR_TOKEN"]
+               "--header", "Authorization: Bearer 你的Token"]
     }
   }
 }
 ```
 
-**Claude Code**: run one command in the terminal:
+**Claude Code**：终端里跑一条就行：
 
 ```bash
 claude mcp add --transport http mcd-mcp https://mcp.mcd.cn \
-  --header "Authorization: Bearer YOUR_TOKEN"
+  --header "Authorization: Bearer 你的Token"
 ```
 
 **Cursor**
@@ -230,15 +233,15 @@ claude mcp add --transport http mcd-mcp https://mcp.mcd.cn \
   "mcpServers": {
     "mcd-mcp": {
       "url": "https://mcp.mcd.cn",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" }
+      "headers": { "Authorization": "Bearer 你的Token" }
     }
   }
 }
 ```
 
-Put it in the global `~/.cursor/mcp.json` (Windows: `%USERPROFILE%\.cursor\mcp.json`), or in the project's `.cursor/mcp.json`. After saving, click refresh in the MCP panel.
+放全局的 `~/.cursor/mcp.json`（Windows 是 `%USERPROFILE%\.cursor\mcp.json`），或者放进项目里的 `.cursor/mcp.json`。存完在 MCP 面板点一下刷新。
 
-**VS Code (Copilot)**
+**VS Code（Copilot）**
 
 ```json
 {
@@ -246,15 +249,15 @@ Put it in the global `~/.cursor/mcp.json` (Windows: `%USERPROFILE%\.cursor\mcp.j
     "mcd-mcp": {
       "type": "http",
       "url": "https://mcp.mcd.cn",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" }
+      "headers": { "Authorization": "Bearer 你的Token" }
     }
   }
 }
 ```
 
-Put it in the project's `.vscode/mcp.json`.
+放在项目里的 `.vscode/mcp.json`。
 
-**Cline**: no file editing. Open the extension's MCP Servers panel, choose Add Remote Server, set the URL to `https://mcp.mcd.cn`, the header name to `Authorization`, and the header value to `Bearer YOUR_TOKEN`.
+**Cline**：不用手写文件。打开扩展的 MCP Servers 面板，选 Add Remote Server，URL 填 `https://mcp.mcd.cn`，Header 名填 `Authorization`，Header 值填 `Bearer 你的Token`。
 
 **Windsurf**
 
@@ -263,141 +266,146 @@ Put it in the project's `.vscode/mcp.json`.
   "mcpServers": {
     "mcd-mcp": {
       "serverUrl": "https://mcp.mcd.cn",
-      "headers": { "Authorization": "Bearer YOUR_TOKEN" }
+      "headers": { "Authorization": "Bearer 你的Token" }
     }
   }
 }
 ```
 
-Other clients (Gemini CLI, etc.) follow the same pattern: set the URL to `https://mcp.mcd.cn`, then add an `Authorization: Bearer YOUR_TOKEN` request header.
+其余客户端（Gemini CLI 等）也是同一个套路：填 URL `https://mcp.mcd.cn`，再加一个 `Authorization: Bearer 你的Token` 请求头。
 
-Step 3: Check the connection
+第 3 步：看连上了没有
 
-Ask "List the McDonald's tools you can use." If it names a set of tools, the connection works.
+随便问一句「列出你能用的麦当劳工具」。能报出一串工具名，就是通了。
 
-Step 4: Make it compute the way this project does
+第 4 步：让它按本项目的口径算
 
-What you installed is only the data channel. [`SKILL.md`](SKILL.md) in the same directory defines how to compute: which data to fetch first, what the hard constraints are, and which numbers must not be invented. Open the project directory as your working directory, then tell it:
+上面装的只是「取数通道」。同一个目录里的 [`SKILL.md`](SKILL.md) 写的是怎么算：先拉哪些数据、哪些是硬门槛、哪些数不许编。把项目目录当工作目录打开，然后跟它说：
 
-> Read SKILL.md first, then follow its workflow strictly.
+> 先读一遍 SKILL.md，之后严格按里面的流程执行。
 
-If you want it to read this automatically every time, put that sentence into the client's project rules file (Claude Code uses `CLAUDE.md`, Cursor uses `.cursor/rules`, many other clients use `AGENTS.md`).
+想让它每次都自动先读，就把这句话写进该客户端的项目规则文件（Claude Code 认 `CLAUDE.md`、Cursor 认 `.cursor/rules`、很多其他客户端认 `AGENTS.md`）。
 
 ---
 
-### Option 3 · No AI client, just run it
+### 方式三 · 不用 AI 客户端，自己跑
 
-You need only Python 3.9 or later. No token, network access, or account registration is required:
+只要 Python（3.9 以上），不需要 Token，不联网，也不需要注册任何账号：
 
 ```bash
 git clone https://github.com/pandasir/mcd-value && cd mcd-value
 
-python scripts/adviser.py --budget 45 --mode balanced   # a balanced meal for 45 yuan
-python scripts/coupon_doctor.py --budget 45             # coupon wallet checkup + usage schedule
-python demo.py                                          # the three examples above, seven scenarios in one run
-python scripts/build_pages.py                           # pre-render comparisons into the web page (crawler-readable)
+python scripts/adviser.py --budget 45 --mode balanced   # 45 元吃一餐均衡的
+python scripts/coupon_doctor.py --budget 45             # 券包体检 + 用券排程
+python demo.py                                          # 开头那三个例子，七个场景一次跑完
+python scripts/build_pages.py                           # 把比价结果预渲染进网页（爬虫可读）
 ```
 
-> The 12 lines of numbers in the web demo (`docs/index.html`) are generated. Don't edit them by hand. After changing `data/`, run `build_demo.py` and `build_pages.py`. CI checks that both sides come from the same source.
+> 网页 Demo（`docs/index.html`）里的那 12 行数字是生成出来的，不要手改。改 `data/` 之后跑 `build_demo.py` 和 `build_pages.py`，CI 会校验两边是否同源。
 
-It reads a real store snapshot bundled with the project, captured on 2026-10-14 and anonymized. The snapshot contains no personal information.
+它读的是项目自带的一份真实门店快照（2026-10-14 抓取，已脱敏，不含任何个人信息）。
 
-> If your system only has `python3` and no `python` (the macOS default), replace `python` in the commands with `python3`.
+> 如果你的系统只有 `python3` 没有 `python`（macOS 默认就是这样），把命令里的 `python` 换成 `python3` 即可。
 
-To use your own usual store, configure the token with Option 1 or 2 and tell the assistant which store you want. It will fetch that store's live menu. See [`docs/TOKEN_GUIDE.md`](docs/TOKEN_GUIDE.md) for the full data-fetching steps.
-
----
-
-## How to use
-
-Talk in plain language in the chat window. There are no commands to memorize.
-
-"I want a Big Mac, fries, and a Coke. What is the cheapest way to order that?"
-
-À la carte the three items cost ¥48.5. This store's "Big Mac Trio" includes all three for ¥36.5, so you overpaid ¥12.0. With the card, the price can go down to ¥32.0.
-
-"What can I eat at McDonald's for 30 yuan?"
-
-It returns several ways to order within a 30-yuan budget, with calories and protein for each, and notes where each is expensive or cheap.
-
-"I'm cutting fat, no beef and nothing fried, within 45 yuan."
-
-It excludes the restricted ingredients rather than trying to avoid them. The result is a meal of 559 kcal, 20g protein, and 558mg sodium.
-
-"How should I use these coupons in the next few days?"
-
-It measures what each coupon is worth, orders them by your real ordering frequency, and says which ones will go unused.
-
-"Four of us eating together, 150 yuan total."
-
-It returns a meal plan for the table within the total budget.
+想看你自己常去的门店？配好 Token（方式一或方式二）之后跟它说一声，它会去拉那家店的实时菜单。完整的取数步骤见 [`docs/TOKEN_GUIDE.md`](docs/TOKEN_GUIDE.md)。
 
 ---
 
-## Why its numbers are trustworthy
+## 怎么用
 
-Any AI can give a professional-sounding answer to the same question. In most such answers the items, prices, and nutrition are made up.
+在对话框里说人话就行，不用记任何命令。
 
-| | Typical approach | McDonald's Ordering Strategist |
+「我想吃巨无霸 + 薯条 + 可乐，怎么点最划算？」
+单点 ¥48.5；这家店的「巨无霸三件套」¥36.5 就含这三样，你多花了 ¥12.0。持卡还能到 ¥32.0。
+
+「30 块钱在麦当劳能吃到什么？」
+预算 30 元以内的几种点法，各自的热量和蛋白，贵在哪、便宜在哪。
+
+「我在减脂，不要牛肉和油炸，45 块以内。」
+忌口会真的从候选里剔除。给出一份 559 大卡、蛋白 20g、钠 558mg 的一餐。
+
+「我这些券这几天怎么用？」
+每张券实测值多少钱，按你的真实点单频率排出先用哪张，并直说哪几张会用不掉。
+
+「我们 4 个人一起吃，总共 150 块。」
+一份总预算内的配餐方案。
+
+---
+
+## 为什么它算得准
+
+同一个问题随便问一个 AI，也能得到一段听起来很专业的回答，但那些回答里的商品、价格、营养多半是编的。
+
+| | 常见做法 | 麦麦点餐参谋 |
 |---|---|---|
-| Items | Generated from memory; names don't match the store | Real store menu; names and prices match |
-| Prices | Estimated | Real store listed prices; re-checked again before ordering |
-| Nutrition | Said from memory | Official nutrition database; combos derived from components and labeled as estimates |
-| Savings | Vague | States which kind of saving it is; different bases are never added together |
-| Whether you can eat it | Model weighs it up itself | Budget, calories, protein, and restrictions are hard constraints; fail one and the item is out |
-| When it can't compute | Forces out a number | Says "unclear" directly |
+| 商品 | 凭印象生成，名字对不上店里 | 门店真实菜单，名称与价格都对得上 |
+| 价格 | 估一个 | 门店真实标价；下单前还会再核一次价 |
+| 营养 | 凭印象说 | 官方营养库；套餐按组成推算，并标明是估算 |
+| 省了多少钱 | 含糊带过 | 说清是哪一种省，不同口径不混着加 |
+| 能不能吃 | 模型自己权衡 | 预算、热量、蛋白、忌口是硬门槛，达不到就淘汰 |
+| 算不出来时 | 硬给一个数 | 直接说「不清楚」 |
 
-The AI handles the language. A deterministic calculation handles the money.
+AI 负责听懂你的需求，算钱这件事交给确定性计算。
 
-### How "how much you saved" is counted
+### 关于「省了多少钱」，口径不混着说
 
-The same meal can produce three different figures, and they are easy to blend. The rule is:
+同一顿饭能算出三个不同的差额，很容易混着说。我们的口径是：
 
-- Accepted: money saved by buying the same items a different way. Both sides are real current prices at this store, so the figure is certain.
-- Accepted: money actually deducted by coupons. This is measured by pricing the coupon at the store. It is certain, but subject to verification in the store.
-- Labeled separately and never added to the figures above: the store's struck-through price minus the current price.
+- 计入：同一批商品，换个买法省下的钱。两侧都是这家店的真实现价，确定。
+- 计入：券实际抵扣掉的钱。拿券去计价实测出来的，确定，但以门店核验为准。
+- 单独标注，不与上面相加：门店的「划线价 − 现价」。
 
-The third figure is not counted because you would not have bought at the struck-through price anyway. Using that price as a baseline makes the saving look larger than it is.
-
----
-
-## Who it's for
-
-Office workers and students on a fixed daily budget want the cheapest way to order this meal. People cutting fat or building muscle have calorie and protein targets and need combinations that meet them. People with dietary restrictions do not want to check the menu item by item for beef, spice, or caffeine. People with many coupons need to know which to use first and which will go unused. Anyone ordering for a group needs to feed a table within a total budget.
+第三条不计入，因为你本来也不会按划线价买。拿划线价当基准，能把「省」吹得很漂亮，但那是假的。
 
 ---
 
-## Caveats
+## 适合谁
 
-- Prices are a snapshot from that day. Demo data comes from the 2026-10-14 store snapshot; actual prices and availability are subject to the store or app.
-- Nutrition involves estimates. Nutrition for combo items is derived from components, and the output labels it as an estimate. Sauces and some new items have no nutrition data and are excluded.
-- Coupons have limits. Few coupons reveal their amount in the name; ones we cannot infer are marked "unclear" rather than given a made-up number. Eligibility and stacking rules are subject to the store.
-- Spending analysis looks only at how often you order and how much you spend. It does not analyze what you like, and it does not store your order details.
-- This is not nutrition or medical advice. Data and conclusions are for reference only.
+上班族和学生每天有固定预算，想知道这一顿怎么点最划算。在减脂或增肌的人有热量和蛋白目标，需要能兑现的搭配而不是感觉。有忌口的人不想在菜单里一个个翻有没有牛肉、辣、咖啡因。券很多的人需要知道先用哪张、哪张会用不掉。带一群人吃饭的人要在总预算里给一桌人配餐。
 
 ---
 
-## Found something that doesn't match?
+## 几点说明
 
-If a price, combo composition, coupon amount, or nutrition value does not match what you see in the store, say so.
-
-Snapshots expire, stores change prices, and combos get restructured, so these reports are the only way to fix them.
-
-- [Report a miscalculation](https://github.com/pandasir/mcd-value/issues/new?template=price-report.yml): which store, which conclusion, and what you saw
-- [I want my store](https://github.com/pandasir/mcd-value/issues/new?template=store-request.yml): tell us the city and store, and we will prioritize adding it
-
----
-
-## Disclaimer
-
-This project is an entry for the "McDonald's Programmer Creative Development Contest," independently developed by the contestant, and is not an official McDonald's product.
-Output is for reference only and does not constitute medical, nutritional, or other professional advice; item information, prices, and availability are subject to real-time results from official McDonald's channels.
-Use of McDonald's MCP services is subject to its Terms of Use and McDonald's MCP Service Rules.
-
-MIT License (see [LICENSE](LICENSE)).
-
-If it saves you the price of a Coke, a star is welcome.
+- 价格是当天的快照。演示数据来自 2026-10-14 的门店快照，实际价格和供应情况以门店或 App 为准。
+- 营养有估算成分。套餐类商品的营养是按组成推算的，输出里会明确标注「估算」；调味酱和部分新品没有营养数据，不参与计算。
+- 券有边界。能从券名推出金额的券很少，推不出来的我们标「不清楚」，不编一个数。能用范围与叠加规则以门店为准。
+- 消费分析只看你多久点一次、一次花多少。它不分析你爱吃什么，也不会保存你的订单明细。
+- 这不是营养或医疗建议。数据与结论仅供参考。
 
 ---
 
-[中文版 README](README.zh-CN.md)
+## 发现对不上的地方
+
+价格、套餐组成、券金额、营养数值，只要和你在门店看到的对不上，说一声就行。
+
+快照会过期，门店会调价，套餐也会改组成。这些都只能靠真实反馈来修。
+
+- [报一个算错的地方](https://github.com/pandasir/mcd-value/issues/new?template=price-report.yml)：哪家店、哪条结论、你看到的是什么
+- [我想要我这家店](https://github.com/pandasir/mcd-value/issues/new?template=store-request.yml)：说城市和门店，优先补那一家
+
+---
+
+## 免责声明
+
+本项目为「麦当劳程序员创意开发大赛」参赛作品，由参赛者独立开发，非麦当劳官方产品。
+项目输出仅供参考，不构成医疗、营养或其他专业建议；餐品信息、价格及供应状态以麦当劳官方渠道的实时结果为准。
+使用麦当劳 MCP 服务须遵守其《使用条款》与《麦当劳 MCP 服务规则》。
+
+MIT License（见 [LICENSE](LICENSE)）。
+
+如果它帮你少花了一杯可乐的钱，欢迎给一个 star。
+
+---
+
+## English summary
+
+McDonald's Ordering Strategist (mcd-value) is an ordering advisor built on McDonald's China MCP. You say what you want to eat, your budget, and any dietary limits, and it lists every way to buy that meal at your store: à la carte, combos, and bundles, with coupons applied.
+
+Prices come from the store's real menu snapshot, not from model memory. Budget, calories, protein, and restrictions are hard constraints. Anything it cannot compute is labeled unknown instead of estimated. It does not host an MCP server; live store data needs your own McDonald's MCP token, while the bundled snapshot and `python demo.py` run offline with no token and no dependencies.
+
+Full English documentation: [README.en.md](README.en.md).
+
+---
+
+[English README](README.en.md)

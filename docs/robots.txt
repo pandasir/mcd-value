@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://pandasir.github.io/mcd-value/sitemap.xml
+
+# 给 AI 抓取器准备的站点摘要（llmstxt.org 约定）
+# LLMs-Txt: https://pandasir.github.io/mcd-value/llms.txt
