@@ -128,6 +128,14 @@
 | 在 **Claude / Cursor / VS Code / Cline / Windsurf** 等里用 | 方式二 | 任意支持 MCP 的客户端 + MCP Token |
 | 不装 AI 客户端，自己跑命令看结果 | 方式三 | 一个 Python（3.9 以上） |
 
+如果只是想把它当技能装进已支持的客户端，一条命令就够：
+
+```bash
+npx skills add pandasir/mcd-value --skill mcd-meal-adviser
+```
+
+技能页面：<https://www.skills.sh/pandasir/mcd-value/mcd-meal-adviser>。这条命令只装技能文件（`SKILL.md` 与 `scripts/`），不配 MCP 连接；要拉实时菜单仍需按方式一或方式二填 Token。
+
 ---
 
 先做这一步（方式一、方式二都要）：申请麦当劳 MCP Token

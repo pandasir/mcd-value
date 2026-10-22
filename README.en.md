@@ -125,6 +125,14 @@ There are three installation paths. Use Option 1 or 2 if you want the live menu 
 | Use it in **Claude / Cursor / VS Code / Cline / Windsurf**, etc. | Option 2 | Any MCP-capable client + an MCP token |
 | No AI client, just run commands yourself | Option 3 | Python (3.9+) |
 
+If you only want to install the skill into a supported client, one command does it:
+
+```bash
+npx skills add pandasir/mcd-value --skill mcd-meal-adviser
+```
+
+Skill page: <https://www.skills.sh/pandasir/mcd-value/mcd-meal-adviser>. This installs the skill files (`SKILL.md` and `scripts/`) only. Live menus still need an MCP token from Option 1 or 2.
+
 ---
 
 Get a McDonald's MCP token first (required for Options 1 and 2).

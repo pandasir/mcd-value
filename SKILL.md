@@ -1,6 +1,8 @@
 ---
 name: mcd-meal-adviser
-description: 麦麦点餐参谋 —— 基于麦当劳 MCP 的约束求解式点餐推荐。当用户问"今天麦当劳吃什么""预算 X 元怎么点最划算""减脂期能吃哪套""不要牛肉的套餐""几个人聚餐怎么点"时使用。输入预算/人数/营养目标/忌口，输出多套可解释、可直接下单的套餐方案。
+description: |
+  麦麦点餐参谋 —— 基于麦当劳 MCP 的约束求解式点餐推荐。当用户问"今天麦当劳吃什么""预算 X 元怎么点最划算""减脂期能吃哪套""不要牛肉的套餐""几个人聚餐怎么点"时使用。输入预算/人数/营养目标/忌口，输出多套可解释、可直接下单的套餐方案。
+  McDonald's China ordering advisor and meal-planning skill. Use when the user asks what to eat at McDonald's, how to order a budget meal cheaply, which combo beats ordering items separately, what fits a calorie or protein target, or how to use expiring coupons. Compares a-la-carte, combo, and bundle prices from a real store menu snapshot, then applies coupons. Prices and item codes come from McDonald's MCP responses, never from memory; anything it cannot compute is reported as unknown instead of estimated.
 ---
 
 # 麦麦点餐参谋
